@@ -1,2 +1,2 @@
-# ruparel.github.io
+# rruparel.github.io
 Github page repo area
