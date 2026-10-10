@@ -357,3 +357,5 @@ a:hover { text-decoration-thickness: 2px; }
 .interests .label { font-family: var(--ui); font-size: 0.78rem; margin: 0 0 1rem; }
 .interests ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; max-width: 62ch; }
 .interests li::marker { color: var(--accent); }
+#experience .timeline { gap: 1.25rem; }
+#experience .org { margin-bottom: 0; }
