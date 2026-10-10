@@ -359,3 +359,5 @@ a:hover { text-decoration-thickness: 2px; }
 .interests li::marker { color: var(--accent); }
 #experience .timeline { gap: 1.25rem; }
 #experience .org { margin-bottom: 0; }
+#experience .subhead { border-top: 1px solid var(--line); padding-top: 2.5rem; margin-top: 2.75rem; }
+.section h2[tabindex="-1"]:focus, .section h2[tabindex="-1"]:focus-visible { outline: none; }
