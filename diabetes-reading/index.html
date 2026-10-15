@@ -281,6 +281,8 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .part-head p { margin: 0; font-size: 16px; }
 .xpick { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
 .xpick .chip .dot { background: var(--rule); }
+.xtip { position: fixed; z-index: 60; max-width: 260px; background: var(--ink); color: var(--paper); font: 600 13px/1.35 var(--f-ui); padding: 6px 10px; border-radius: 6px; pointer-events: none; box-shadow: var(--shadow); }
+#xsheet [data-tip] { cursor: help; }
 mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radius: 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .xlegend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: -6px 0 16px; font-size: 13px; color: var(--ink); }
 .xlegend > span { display: inline-flex; align-items: center; gap: 7px; }
@@ -1132,7 +1134,32 @@ if (document.getElementById('quiz')) renderAll();
   const xesc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
   function scramble(w, seed) { const a = w.split(''); const letters = a.map((c, i) => /[a-z]/i.test(c) ? i : -1).filter(i => i > 0); let r = seed || Math.random(); for (let i = letters.length - 1; i > 0; i--) { r = (r * 9301 + 49297) % 233280 / 233280; const j = Math.floor(r * (i + 1)); const t = a[letters[i]]; a[letters[i]] = a[letters[j]]; a[letters[j]] = t; } return a.join(''); }
 
+  const TIPS = {
+    scramble: pn => `${pn} couldn’t read or say this word`,
+    glyph: pn => `A unit ${pn} didn’t recognize`,
+    fade: pn => `${pn} didn’t know this unit`,
+    blank: pn => `${pn} had no idea what this meant`,
+    gemini: pn => `${pn} would look this up with an AI tool`,
+    gloss: pn => `How ${pn} worked out the word`,
+    cycleare: pn => `${pn} kept reading “you” as her dad, or herself`,
+    cyclehave: pn => `${pn} kept reading “you” as her dad, or herself`,
+    cycleyour: pn => `${pn} kept reading “your” as his, or hers`,
+    team: pn => `For ${pn}, “health care team” meant five different specialists`,
+    pulse: pn => `${pn} stopped here`,
+    conflict: pn => `Clashed with what her dad’s kidney doctor said`,
+    mark: pn => `Stood out to ${pn}`,
+    academic: pn => `${pn} called this “a big academic word”`,
+    academicg: pn => `${pn} noted most people just say “blood sugar”`,
+    cycle70: pn => `${pn} questioned who 70 is the right number for`,
+    flip: pn => `${pn} had placed this under low blood sugar, not high`,
+  };
   function tok(key, r) {
+    const f = r.fx[key]; const html = tokInner(key, r);
+    if (!f) return html;
+    const kind = f.split(':')[0]; const t = TIPS[kind];
+    return t ? `<span class="tipw" data-tip="${xesc(t(r.pn))}">${html}</span>` : html;
+  }
+  function tokInner(key, r) {
     const word = TOK[key]; const f = r.fx[key];
     if (!f) return xesc(word);
     const [kind, arg] = f.split(':');
@@ -1178,6 +1205,14 @@ if (document.getElementById('quiz')) renderAll();
     });
     sheet.style.minHeight = (last + 30) + 'px';
   }
+  (function () {
+    const tip = document.createElement('div'); tip.className = 'xtip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true; (document.querySelector('main') || document.body).appendChild(tip);
+    const show = (el, x, y) => { tip.textContent = el.dataset.tip; tip.hidden = false; const w = tip.offsetWidth, h = tip.offsetHeight; let left = Math.min(Math.max(8, x - w / 2), innerWidth - w - 8); let top = y - h - 12; if (top < 8) top = y + 18; tip.style.left = left + 'px'; tip.style.top = top + 'px'; };
+    const sheetEl = () => document.getElementById('xsheet');
+    document.addEventListener('mousemove', e => { const sh = sheetEl(); if (!sh || !sh.contains(e.target)) { tip.hidden = true; return; } const el = e.target.closest('[data-tip]'); if (!el || !sh.contains(el)) { tip.hidden = true; return; } show(el, e.clientX, e.clientY); });
+    document.addEventListener('click', e => { const sh = sheetEl(); if (!sh || !sh.contains(e.target) || !matchMedia('(hover: none)').matches) return; const el = e.target.closest('[data-tip]'); if (!el) { tip.hidden = true; return; } const r = el.getBoundingClientRect(); show(el, r.left + Math.min(r.width, 200) / 2, r.top); clearTimeout(window._tipT); window._tipT = setTimeout(() => tip.hidden = true, 2500); });
+    window.addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
+  })();
   window.addEventListener('resize', () => { clearTimeout(window._xl); window._xl = setTimeout(layoutNotes, 150); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutNotes);
   function renderX() {
@@ -1196,14 +1231,15 @@ if (document.getElementById('quiz')) renderAll();
       if (r.out9 && ln.p === 9 && ln.k !== 'h1') cls += ' out';
       if (conf.s) cls += ' ' + conf.s;
       let raw = ln.t; (conf.hlp || []).forEach(ph => { raw = raw.replace(ph, '\u0001' + ph + '\u0002'); });
-      const text = raw.replace(/\{(\w+)\}/g, (_, k) => tok(k, r)).replace(/\u0001/g, '<mark class="xhl">').replace(/\u0002/g, '</mark>');
-      html += `<div class="${cls}"><span class="t">${text}</span></div>`;
+      const lineTip = { skim: `${r.pn} skimmed this`, tiny: `The print felt very small to ${r.pn}`, glaze: `${r.pn}’s eyes glazed over on paragraphs`, hl: `Stood out to ${r.pn}` }[conf.s] || ((r.out9 && ln.p === 9 && ln.k !== 'h1') ? `${r.pn} only reviewed page 10` : '');
+      const text = raw.replace(/\{(\w+)\}/g, (_, k) => tok(k, r)).replace(/\u0001/g, `<mark class="xhl" data-tip="Stood out to ${r.pn}">`).replace(/\u0002/g, '</mark>');
+      html += `<div class="${cls}"${lineTip ? ` data-tip="${xesc(lineTip)}"` : ''}><span class="t">${text}</span></div>`;
       let note = '';
       if (r.out9 && ln.id === 'h1') note = '<span class="lab">P1 reviewed page 10 only</span>';
       if (conf.n && !(r.out9 && ln.p === 9)) note = conf.n.map(q => `<p class="q">${xesc(q)}</p>`).join('');
       html += `<div class="xnote">${note}</div>`;
       if (conf.shift) html += `<div class="xshift" role="note"><span class="lab">What this line changed for P4</span><div class="xs-row"><div><span class="lab">Before reading</span><p class="q">So to me, poorly controlled means, you didn’t do your part.</p></div><div><span class="lab">After this line</span><p class="q">Now I think, maybe sometimes you did your part and still it went up.</p></div></div></div>`;
-      if (r.gapAfter === ln.id) html += `<div class="kgap"><b>Kidneys</b> · not on these two pages</div><div class="xnote"><p class="q">there’s nothing about kidneys on these two pages. Like, at all. Which, for my dad, that’s the main thing.</p></div>`;
+      if (r.gapAfter === ln.id) html += `<div class="kgap" data-tip="What ${r.pn} needed most wasn’t on these pages"><b>Kidneys</b> · not on these two pages</div><div class="xnote"><p class="q">there’s nothing about kidneys on these two pages. Like, at all. Which, for my dad, that’s the main thing.</p></div>`;
     });
     const sheet = document.getElementById('xsheet');
     sheet.className = 'xsheet' + (r.photo ? ' photo' + (reduce() ? '' : ' dim') : '');
