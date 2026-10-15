@@ -869,7 +869,7 @@ function renderSheet() {
     `<p>Check to be sure. Drink water. Take medicines as prescribed and don’t skip a dose. If levels stay high, or there is nausea, vomiting or confusion, contact the doctor right away. It could be ${T('dka')}.</p>`}
   ${on('why') ? `<details class="why" ${tint('why')}><summary>What is DKA?</summary>${src('why')}<p>With too little insulin, the body breaks down fat for energy, which makes ketones. Too many ketones can make the blood acidic. This is an emergency.</p></details>` : ''}
   ${on('team') ? `<div class="add" ${tint('team')}>${src('team')}
-      <p>“Talk to the health care team” can mean several people. Write down who to call for what. This stays in this browser only.</p>
+      <p>“Talk to the health care team” can mean several people. Write down who to call for what. This clears when you leave or refresh the page.</p>
       <div class="team">
         ${[['high', 'Sugar running high or low'], ['sick', 'Sick-day questions'], ['kidney', 'Kidney or other condition'], ['meds', 'Medicine changes']].map(([id, lbl]) => `<label for="team-${id}"><span>${lbl}</span><input id="team-${id}" data-team="${id}" placeholder="Name or clinic" value="${esc((state.team || {})[id] || '')}"></label>`).join('')}
       </div></div>` : `<p>Talk to the health care team about what to do if levels run higher than ${Y('your', 'their')} targets.</p>`}
@@ -993,8 +993,8 @@ function renderSheet() {
 function selectList() { const r = document.createRange(); r.selectNodeContents($('#callq')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('#copied').textContent = 'Selected. Copy with your keyboard.'; }
 
 /* ---------- Persistence (this browser only) ---------- */
-function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: state.reader, on: [...state.on], food: state.food, foodOther: state.foodOther, cond: state.cond, team: state.team, checks: state.checks, fromQuiz: state.fromQuiz })); } catch (e) {} }
-function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true, firstDone: true, skipped: new Set(), marks: new Set(), markedLines: [], view: 'after', hl: true }); } } catch (e) {} }
+function save() { /* fresh start on every visit: nothing is kept between page loads */ }
+function load() { try { localStorage.removeItem('ryw'); localStorage.removeItem('ryw-preview'); localStorage.removeItem('r5w-idx'); } catch (e) {} }
 
 function resetAll() {
   Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: false, view: 'after', hl: false });
