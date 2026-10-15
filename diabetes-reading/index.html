@@ -985,8 +985,8 @@ renderAll();
         sick: { s: 'hl', n: ['this was actually new to me as well, in terms of sick day planning'] },
       } },
   };
-  const ORDER = ['p4', 'p3', 'p5', 'p2', 'p1'];
-  let cur = 'p4', timers = [];
+  const ORDER = ['p1', 'p2', 'p3', 'p4', 'p5'];
+  let cur = 'p1', timers = [];
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const xesc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
   function scramble(w, seed) { const a = w.split(''); const letters = a.map((c, i) => /[a-z]/i.test(c) ? i : -1).filter(i => i > 0); let r = seed || Math.random(); for (let i = letters.length - 1; i > 0; i--) { r = (r * 9301 + 49297) % 233280 / 233280; const j = Math.floor(r * (i + 1)); const t = a[letters[i]]; a[letters[i]] = a[letters[j]]; a[letters[j]] = t; } return a.join(''); }
