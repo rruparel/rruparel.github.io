@@ -359,7 +359,8 @@ function renderQuiz() {
       <button type="button" class="btn ghost" id="back" ${state.step === 0 ? 'hidden' : ''}>Back</button>
       <button type="button" class="btn" id="fwd" ${canNext ? '' : 'disabled'}>${state.step === QUESTIONS.length - 1 ? 'Show my match' : 'Next'}</button>
     </div>
-    <div style="margin-top:14px"><span class="others">Or pick a reader yourself:</span><div class="pickrow">${pickChips()}</div></div>`;
+    <div style="margin-top:14px"><span class="others">Or pick a reader yourself:</span><div class="pickrow">${pickChips()}</div></div>
+    ${Object.keys(state.answers).length || state.step > 0 || state.cond || state.food !== 'none' ? '<div style="margin-top:12px"><button type="button" class="link" data-reset>Clear my answers and start over</button></div>' : ''}`;
   el.querySelectorAll('.opt[data-a]').forEach(b => b.addEventListener('click', () => { state.answers[q.id] = +b.dataset.a; renderQuiz(); }));
   const oc = $('#opt-cond'); if (oc) oc.addEventListener('click', () => { state.cond = !state.cond; oc.setAttribute('aria-pressed', state.cond); });
   const fd = $('#food'); if (fd) { fd.value = state.food; fd.addEventListener('change', () => state.food = fd.value); }
@@ -395,12 +396,11 @@ function renderMatch() {
       <div class="you">${state.fromQuiz ? 'You read most like' : 'Reading as'}</div>
       <h2>${r.pn} · ${esc(r.name)}</h2>
       <p class="why">${esc(r.why)} We turned on the supports that helped them. Switch any of them on or off.</p>
-      <button type="button" class="link" id="retake">Retake the questions</button>
+      <button type="button" class="btn ghost reset" data-reset>Start over</button>
     </div>
     <div><p class="hand">“${esc(r.q)}”<small>${r.pn}, in the study</small></p>
       <div class="others" style="margin-top:14px">Try another reader:</div><div class="pickrow">${pickChips()}</div></div>
   </div>`;
-  $('#retake').addEventListener('click', () => { state.matched = false; state.step = 0; state.answers = {}; renderQuiz(); });
   bindPick(el);
 }
 
@@ -409,7 +409,7 @@ function renderRail() {
   const rail = $('#rail');
   rail.innerHTML = `<h3>Reading supports</h3><p class="hint">${state.reader ? 'Turned on for your match. Mix and match.' : 'Answer the questions, or switch supports on here.'}</p>` +
     SUPPORTS.map(s => `<button type="button" class="sup" data-k="${s.k}" aria-pressed="${state.on.has(s.k)}"><span class="sw"></span><b>${esc(s.label)}</b><span class="from">from ${R[s.from].pn} · ${esc(R[s.from].name)}</span></button>`).join('') +
-    `<div class="railfoot">${state.on.size} of ${SUPPORTS.length} on</div>`;
+    `<div class="railfoot">${state.on.size} of ${SUPPORTS.length} on${state.on.size || state.reader ? ' · <button type="button" class="link" data-reset style="font-size:12px;padding:0">Start over</button>' : ''}</div>`;
   rail.querySelectorAll('.sup').forEach(b => b.addEventListener('click', () => {
     const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); renderRail(); renderSheet(); save();
   }));
@@ -549,6 +549,13 @@ function selectList() { const r = document.createRange(); r.selectNodeContents($
 function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: state.reader, on: [...state.on], food: state.food, cond: state.cond, team: state.team, checks: state.checks, fromQuiz: state.fromQuiz })); } catch (e) {} }
 function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true }); } } catch (e) {} }
 
+function resetAll() {
+  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, fromQuiz: false });
+  save(); renderAll();
+  const q = $('#quiz'); q.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-reset]')) resetAll(); });
 function renderAll() { renderQuiz(); renderRail(); renderSheet(); }
 load();
 renderAll();
