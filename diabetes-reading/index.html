@@ -13,9 +13,10 @@
 <style>
 /* Layout: a reading app. A short matching quiz up top, then a supports rail beside one tuned handout sheet. Shares its look with Read Five Ways. */
 :root {
-  --desk: #e3e7ec; --paper: #fdfdfb; --ink: #1d2733; --ink-soft: #5d6a78; --rule: #cdd5dd; --accent: #24476b; --wash: #eef2f6;
+  --desk: #e3e7ec; --paper: #fdfdfb; --ink: #1d2733; --ink-soft: #4f5d6c; --rule: #cdd5dd; --accent: #24476b; --wash: #eef2f6;
   --shadow: 0 1px 2px rgba(29,39,51,.08), 0 8px 28px rgba(29,39,51,.10);
   --warn: #8a3b12; --warn-bg: #fbeee5;
+  --mark: rgba(255,222,80,.70);
   --p1-hi: rgba(120,184,245,.55); --p1-ink: #1d5fa8;
   --p2-hi: rgba(190,166,240,.55); --p2-ink: #5b3fa0;
   --p3-hi: rgba(120,220,170,.55); --p3-ink: #1c7550;
@@ -30,6 +31,7 @@
   --desk: #14181d; --paper: #1e242b; --ink: #e4e9ee; --ink-soft: #9aa7b4; --rule: #36404b; --accent: #9cc3ea; --wash: #262d35;
   --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.35);
   --warn: #ffb28a; --warn-bg: #3a2519;
+  --mark: rgba(240,205,60,.22);
   --p1-hi: rgba(90,160,235,.38); --p1-ink: #8fc2f7; --p2-hi: rgba(160,130,230,.40); --p2-ink: #c3b0f5;
   --p3-hi: rgba(80,200,145,.36); --p3-ink: #86e0b5; --p4-hi: rgba(240,205,60,.40); --p4-ink: #f2d66a;
   --p5-hi: rgba(245,150,80,.40); --p5-ink: #ffb784; color-scheme: dark; } }
@@ -37,6 +39,7 @@
   --desk: #14181d; --paper: #1e242b; --ink: #e4e9ee; --ink-soft: #9aa7b4; --rule: #36404b; --accent: #9cc3ea; --wash: #262d35;
   --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.35);
   --warn: #ffb28a; --warn-bg: #3a2519;
+  --mark: rgba(240,205,60,.22);
   --p1-hi: rgba(90,160,235,.38); --p1-ink: #8fc2f7; --p2-hi: rgba(160,130,230,.40); --p2-ink: #c3b0f5;
   --p3-hi: rgba(80,200,145,.36); --p3-ink: #86e0b5; --p4-hi: rgba(240,205,60,.40); --p4-ink: #f2d66a;
   --p5-hi: rgba(245,150,80,.40); --p5-ink: #ffb784; color-scheme: dark; }
@@ -119,7 +122,12 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(38px, 5.6
 .hltog input { width: 18px; height: 18px; accent-color: var(--ink); }
 .sheet.hl .add, .sheet.hl .flow, .sheet.hl details.why, .sheet.hl .cap { outline: 2.5px dashed var(--ci, var(--accent)); outline-offset: 4px; border-radius: 4px; }
 .sheet.hl .flow { --ci: var(--p5-ink); }
-.sheet.hl .term, .sheet.hl .chg, .sheet.hl mark.hi { background: var(--p4-hi); border-radius: 2px; box-shadow: 0 0 0 2px var(--p4-hi); }
+.sheet.hl .term, .sheet.hl .chg, .sheet.hl mark.hi { background: var(--mark); color: var(--ink); border-radius: 2px; box-shadow: 0 0 0 2px var(--mark); }
+.sheet.hl h3 .term { color: var(--ink); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 10; background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 6px; font-weight: 600; text-decoration: none; }
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 12px); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .pg { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; border-bottom: 1px dashed var(--rule); padding: 22px 0 6px; margin-bottom: 4px; }
 
 .term { border: 0; background: none; color: inherit; font: inherit; padding: 0; cursor: help; border-bottom: 1.5px dotted var(--ink-soft); }
@@ -127,7 +135,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(38px, 5.6
 .term[aria-expanded="false"] .med { display: none; }
 
 .add { position: relative; margin: .7em 0; padding: 10px 14px 10px 16px; border-radius: 4px; background: var(--wash); border-left: 4px solid var(--c, var(--accent)); font-size: .95em; }
-.tag { display: inline-flex; gap: 6px; align-items: center; font: 600 11px/1.2 var(--f-ui); letter-spacing: .06em; color: var(--ci, var(--ink-soft)); margin-bottom: 4px; text-transform: uppercase; background: none; border: 0; padding: 3px 0; cursor: pointer; text-align: left; }
+.tag { display: inline-flex; gap: 6px; align-items: center; font: 600 12px/1.2 var(--f-ui); letter-spacing: .06em; color: var(--ci, var(--ink-soft)); margin-bottom: 4px; text-transform: uppercase; background: none; border: 0; padding: 3px 0; cursor: pointer; text-align: left; }
 button.tag:hover { text-decoration: underline; text-underline-offset: 3px; }
 .tag .car { display: inline-block; font-size: 0; }
 .tag .car::before { content: "\25B8"; font-size: 11px; }
@@ -217,7 +225,8 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 
 </head>
 <body>
-<div class="wrap">
+<a class="skip" href="#sheet">Skip to the reading</a>
+<main class="wrap" id="top">
   <header>
     <div class="intro">
       <div class="intro-text">
@@ -258,11 +267,11 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
     </div>
   </header>
 
-  <section class="quiz" id="quiz" aria-live="polite"></section>
+  <section class="quiz" id="quiz" aria-label="Match me to a reader"></section>
 
   <section class="reader">
     <aside class="rail" id="rail" aria-label="Reading supports"></aside>
-    <article class="sheet" id="sheet" aria-label="The handout"></article>
+    <article class="sheet" id="sheet" aria-label="The handout" tabindex="-1"></article>
   </section>
 
   <section class="closing" id="closing" aria-live="polite">
@@ -275,7 +284,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
   </section>
 
   <p class="foot">A class prototype, not medical advice. Handout content is condensed from pages 9 and 10 of an American Diabetes Association guide for people living with type 2 diabetes. Each added support is tagged with the participant whose reading it came from. Five think-aloud interviews, September 2026. Roma Ruparel, INFO 272.</p>
-</div>
+</main>
 
 <script>
 /* ---------- Readers and supports ---------- */
@@ -344,8 +353,8 @@ function renderFirst() {
     else { state.skipped.delete('none'); state.skipped.has(k) ? state.skipped.delete(k) : state.skipped.add(k); }
     renderFirst();
   }));
-  $('#first-done').addEventListener('click', () => { state.firstDone = true; renderQuiz(); $('#quiz').scrollIntoView({ block: 'start' }); });
-  $('#skip-first').addEventListener('click', () => { state.skipped = new Set(); state.firstDone = true; renderQuiz(); });
+  $('#first-done').addEventListener('click', () => { state.firstDone = true; renderQuiz(); focusQ(); });
+  $('#skip-first').addEventListener('click', () => { state.skipped = new Set(); state.firstDone = true; renderQuiz(); focusQ(); });
 }
 
 /* ---------- Quiz ---------- */
@@ -416,9 +425,9 @@ function renderQuiz() {
   const fd = $('#food'), fo = $('#food-other');
   if (fd) { fd.value = state.food; fd.addEventListener('change', () => { state.food = fd.value; fo.hidden = fd.value !== 'other'; if (!fo.hidden) fo.focus(); }); }
   if (fo) { fo.value = state.foodOther || ''; fo.addEventListener('input', () => state.foodOther = fo.value.trim()); }
-  const back = $('#back'); if (back) back.addEventListener('click', () => { state.step--; renderQuiz(); });
+  const back = $('#back'); if (back) back.addEventListener('click', () => { state.step--; renderQuiz(); focusQ(); });
   $('#fwd').addEventListener('click', () => {
-    if (state.step < QUESTIONS.length - 1) { state.step++; renderQuiz(); return; }
+    if (state.step < QUESTIONS.length - 1) { state.step++; renderQuiz(); focusQ(); return; }
     const top = score()[0][0];
     applyReader(top, true);
   });
@@ -430,8 +439,9 @@ function pickChips() {
 }
 function bindPick(el) { el.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => applyReader(b.dataset.pick, false))); }
 
+function focusQ() { const h = document.querySelector('#quiz h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: false }); } }
 function applyReader(k, fromQuiz) {
-  state.reader = k; state.matched = true; state.fromQuiz = fromQuiz;
+  state.reader = k; state.matched = true; state.fromQuiz = fromQuiz; state.justMatched = true;
   state.on = new Set(R[k].sup); state.view = 'after'; state.hl = true; state.firstDone = true;
   if (state.cond) state.on.add('conditions');
   if (state.food !== 'none') state.on.add('food');
@@ -455,6 +465,7 @@ function renderMatch() {
       <div class="others" style="margin-top:14px">Try another reader:</div><div class="pickrow">${pickChips()}</div></div>
   </div>`;
   bindPick(el);
+  if (state.justMatched) { state.justMatched = false; focusQ(); }
 }
 
 /* ---------- Rail ---------- */
@@ -462,7 +473,7 @@ function renderRail() {
   const rail = $('#rail');
   rail.innerHTML = `<h3>Reading supports</h3><p class="hint">${state.reader ? 'Turned on for your match. Mix and match.' : 'Answer the questions, or switch supports on here.'}</p>` +
     SUPPORTS.map(s => `<button type="button" class="sup" data-k="${s.k}" aria-pressed="${state.on.has(s.k)}"><span class="sw"></span><b>${esc(s.label)}</b><span class="from">from ${R[s.from].pn} · ${esc(R[s.from].name)}</span></button>`).join('') +
-    `<div class="railfoot">${state.on.size} of ${SUPPORTS.length} on${state.on.size || state.reader ? ' · <button type="button" class="link" data-reset style="font-size:12px;padding:0">Start over</button>' : ''}</div>`;
+    `<div class="railfoot" aria-live="polite">${state.on.size} of ${SUPPORTS.length} on${state.on.size || state.reader ? ' · <button type="button" class="link" data-reset style="font-size:12px;padding:0">Start over</button>' : ''}</div>`;
   rail.querySelectorAll('.sup').forEach(b => b.addEventListener('click', () => {
     const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); state.view = 'after'; renderRail(); renderSheet(); save();
   }));
@@ -526,9 +537,9 @@ function renderSheet() {
 
   <h3>How to treat a low: the Rule of 15</h3>
   ${on('steps') ? `<div class="flow" ${tint('steps')}>
-      <div class="box"><b>If</b>Below 70</div><span class="arr">→</span>
-      <div class="box"><b>Do</b>Have 15 grams of fast-acting carbs</div><span class="arr">→</span>
-      <div class="box"><b>Wait</b>15 minutes, then check again</div><span class="arr">→</span>
+      <div class="box"><b>If</b>Below 70</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Do</b>Have 15 grams of fast-acting carbs</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Wait</b>15 minutes, then check again</div><span class="arr" aria-hidden="true">→</span>
       <div class="box"><b>Still below 70?</b>Repeat. Once above 70, have a snack.</div></div>
       <div class="cap">${src('steps')}</div>` :
     `<p>Eat or drink 15 grams of fast-acting carbohydrates. Recheck after 15 minutes. If still low, repeat.</p>`}
@@ -553,7 +564,7 @@ function renderSheet() {
   ${add('conditions', '<p>Tiredness or peeing more can also come from age, the kidneys, or other medicines. Sleepiness can be a sign of high sugar, so check the number.</p>')}
 
   ${on('compare') ? `<div class="add" ${tint('compare')}>${src('compare')}
-    <div class="tablewrap"><table class="cmp"><thead><tr><th></th><th>Low</th><th>High</th></tr></thead><tbody>
+    <div class="tablewrap"><table class="cmp"><thead><tr><th><span class="sr-only">Topic</span></th><th>Low</th><th>High</th></tr></thead><tbody>
       <tr><td>What</td><td>Below 70</td><td>Above target</td></tr>
       <tr><td>Can feel like</td><td>Shaky, sweaty, hungry, dizzy, weak</td><td>Thirsty, peeing often, sleepy, blurry vision, or nothing</td></tr>
       <tr><td>Both</td><td colspan="2">Confusion can happen with either. Check the number to tell which.</td></tr>
@@ -562,8 +573,8 @@ function renderSheet() {
 
   <h3>How to manage a high</h3>
   ${on('steps') ? `<div class="flow" ${tint('steps')}>
-      <div class="box"><b>First</b>Check again to be sure</div><span class="arr">→</span>
-      <div class="box"><b>Then</b>Drink water. Take medicines as prescribed. Don’t skip a dose.</div><span class="arr">→</span>
+      <div class="box"><b>First</b>Check again to be sure</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Then</b>Drink water. Take medicines as prescribed. Don’t skip a dose.</div><span class="arr" aria-hidden="true">→</span>
       <div class="box alert"><b>Call the doctor right away if</b>It stays high, or there is nausea, vomiting or confusion</div></div>
       <div class="cap">${src('steps')}</div>` :
     `<p>Check to be sure. Drink water. Take medicines as prescribed and don’t skip a dose. If levels stay high, or there is nausea, vomiting or confusion, contact the doctor right away. It could be ${T('dka')}.</p>`}

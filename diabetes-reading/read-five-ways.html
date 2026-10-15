@@ -16,7 +16,7 @@
   --desk: #e3e7ec;
   --paper: #fdfdfb;
   --ink: #1d2733;
-  --ink-soft: #5d6a78;
+  --ink-soft: #4f5d6c;
   --rule: #cdd5dd;
   --accent: #24476b;
   --shadow: 0 1px 2px rgba(29,39,51,.08), 0 8px 28px rgba(29,39,51,.10);
@@ -87,6 +87,13 @@ button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipula
 .k-hi { background: linear-gradient(transparent 15%, var(--reader-hi, var(--p4-hi)) 15%, var(--reader-hi, var(--p4-hi)) 88%, transparent 88%); padding: 0 3px; color: var(--ink); }
 .k-skip { filter: blur(2px); color: var(--ink); }
 .k-skim { opacity: .4; color: var(--ink); }
+.legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { display: inline-block; width: 26px; height: 12px; border-radius: 2px; }
+.sw-hi { background: var(--reader-hi, var(--p4-hi)); }
+.sw-skim { background: var(--ink); opacity: .25; }
+.sw-skip { background: repeating-linear-gradient(90deg, var(--ink) 0 3px, transparent 3px 6px); filter: blur(1.5px); opacity: .6; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
 /* The sheet */
 .sheet { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 300px; column-gap: 32px; padding-block: 40px 44px; }
@@ -100,7 +107,7 @@ button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipula
 .ln.pg::after { content: ""; display: block; border-bottom: 1px dashed var(--rule); margin-top: 6px; }
 .ln .txt { padding: 0 2px; border-radius: 2px; transition: background-size .5s ease; background-image: linear-gradient(transparent 12%, var(--reader-hi) 12%, var(--reader-hi) 90%, transparent 90%); background-repeat: no-repeat; background-size: 0% 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .ln.land .txt { background-size: 100% 100%; }
-.ln.skim { opacity: .38; }
+.ln.skim { opacity: .5; }
 .ln.out { opacity: .2; }
 .ln.skip { opacity: .55; filter: blur(2.4px); }
 .ln.hinge .txt { outline: 2px dashed var(--reader-ink); outline-offset: 3px; }
@@ -142,7 +149,7 @@ button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipula
 .shift .printed { font-family: var(--f-page); font-size: 16px; color: var(--ink); }
 .shift .printed mark { background: linear-gradient(transparent 12%, var(--p4-hi) 12%, var(--p4-hi) 90%, transparent 90%); color: inherit; padding: 0 2px; }
 .shift .voice { font-family: var(--f-hand); color: var(--p4-ink); font-size: clamp(20px, 2.5vw, 25px); }
-.struck { text-decoration: line-through; text-decoration-color: var(--p4-ink); text-decoration-thickness: 2px; opacity: .55; }
+.struck { text-decoration: line-through; text-decoration-color: var(--p4-ink); text-decoration-thickness: 2px; color: var(--ink-soft); }
 .rewrite { display: block; margin-top: 6px; }
 .shift.playing .step { opacity: 0; transform: translateY(8px); }
 .shift.playing .step.in { opacity: 1; transform: none; }
@@ -167,7 +174,7 @@ button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipula
 
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
   <header>
     <div class="eyebrow">Alternative report · Diabetes education study · INFO 272</div>
     <h1>Read Five Ways</h1>
@@ -178,13 +185,13 @@ button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipula
   <section id="card" class="card plain" aria-live="polite"></section>
 
   <div class="legend" id="legend" hidden>
-    <span><span class="k-hi">highlighted</span> <b>landed</b></span>
-    <span><span class="k-skim">faded</span> <b>skimmed</b></span>
-    <span><span class="k-skip">blurred</span> <b>skipped</b></span>
+    <span><span class="sw sw-hi" aria-hidden="true"></span> <b>Highlighted</b> landed</span>
+    <span><span class="sw sw-skim" aria-hidden="true"></span> <b>Faded</b> skimmed</span>
+    <span><span class="sw sw-skip" aria-hidden="true"></span> <b>Blurred</b> skipped</span>
     <span><b>Handwriting</b> is the reader's own words</span>
   </div>
 
-  <section class="sheet" id="sheet" aria-label="The handout"></section>
+  <section class="sheet" id="sheet" aria-label="The handout, annotated by the selected reader"></section>
 
   <div class="navrow">
     <button class="btn ghost" id="prev" type="button">← Previous</button>
@@ -214,7 +221,7 @@ button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipula
     <p class="next">Want to read the page your way? <a href="index.html">Try Read Your Way</a>, a prototype that matches you with the participant you read most like and adjusts the page with the supports that helped them.</p>
     <p class="method">Five 30-minute think-aloud interviews, September 2026, analyzed with reflexive thematic analysis. The handout text is condensed from pages 9 and 10 of <a href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener"><i>Your Rights and Care Standards: A Guide for People with Type 2 Diabetes</i></a> (American Diabetes Association, 2026). P1 reviewed page 10 only. Handwritten notes are participants’ own words, lightly trimmed. Roma Ruparel.</p>
   </section>
-</div>
+</main>
 
 <script>
 const PAGE = [
