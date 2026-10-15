@@ -123,6 +123,17 @@ details.why .tag { display: flex; margin-top: 6px; }
 .premise { margin-top: 22px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 900px; }
 .premise div { border-top: 2px solid var(--ink); padding-top: 8px; font-size: 15px; line-height: 1.4; }
 .premise b { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+.findings { margin-top: 30px; }
+.findings > h2 { margin: 0 0 12px; }
+.find-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.find { background: var(--paper); box-shadow: var(--shadow); border-radius: 4px; border-top: 5px solid var(--c); padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.find h3 { font-family: var(--f-display); font-weight: 600; font-size: 21px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.find p { margin: 0; font-size: 15px; line-height: 1.5; }
+.find blockquote { margin: auto 0 0; padding-top: 8px; font-family: var(--f-hand); font-size: 19px; line-height: 1.3; color: var(--ci); }
+.find cite { display: block; font: 500 12px/1.4 var(--f-ui); font-style: normal; color: var(--ink-soft); margin-top: 4px; }
+.try { margin-top: 34px; max-width: 720px; }
+.try h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(24px, 3vw, 30px); margin: 0 0 6px; line-height: 1.15; }
+.try p { margin: 0; font-size: 16px; }
 .closing { margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 36px; align-items: start; }
 .closing h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.12; margin: 0; text-wrap: balance; }
 .closing p { margin: 0 0 10px; }
@@ -164,7 +175,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
   .rail { position: static; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .rail h3, .rail p.hint, .railfoot { grid-column: 1 / -1; }
   .match { grid-template-columns: 1fr; }
-  .premise, .closing { grid-template-columns: 1fr; }
+  .find-grid, .closing { grid-template-columns: 1fr; }
   .team label { grid-template-columns: 1fr; gap: 4px; }
 }
 @media (max-width: 560px) {
@@ -182,11 +193,32 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
   <header>
     <div class="eyebrow">Design prototype</div>
     <h1>Read Your Way</h1>
-    <p class="lede">Nobody in the study read this diabetes handout the same way. Answer four quick questions, and the page will match you with the participant you read most like, then adjust the page with the supports that helped them.</p>
-    <div class="premise" aria-label="Why this exists">
-      <div><b>What the study found</b>People often read health pages on behalf of someone else.</div>
-      <div><b>&nbsp;</b>They decide which voices to trust: doctors, daughters, pharmacists, AI.</div>
-      <div><b>&nbsp;</b>One short line can change who they think is to blame.</div>
+    <p class="lede">Five people with different connections to type 2 diabetes read the same two pages of a diabetes guide while thinking out loud. None of them came to it as a blank slate. Their histories, relationships and trusted sources shaped what they noticed, skipped and took away.</p>
+
+    <section class="findings" aria-labelledby="find-h">
+      <h2 id="find-h" class="eyebrow">What the study found</h2>
+      <div class="find-grid">
+        <article class="find" style="--c:var(--p3-hi);--ci:var(--p3-ink)">
+          <h3>People read on behalf of someone else</h3>
+          <p>The guide speaks to “you,” the person with diabetes. Most participants read it for a parent, a friend or themselves, and the person they pictured shaped what they paid attention to.</p>
+          <blockquote>“He’s not gonna read this. He would hand this to me.”<cite>P3, caring for her father</cite></blockquote>
+        </article>
+        <article class="find" style="--c:var(--p5-hi);--ci:var(--p5-ink)">
+          <h3>Medical words can build trust and wear it down</h3>
+          <p>Clinical terms helped some readers talk with their doctors and pushed others away. When the page fell short, people turned to someone they already trusted: a daughter, a pharmacist, an AI tool.</p>
+          <blockquote>“Then why don’t they just say sugar? Everybody says sugar.”<cite>P4, managing her own health</cite></blockquote>
+        </article>
+        <article class="find" style="--c:var(--p4-hi);--ci:var(--p4-ink)">
+          <h3>One line can change who gets blamed</h3>
+          <p>Reading that stress or illness can raise blood sugar led one participant to rethink what “poorly controlled” means, for herself and for a friend.</p>
+          <blockquote>“Now I think, maybe sometimes you did your part and still it went up.”<cite>P4, by the end of her interview</cite></blockquote>
+        </article>
+      </div>
+    </section>
+
+    <div class="try">
+      <h2>Try it: read the page your way</h2>
+      <p>This prototype turns those findings into a reading tool. Answer four quick questions and it matches you with the participant you read most like, then adjusts the handout with the supports that helped them. Every support links back to the moment in the study it came from.</p>
     </div>
   </header>
 
@@ -200,8 +232,8 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
   <section class="closing">
     <h2>Your answers changed this page. In the study, the page also changed its readers.</h2>
     <div>
-      <p>After reading that stress or illness can raise blood sugar, P4 rethought what “poorly controlled” means:</p>
-      <p class="hand">“Now I think, maybe sometimes you did your part and still it went up.”</p>
+      <p>After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:</p>
+      <p class="hand">“I will not tell her, ‘Just walk more.’ I used to say that.”</p>
       <p>Each support here started as something a participant needed. Tap any tag on the page to read the moment behind it. To see how each person read the original page, open <a href="read-five-ways.html">Read Five Ways</a>.</p>
     </div>
   </section>
