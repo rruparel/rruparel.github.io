@@ -102,6 +102,14 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(38px, 5.6
 .sheet p, .sheet li { margin: .35em 0; }
 .sheet ul { padding-left: 1.2em; margin: .3em 0; }
 .sheet .sub { color: var(--ink-soft); margin: 0 0 .6em; }
+.orig { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 20px; align-items: center; background: var(--wash); border: 1.5px solid var(--rule); border-radius: 6px; padding: 16px 18px; margin: 0 0 22px; font-size: 15px; }
+.orig p { margin: 4px 0 0; }
+.orig .eyebrow { display: block; }
+.orig .btn { text-decoration: none; display: inline-block; white-space: nowrap; }
+.orig-note { grid-column: 1 / -1; font-size: 13px; color: var(--ink-soft); margin: 0 !important; }
+.adapted { font-size: 12px; color: var(--ink-soft); margin: 0 0 10px !important; letter-spacing: .02em; }
+.adapted a { color: var(--accent); }
+@media (max-width: 560px) { .orig { grid-template-columns: 1fr; } .orig .btn { text-align: center; } }
 .pg { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; border-bottom: 1px dashed var(--rule); padding: 22px 0 6px; margin-bottom: 4px; }
 
 .term { border: 0; background: none; color: inherit; font: inherit; padding: 0; cursor: help; border-bottom: 1.5px dotted var(--ink-soft); }
@@ -435,7 +443,15 @@ function renderSheet() {
   const snack = on('food') ? FOODS[state.food === 'none' ? 'southasian' : state.food] : FOODS.none;
   const foodLabel = on('food') && state.food === 'none' ? ' <select class="sel" id="food2" aria-label="Choose foods" style="padding:4px 8px;font-size:.85em"><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option></select>' : '';
 
+  const pristine = !state.reader && state.on.size === 0;
   sheet.innerHTML = `
+  ${pristine ? `<div class="orig">
+    <div class="orig-text"><span class="eyebrow">The original pages</span>
+    <p><b>Pages 9 and 10</b> of <i>Your Rights and Care Standards: A Guide for People with Type 2 Diabetes</i>, American Diabetes Association, 2026. This is what every participant read.</p></div>
+    <a class="btn" href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener">Open pages 9–10 (PDF)</a>
+    <p class="orig-note">On some phones the PDF opens at the cover. Scroll to page 9. Below is an adapted version of the same pages. Answer the questions or switch on a support to see how it changes.</p>
+  </div>` : ''}
+  <p class="adapted">Adapted from pages 9–10 of the ADA guide · <a href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener">see the original</a></p>
   <h2>Short-term health challenges</h2>
   <p class="sub">${on('voice') ? 'For people helping someone live with type 2 diabetes.' : 'Low and high blood ' + T('glucose') + ' are common short-term issues in type 2 diabetes.'}</p>
   ${add('hope', '<p>For many people, numbers can improve with changes in daily habits over time. Ask the doctor what is realistic for you.</p>')}
