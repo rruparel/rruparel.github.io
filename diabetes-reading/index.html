@@ -167,6 +167,14 @@ li.markable { list-style-position: outside; }
 .hltog input { width: 18px; height: 18px; accent-color: var(--ink); }
 .sheet.hl .add, .sheet.hl .flow, .sheet.hl details.why, .sheet.hl .cap { outline: 2.5px dashed var(--ci, var(--accent)); outline-offset: 4px; border-radius: 4px; }
 .sheet.hl .flow { --ci: var(--p5-ink); }
+.sheet { position: relative; }
+.sheet.annotated { padding-right: 270px; }
+.annot { position: absolute; right: 18px; width: 232px; font-size: 13px; line-height: 1.4; background: var(--paper); border: 1.5px solid var(--rule); border-left: 4px solid var(--ah); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; z-index: 2; }
+.annot.inline { position: static; width: auto; margin: 4px 0 10px; }
+.annot .a-what { font-weight: 600; color: var(--ink); }
+.annot .a-why { color: var(--ink-soft); }
+.annot .a-why b { color: var(--ink); font-weight: 700; }
+.annot .a-tag { font: 700 11px/1.3 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ai); }
 .sheet.hl .term, .sheet.hl .chg, .sheet.hl mark.hi { background: var(--mark); color: var(--ink); border-radius: 2px; box-shadow: 0 0 0 2px var(--mark); }
 .sheet.hl h3 .term { color: var(--ink); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
@@ -523,6 +531,58 @@ function renderSkips(sheet) {
   const more = sheet.querySelector('#fx-more'); if (more) more.addEventListener('click', () => { state.showAll = true; renderSheet(); });
   sheet.querySelectorAll('[data-turnon]').forEach(b => b.addEventListener('click', () => { state.on.add(b.dataset.turnon); renderRail(); renderSheet(); save(); }));
 }
+const WHYQ = {
+  'glucose': ['Then why don’t they just say sugar? Everybody says sugar.', 'P4'],
+  'hypoglycemia': ['I’m going to skip the big word.', 'P4'],
+  'hyperglycemia': ['I’m going to skip the big word.', 'P4'],
+  'glucagon': ['No idea. I’d have to look that up.', 'P5'],
+  'diabetic ketoacidosis (DKA)': ['Keto, like the diet?', 'P4'],
+  unit: ['Seventy what?', 'P4'],
+  food: ['We don’t eat cheese and crackers. We will eat some chevdo, or a roti with something.', 'P4'],
+  voice: ['He’s not gonna read this. He would hand this to me.', 'P3'],
+  stress: ['Tension can make your sugar high? I didn’t know that.', 'P4'],
+};
+function supInfo(k) { const sp = SUPPORTS.find(x => x.k === k); return sp ? { label: sp.label, pn: R[sp.from].pn, from: sp.from, q: sp.q } : null; }
+function describe(el) {
+  const why = (k, wk) => { const i = supInfo(k); const w = WHYQ[wk]; return i ? { tag: `${i.label} · ${i.pn}`, from: i.from, q: w ? w[0] : i.q, qp: w ? w[1] : i.pn } : null; };
+  if (el.matches('.term')) { const med = (el.getAttribute('title') || '').replace('Medical term: ', ''); const plain = el.childNodes[0] ? el.childNodes[0].textContent : el.textContent; return { key: 'term:' + med, what: `“${med}” is now “${plain}”. Tap it to see the medical term.`, ...why('plain', med) }; }
+  if (el.matches('.sub.chg')) return { key: 'unit', what: 'Added a plain note on what “mg/dL” means.', ...why('plain', 'unit') };
+  if (el.matches('mark.hi')) return { key: 'stress', what: 'Highlighted “stress or illness” as a cause.', ...why('noblame', 'stress') };
+  if (el.matches('.chg')) {
+    const t = el.textContent;
+    if (/^(something|a roti|a piece of injera|a corn tortilla|a small bowl)/.test(t)) return { key: 'food', what: `Swapped “cheese and crackers” for ${t.length > 50 ? 'foods you usually eat' : '“' + t + '”'}.`, ...why('food', 'food') };
+    return { key: 'voice', what: `“You” now reads “${t}”, for the person helping.`, ...why('voice', 'voice') };
+  }
+  if (el.matches('.flow')) return { key: 'flow' + Math.random(), what: 'Rewrote the paragraph as if-then steps.', ...why('steps') };
+  if (el.matches('details.why')) return { key: 'why' + Math.random(), what: 'Added a short explanation of why this happens.', ...why('why') };
+  if (el.matches('.add')) { const tag = el.querySelector('.tag'); const lbl = tag ? tag.textContent.replace(/·.*$/, '').replace(/[▸▾]/g, '').trim() : ''; const sp = SUPPORTS.find(x => x.label === lbl); if (sp && /sugar is treatment/.test(el.textContent)) return { key: 'guilt', what: 'Added: treating a low with sugar is the right thing to do.', tag: `${sp.label} · ${R[sp.from].pn}`, from: sp.from, q: 'They will feel guilty. They will think, I’m not supposed to eat this.', qp: 'P4' }; return sp ? { key: 'add' + Math.random(), what: `Added: ${lbl.toLowerCase()}.`, tag: `${sp.label} · ${R[sp.from].pn}`, from: sp.from, q: sp.q, qp: R[sp.from].pn } : { key: 'add' + Math.random(), what: 'Added a note that some people feel nothing at all.', tag: 'Everyday words · P4', from: 'p4', q: 'My number was high and I felt completely fine.', qp: 'P4' }; }
+  return null;
+}
+function annotate(sheet) {
+  sheet.querySelectorAll('.annot').forEach(a => a.remove());
+  const wide = sheet.clientWidth >= 760;
+  sheet.classList.toggle('annotated', wide);
+  const seen = new Set(); const items = [];
+  sheet.querySelectorAll('.term, .chg, mark.hi, .add, .flow, details.why').forEach(el => {
+    if (el.closest('.add') && !el.matches('.add')) return; if (el.closest('.cmpbar, .fixlist')) return;
+    const d = describe(el); if (!d || seen.has(d.key)) return; seen.add(d.key); items.push({ el, d });
+  });
+  let lastBottom = 0; const top0 = sheet.getBoundingClientRect().top;
+  items.forEach(({ el, d }) => {
+    const a = document.createElement('div'); a.className = 'annot'; a.setAttribute('role', 'note'); a.style.setProperty('--ai', `var(--${d.from}-ink)`); a.style.setProperty('--ah', `var(--${d.from}-hi)`);
+    a.innerHTML = `<span class="a-what">${esc(d.what)}</span><span class="a-why"><b>Why:</b> “${esc(d.q)}” (${esc(d.qp || '')})</span><span class="a-tag">${esc(d.tag)}</span>`;
+    if (wide) {
+      sheet.appendChild(a);
+      let top = el.getBoundingClientRect().top - top0; if (top < lastBottom + 8) top = lastBottom + 8;
+      a.style.top = top + 'px'; lastBottom = top + a.offsetHeight;
+    } else {
+      const host = el.closest('p, li, h3, .add, .flow, details') || el;
+      const blk = host.matches('li') ? host.closest('ul') : host; blk.insertAdjacentElement('afterend', a); a.classList.add('inline');
+    }
+  });
+  if (wide && lastBottom > sheet.scrollHeight) sheet.style.minHeight = (lastBottom + 40) + 'px'; else sheet.style.minHeight = '';
+}
+window.addEventListener('resize', () => { clearTimeout(window._annT); window._annT = setTimeout(() => { if (state.hl && state.view === 'after') renderSheet(); }, 250); });
 function marking() { return !state.firstDone && !state.matched && state.on.size === 0; }
 function splitWords(block, bi) {
   const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
@@ -910,6 +970,7 @@ function renderSheet() {
       $('#dsum').textContent = `You skipped ${n} word${n === 1 ? '' : 's'} in ${secs} section${secs === 1 ? '' : 's'}. ` + (secs === 1 ? (helped ? 'That section now has added support.' : 'That section has no added support yet.') : `${helped} of those sections now ${helped === 1 ? 'has' : 'have'} added support.`);
     }
   }
+  if (state.hl && state.view === 'after') annotate(sheet);
   const sk = $('#showskips'); if (sk) sk.addEventListener('change', () => { state.showSkips = sk.checked; renderSheet(); });
   sheet.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; renderSheet(); }));
   const hl = $('#hl'); if (hl) hl.addEventListener('change', () => { state.hl = hl.checked; renderSheet(); });
