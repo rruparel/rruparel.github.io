@@ -281,6 +281,14 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .part-head p { margin: 0; font-size: 16px; }
 .xpick { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
 .xpick .chip .dot { background: var(--rule); }
+mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radius: 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.xlegend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: -6px 0 16px; font-size: 13px; color: var(--ink); }
+.xlegend > span { display: inline-flex; align-items: center; gap: 7px; }
+.xsw { display: inline-block; width: 24px; height: 12px; border-radius: 2px; }
+.xsw-hi { background: var(--x-hi); }
+.xsw-skim { background: var(--ink); opacity: .25; }
+.xsw-fx { border-bottom: 2px dashed var(--x-ink); height: 8px; background: repeating-linear-gradient(90deg, var(--x-hi) 0 4px, transparent 4px 7px); }
+.xsw-hand { font-family: var(--f-hand); font-size: 16px; color: var(--x-ink); line-height: 1; }
 .xpick .chip[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .xcard { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px 28px; padding: 14px 0 16px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: 18px; }
 .xcard h3 { font-family: var(--f-display); font-size: 24px; font-weight: 600; margin: 0 0 4px; }
@@ -1025,13 +1033,13 @@ renderAll();
       lines: {
         intro: { n: ['Then why don’t they just say sugar? Everybody says sugar.'] },
         l70: { n: ['Seventy what?'] },
-        causes: { s: 'hl', n: ['Yes, that is what happened to me. With the walking.', 'Oh, several hours? I didn’t know that.'] },
-        sxlow: { s: 'hl', n: ['Shaky and weak, that was me. Sweating and talking funny, that was my friend.'] },
+        causes: { hlp: ['too little food or delayed meals', 'This can last several hours after being active'], n: ['Yes, that is what happened to me. With the walking.', 'Oh, several hours? I didn’t know that.'] },
+        sxlow: { hlp: ['shakiness, sweating', 'feeling weak'], n: ['Shaky and weak, that was me. Sweating and talking funny, that was my friend.'] },
         rule: { n: ['All these years they are telling us, don’t drink soda… And now they are saying drink soda?'] },
         cgm: { n: ['We don’t eat cheese and crackers. We will eat some chevdo, or a roti with something.'] },
         prev: { s: 'skim', n: ['This is all common sense. I’m going fast here.'] },
         h_high: { n: ['Okay, this one is me. Or it was me.'] },
-        hicause: { s: 'hl', shift: true, n: ['Tension can make your sugar high? I didn’t know that.', 'I thought it was because I was eating badly. Maybe it was also the tension.'] },
+        hicause: { shift: true, n: ['Tension can make your sugar high? I didn’t know that.', 'I thought it was because I was eating badly. Maybe it was also the tension.'] },
         sxhigh: { n: ['My number was high and I felt completely fine.'] },
         manage: { s: 'tiny', n: ['This is a long paragraph. The print is very small.'] },
         sick: { n: ['When I am sick, I don’t eat anything. Only khichdi, maybe. So I would think the sugar goes down.'] },
@@ -1042,16 +1050,16 @@ renderAll();
       sr: { cycle: '“you,” which P3 kept translating to her dad or herself', team: 'a “health care team” that, for P3, is five different specialists' },
       lines: {
         l70: { n: ['That’s the number his sensor alarms at.'] },
-        causes: { s: 'hl', n: ['So, like, if he walks in the afternoon, it could hit later.'] },
+        causes: { hlp: ['This can last several hours after being active'], n: ['So, like, if he walks in the afternoon, it could hit later.'] },
         sxlow: { s: 'skim', n: ['I’m kind of skimming this because I’ve lived it.'] },
         rule: { n: ['the diabetes side said juice, and then the kidney side said watch the juice.'] },
         cgm: { n: ['That’s actually how we do it. I watch the arrow.'] },
         glucagon: { n: ['We do have that, actually. It’s in the kitchen drawer.'] },
         prev: { s: 'skim', n: ['this is all stuff I kind of already know. I’m skimming.'] },
-        sxhigh: { s: 'hl', n: ['How many times have I just let him nap, and it was actually his sugar?'] },
+        sxhigh: { n: ['How many times have I just let him nap, and it was actually his sugar?'] },
         manage: { n: ['Confusion is on the low list too… So if he’s confused, how do I know which one it is?'] },
         team: { n: ['assumes you have one team. And he has five people. So who do I call?'] },
-        sick: { s: 'hl', n: ['This is the part I actually care about.', 'in my head, not eating means low.'] },
+        sick: { hlp: ['blood {glucose} can rise, even if {youare} eating less'], n: ['This is the part I actually care about.', 'in my head, not eating means low.'] },
       } },
     p5: { pn: 'P5', name: 'The son far away', who: 'His dad in India has lived with diabetes for 15 to 20 years; his sister handles the appointments.', readsFor: 'His dad, mostly through photos of lab reports',
       q: 'And I’m looking at it at eleven at night, and there’s all these numbers and abbreviations, and I have no idea what I’m looking at.',
@@ -1062,7 +1070,7 @@ renderAll();
       lines: {
         l70: { n: ['I’m just gonna take seventy as the number.'] },
         rule: { s: 'hl', n: ['That’s basically an algorithm. That’s a loop. I can follow that.'] },
-        cgm: { s: 'hl', n: ['Could I see his numbers from here?'] },
+        cgm: { hlp: ['continuous {glucose} monitor (CGM)'], n: ['Could I see his numbers from here?'] },
         prev: { s: 'skim', n: ['Okay, this is fine. I’m skimming.'] },
         h_high: { n: ['That’s the one my dad has.'] },
         sxhigh: { n: ['When I talk to him on the phone, he sounds fine. So I have no idea.'] },
@@ -1076,7 +1084,7 @@ renderAll();
       lines: {
         intro: { n: ['the way most people are interacting with the disease is still to say blood sugar'] },
         h_low: { n: ['it’s a big academic word. That does translate to, like, low blood glucose.'] },
-        l70: { s: 'hl', n: ['who’s 70 really the baseline for?'] },
+        l70: { n: ['who’s 70 really the baseline for?'] },
         sxlow: { s: 'skim', n: ['what if people have other chronic conditions that elicit some of these other symptoms?'] },
         rule: { n: ['what if your truth is you know, you’re not carrying any of those things'] },
       } },
@@ -1087,7 +1095,7 @@ renderAll();
       sr: { flip: 'a term P1 had placed under low blood sugar instead of high' },
       lines: {
         prev: { n: ['thinking through the motivation and the willpower to change years-long, decades-long habits'] },
-        sxhigh: { s: 'hl', n: ['it kind of jogged my memory of, oh, I remember the increased [thirst]', 'the feeling sleepy and some of the side effects were new to me'] },
+        sxhigh: { hlp: ['increased thirst'], n: ['it kind of jogged my memory of, oh, I remember the increased [thirst]', 'the feeling sleepy and some of the side effects were new to me'] },
         manage: { n: ['I had flipped the diabetic ketoacidosis between low versus high… it’s actually lack of insulin, so it’s high blood sugar.'] },
         sick: { s: 'hl', n: ['this was actually new to me as well, in terms of sick day planning'] },
       } },
@@ -1154,6 +1162,7 @@ renderAll();
     document.getElementById('xpick').innerHTML = `<button type="button" class="chip" data-x="" aria-pressed="${!cur}"><span class="dot"></span>Original</button>` + ORDER.map(k => `<button type="button" class="chip" data-x="${k}" aria-pressed="${k === cur}"><span class="dot" style="background:var(--${k}-hi)"></span>${XR[k].pn} ${xesc(XR[k].name)}</button>`).join('');
     document.querySelectorAll('#xpick [data-x]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.x || null; cur = (k && k === cur) ? null : k; renderX(); }));
     document.getElementById('xcard').innerHTML = !cur ? `<div><h3>The original page</h3><p>The condensed handout every participant read, with no effects. Turn on a participant to see how it felt to them, and tap them again to turn them off.</p></div><div></div>` : `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
+    document.getElementById('xlegend').hidden = !cur;
     let html = '';
     if (r.photo) html += `<p class="photocap">Reading from a distance, in pieces and after the fact. <span>“So everything I know is kind of after the fact.”</span></p>`;
     XP.forEach(ln => {
@@ -1161,7 +1170,8 @@ renderAll();
       let cls = 'xln ' + (ln.k || 'p');
       if (r.out9 && ln.p === 9 && ln.k !== 'h1') cls += ' out';
       if (conf.s) cls += ' ' + conf.s;
-      const text = ln.t.replace(/\{(\w+)\}/g, (_, k) => tok(k, r));
+      let raw = ln.t; (conf.hlp || []).forEach(ph => { raw = raw.replace(ph, '\u0001' + ph + '\u0002'); });
+      const text = raw.replace(/\{(\w+)\}/g, (_, k) => tok(k, r)).replace(/\u0001/g, '<mark class="xhl">').replace(/\u0002/g, '</mark>');
       html += `<div class="${cls}"><span class="t">${text}</span></div>`;
       let note = '';
       if (r.out9 && ln.id === 'h1') note = '<span class="lab">P1 reviewed page 10 only</span>';
