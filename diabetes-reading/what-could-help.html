@@ -1008,12 +1008,12 @@ renderAll();
     { id: 'hicause', p: 10, t: 'Causes: not enough medication, too much food, not enough physical activity, and {stress}.' },
     { id: 'sxhigh', p: 10, t: 'Symptoms: increased thirst, frequent urination, {sleepy}, blurred vision.' },
     { id: 'h_mng', k: 'h', p: 10, t: 'How should I manage my high blood {glucose}?' },
-    { id: 'manage', p: 10, t: 'Check to be sure. Drink water. Take {your} medications as prescribed. If levels stay high, or {you} have nausea, vomiting or {confusion}, contact {your} doctor right away. It could be {dka}.' },
+    { id: 'manage', p: 10, t: 'Check to be sure. Drink water. Take {your} medications as prescribed. If levels stay high, or {youhave} nausea, vomiting or {confusion}, contact {your} doctor right away. It could be {dka}.' },
     { id: 'team', p: 10, t: 'Talk to {your} {team} about what to do if {your} levels are higher than {your} targets.' },
     { id: 'h_sick', k: 'h', p: 10, t: 'Sick-day planning' },
-    { id: 'sick', p: 10, t: 'When {you} are sick, blood {glucose} can rise, even if {you} are eating less. Check at least every four hours. Keep taking {your} diabetes medications.' },
+    { id: 'sick', p: 10, t: 'When {youare} sick, blood {glucose} can rise, even if {youare} eating less. Check at least every four hours. Keep taking {your} diabetes medications.' },
   ];
-  const TOK = { glucose: 'glucose', hypo: 'hypoglycemia', hyper: 'hyperglycemia', seventy: '70', mgdl: 'mg/dL', confusion: 'confusion', juice: 'juice', soda: 'regular soda', your: 'your', you: 'you', team: 'health care team', glucagon: 'glucagon', snack: 'cheese and crackers', stress: 'stress or illness', sleepy: 'feeling sleepy', dka: 'diabetic ketoacidosis (DKA)' };
+  const TOK = { glucose: 'glucose', hypo: 'hypoglycemia', hyper: 'hyperglycemia', seventy: '70', mgdl: 'mg/dL', confusion: 'confusion', juice: 'juice', soda: 'regular soda', your: 'your', you: 'you', youare: 'you are', youhave: 'you have', team: 'health care team', glucagon: 'glucagon', snack: 'cheese and crackers', stress: 'stress or illness', sleepy: 'feeling sleepy', dka: 'diabetic ketoacidosis (DKA)' };
 
   const XR = {
     p4: { pn: 'P4', name: 'The one who reversed it', who: 'Told she was borderline eight or nine years ago; now walks ten thousand steps and her numbers are normal.', readsFor: 'Herself, and her friends in the morning walking group',
@@ -1036,7 +1036,7 @@ renderAll();
       } },
     p3: { pn: 'P3', name: 'The caregiver', who: 'Primary caregiver for her dad, who lives with her and sees five specialists.', readsFor: 'Her dad, who lives with her',
       q: 'He’s not gonna read this. He would hand this to me.',
-      fx: { you: 'cycle', your: 'cycleyour', team: 'team', confusion: 'pulse', juice: 'conflict', sleepy: 'pulse' },
+      fx: { youare: 'cycleare', youhave: 'cyclehave', your: 'cycleyour', team: 'team', confusion: 'pulse', juice: 'conflict', sleepy: 'pulse' },
       sr: { cycle: '“you,” which P3 kept translating to her dad or herself', team: 'a “health care team” that, for P3, is five different specialists' },
       lines: {
         l70: { n: ['That’s the number his sensor alarms at.'] },
@@ -1110,7 +1110,9 @@ renderAll();
       case 'gemini': return `<span class="fx" aria-hidden="true">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">→ ask Gemini</span>${srText}`;
       case 'gloss': return `<span class="fx fx-academic">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">${xesc(arg)}</span>`;
       case 'cycle': return `<span class="fx fx-cycle" data-fx="cycle" data-v="you|he|me" aria-hidden="true">${reduce() ? 'you / he / me' : 'you'}</span>${srText}`;
-      case 'cycleyour': return `<span class="fx fx-cycle" data-fx="cycle" data-v="your|his|my" aria-hidden="true">${reduce() ? 'your / his / my' : 'your'}</span><span class="sr-only">your (which P3 kept translating to her dad or herself)</span>`;
+      case 'cycleare': return `<span class="fx fx-cycle" data-fx="cycle" data-g="pron" data-v="you are|he is|I am" aria-hidden="true">${reduce() ? 'you are / he is / I am' : 'you are'}</span><span class="sr-only">you are (which P3 kept translating to her dad or herself)</span>`;
+      case 'cyclehave': return `<span class="fx fx-cycle" data-fx="cycle" data-g="pron" data-v="you have|he has|I have" aria-hidden="true">${reduce() ? 'you have / he has / I have' : 'you have'}</span><span class="sr-only">you have (which P3 kept translating to her dad or herself)</span>`;
+      case 'cycleyour': return `<span class="fx fx-cycle" data-fx="cycle" data-g="pron" data-v="your|his|my" aria-hidden="true">${reduce() ? 'your / his / my' : 'your'}</span><span class="sr-only">your (which P3 kept translating to her dad or herself)</span>`;
       case 'team': return `<span class="fx fx-team" data-fx="cycle" data-v="health care team|endocrinologist?|primary care?|kidney doctor?" aria-hidden="true">${reduce() ? 'endocrinologist? primary care? kidney doctor?' : 'health care team'}</span>${srText}`;
       case 'pulse': return `<span class="fx fx-pulse">${xesc(word)}</span>`;
       case 'conflict': return `<span class="fx fx-conflict">${xesc(word)}</span><span class="aside" aria-hidden="true">watch the juice</span><span class="sr-only">(her dad’s kidney doctor said to watch the juice)</span>`;
@@ -1187,7 +1189,9 @@ renderAll();
     if (r.photo && !reduce()) setTimeout(() => sheet.classList.remove("dim"), 700);
     if (reduce()) return;
     sheet.querySelectorAll('[data-fx="scramble"]').forEach(el => { const w = el.dataset.w; timers.push(setInterval(() => { el.textContent = scramble(w); }, 260)); });
-    sheet.querySelectorAll('[data-fx="cycle"]').forEach((el, i) => { const vals = el.dataset.v.split('|'); let n = 0; timers.push(setInterval(() => { n = (n + 1) % vals.length; el.textContent = vals[n]; }, 1200 + (i % 3) * 170)); });
+    const pron = [...sheet.querySelectorAll('[data-g="pron"]')];
+    if (pron.length) { let n = 0; timers.push(setInterval(() => { n = (n + 1) % 3; pron.forEach(el => { el.textContent = el.dataset.v.split('|')[n]; }); }, 1400)); }
+    sheet.querySelectorAll('[data-fx="cycle"]:not([data-g])').forEach((el, i) => { const vals = el.dataset.v.split('|'); let n = 0; timers.push(setInterval(() => { n = (n + 1) % vals.length; el.textContent = vals[n]; }, 1200 + (i % 3) * 170)); });
   }
   if (document.getElementById('experience')) renderX();
 })();
