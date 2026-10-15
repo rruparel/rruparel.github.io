@@ -61,6 +61,11 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(40px, 6vw
 
 /* Reader picker */
 .picker { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px; }
+.srcl { color: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.srcl:hover { color: var(--accent); }
+.next { margin-top: 18px; font-size: 17px; max-width: 720px; }
+.next a, .method a { color: var(--accent); }
+button, .chip { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .chip { font: 600 14px/1 var(--f-page); border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); padding: 10px 14px; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; transition: border-color .15s, transform .15s; }
 .chip:hover { border-color: var(--ink-soft); }
 .chip:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
@@ -166,7 +171,7 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(40px, 6vw
   <header>
     <div class="eyebrow">Alternative report · Diabetes education study · INFO 272</div>
     <h1>Read Five Ways</h1>
-    <p class="lede">Five people with different connections to type 2 diabetes read the same two pages of a diabetes guide while thinking out loud. None of them came to it blank. Pick a reader to see the page the way <em>they</em> read it: what lit up, what they skipped, what they translated, and who they were thinking about.</p>
+    <p class="lede">Five people with different connections to type 2 diabetes read the same two pages of a <a class="srcl" href="https://diabetes.org/guide-type-2-diabetes" target="_blank" rel="noopener" title="Your Rights and Care Standards: A Guide for People with Type 2 Diabetes (American Diabetes Association)">diabetes guide</a> while thinking out loud. Pick a reader to see the page the way <em>they</em> read it: what lit up, what they skipped, what they translated, and who they were thinking about.</p>
   </header>
 
   <nav class="picker" id="picker" aria-label="Choose a reader"></nav>
@@ -205,8 +210,9 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(40px, 6vw
       <div class="step"><div class="when">Still</div><div class="body voice">“Maybe the number goes away. But the fear stays.”</div></div>
     </div>
 
-    <p class="close">One short line did more than add a fact. It changed who she thought was to blame. Every reader here arrived in the middle of a story, and the page became one more voice in it.</p>
-    <p class="method">Five 30-minute think-aloud interviews, September 2026, analyzed with reflexive thematic analysis. The handout text is condensed from pages 9 and 10 of an American Diabetes Association guide for people living with type 2 diabetes. P1 reviewed page 10 only. Handwritten notes are participants’ own words, lightly trimmed. Roma Ruparel.</p>
+    <p class="close">One line can change who gets blamed.</p>
+    <p class="next">Want to read the page your way? <a href="index.html">Try Read Your Way</a>, a prototype that matches you with the participant you read most like and adjusts the page with the supports that helped them.</p>
+    <p class="method">Five 30-minute think-aloud interviews, September 2026, analyzed with reflexive thematic analysis. The handout text is condensed from pages 9 and 10 of <a href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener"><i>Your Rights and Care Standards: A Guide for People with Type 2 Diabetes</i></a> (American Diabetes Association, 2026). P1 reviewed page 10 only. Handwritten notes are participants’ own words, lightly trimmed. Roma Ruparel.</p>
   </section>
 </div>
 
@@ -303,7 +309,7 @@ const READERS = [
   { id: 'p4', pn: 'P4', name: 'The one who reversed it',
     who: 'Told she was borderline eight or nine years ago; now walks ten thousand steps and her numbers are normal.',
     readsFor: 'Herself, and her friends in the morning walking group', turnsTo: 'Her doctor, her daughter, and WhatsApp forwards',
-    memo: 'My experience, plus this paper.',
+    memo: 'Maybe the number goes away. But the fear stays.',
     base: 'read',
     terms: { glucose: { t: 'swap', g: 'sugar' }, hypo: { t: 'skip' }, hyper: { t: 'skip' }, mgdl: { t: 'gloss', g: 'seventy what?' }, glucagon: { t: 'skip' }, dka: { t: 'gloss', g: 'keto, like the diet?' } },
     lines: {
@@ -376,7 +382,7 @@ function renderCard(r) {
   if (!r) {
     card.className = 'card plain';
     card.style.removeProperty('--reader-ink');
-    card.innerHTML = `<div><h2>The page as printed</h2><p class="who">A condensed version of the two pages every participant read. It speaks to “you,” the person living with diabetes. Choose a reader to see what happened when a real person picked it up.</p></div>`;
+    card.innerHTML = `<div><h2>The page as printed</h2><p class="who">A condensed version of the two pages every participant read. It speaks to “you,” the person living with diabetes. Choose a reader to see what happened when a real person picked it up.</p><p class="who" style="margin-top:10px"><a class="srcl" href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener">Open the original pages 9–10 (PDF)</a></p></div>`;
     $('#legend').hidden = true;
     return;
   }
