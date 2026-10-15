@@ -272,6 +272,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .part-head h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 3.8vw, 40px); margin: 4px 0 8px; line-height: 1.1; text-wrap: balance; }
 .part-head p { margin: 0; font-size: 16px; }
 .xpick { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
+.xpick .chip .dot { background: var(--rule); }
 .xpick .chip[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .xcard { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px 28px; padding: 14px 0 16px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: 18px; }
 .xcard h3 { font-family: var(--f-display); font-size: 24px; font-weight: 600; margin: 0 0 4px; }
@@ -384,7 +385,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
       <div class="part-head">
         <span class="eyebrow">Part 1</span>
         <h2 id="exp-h">Read it the way they did</h2>
-        <p>Pick a participant. The page below shows what reading it was like for them: words that turned into noise, “you” that pointed at the wrong person, answers that weren’t there. Every effect comes from something they said, and their own words appear in handwriting.</p>
+        <p>Start with the original page, then turn on a participant to see what reading it was like for them: words that turned into noise, “you” that pointed at the wrong person, answers that weren’t there. Every effect comes from something they said, and their own words appear in handwriting.</p>
       </div>
       <div class="xpick" id="xpick" role="group" aria-label="Choose a participant"></div>
       <div class="xcard" id="xcard" aria-live="polite"></div>
@@ -1062,7 +1063,8 @@ renderAll();
       } },
   };
   const ORDER = ['p1', 'p2', 'p3', 'p4', 'p5'];
-  let cur = 'p1', timers = [];
+  let cur = null, timers = [];
+  const PLAIN = { pn: '', name: 'Original', fx: {}, sr: {}, lines: {} };
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const xesc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
   function scramble(w, seed) { const a = w.split(''); const letters = a.map((c, i) => /[a-z]/i.test(c) ? i : -1).filter(i => i > 0); let r = seed || Math.random(); for (let i = letters.length - 1; i > 0; i--) { r = (r * 9301 + 49297) % 233280 / 233280; const j = Math.floor(r * (i + 1)); const t = a[letters[i]]; a[letters[i]] = a[letters[j]]; a[letters[j]] = t; } return a.join(''); }
@@ -1095,11 +1097,11 @@ renderAll();
 
   function renderX() {
     timers.forEach(clearInterval); timers = [];
-    const r = XR[cur]; const sec = document.getElementById('experience');
-    sec.style.setProperty('--x-hi', `var(--${cur}-hi)`); sec.style.setProperty('--x-ink', `var(--${cur}-ink)`);
-    document.getElementById('xpick').innerHTML = ORDER.map(k => `<button type="button" class="chip" data-x="${k}" aria-pressed="${k === cur}"><span class="dot" style="background:var(--${k}-hi)"></span>${XR[k].pn} ${xesc(XR[k].name)}</button>`).join('');
-    document.querySelectorAll('#xpick [data-x]').forEach(b => b.addEventListener('click', () => { cur = b.dataset.x; renderX(); }));
-    document.getElementById('xcard').innerHTML = `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
+    const r = cur ? XR[cur] : PLAIN; const sec = document.getElementById('experience');
+    sec.style.setProperty('--x-hi', cur ? `var(--${cur}-hi)` : 'transparent'); sec.style.setProperty('--x-ink', cur ? `var(--${cur}-ink)` : 'var(--ink)');
+    document.getElementById('xpick').innerHTML = `<button type="button" class="chip" data-x="" aria-pressed="${!cur}"><span class="dot"></span>Original</button>` + ORDER.map(k => `<button type="button" class="chip" data-x="${k}" aria-pressed="${k === cur}"><span class="dot" style="background:var(--${k}-hi)"></span>${XR[k].pn} ${xesc(XR[k].name)}</button>`).join('');
+    document.querySelectorAll('#xpick [data-x]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.x || null; cur = (k && k === cur) ? null : k; renderX(); }));
+    document.getElementById('xcard').innerHTML = !cur ? `<div><h3>The original page</h3><p>The condensed handout every participant read, with no effects. Turn on a participant to see how it felt to them, and tap them again to turn them off.</p></div><div></div>` : `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
     let html = '';
     if (r.photo) html += `<p class="photocap">Reading from a distance, in pieces and after the fact. <span>“So everything I know is kind of after the fact.”</span></p>`;
     XP.forEach(ln => {
