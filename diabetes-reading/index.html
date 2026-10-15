@@ -255,11 +255,11 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
     <article class="sheet" id="sheet" aria-label="The handout"></article>
   </section>
 
-  <section class="closing">
-    <h2>One line can change who gets blamed.</h2>
+  <section class="closing" id="closing" aria-live="polite">
+    <h2 id="close-h">One line can change who gets blamed.</h2>
     <div>
-      <p>After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:</p>
-      <p class="hand">“I will not tell her, ‘Just walk more.’ I used to say that.”</p>
+      <p id="close-lead">After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:</p>
+      <p class="hand" id="close-q">“I will not tell her, ‘Just walk more.’ I used to say that.”</p>
       <p>Each support here started as something a participant needed. Tap any tag on the page to read the moment behind it. To see how each person read the original page, open <a href="read-five-ways.html">Read Five Ways</a>.</p>
     </div>
   </section>
@@ -560,7 +560,20 @@ function resetAll() {
   const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-reset]')) resetAll(); });
-function renderAll() { renderQuiz(); renderRail(); renderSheet(); }
+const CLOSING = {
+  p1: { h: 'Even experts fill in gaps as they read.', lead: 'P1 has worked on diabetes prevention for years. Reading still corrected something she had mixed up:', q: 'I had flipped the diabetic ketoacidosis between low versus high… it’s actually lack of insulin, so it’s high blood sugar.' },
+  p2: { h: 'The right words make it easier to help.', lead: 'For P2, the page mattered most because it gave her a way to support someone instead of watching from the side, and to:', q: 'actually be a part of… figuring out what happens next.' },
+  p3: { h: 'Reading showed her where the gaps were.', lead: 'For P3, the page did not teach much that was new. It showed her what her family’s routine was missing, like a written sick-day plan:', q: 'it’s not that the material taught me a lot, it’s that it showed me where our gaps are.' },
+  p4: { h: 'One line can change who gets blamed.', lead: 'After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:', q: 'I will not tell her, ‘Just walk more.’ I used to say that.' },
+  p5: { h: 'Reading made the distance feel real.', lead: 'For P5, the page brought home how much of his dad’s day he cannot see from another country:', q: 'Reading about it and realizing I don’t really know what his day looks like.' },
+};
+function renderClosing() {
+  const k = state.reader || 'p4', c = CLOSING[k];
+  $('#close-h').textContent = c.h;
+  $('#close-lead').textContent = c.lead;
+  const q = $('#close-q'); q.textContent = '“' + c.q + '”'; q.style.color = `var(--${k}-ink)`;
+}
+function renderAll() { renderQuiz(); renderRail(); renderSheet(); renderClosing(); }
 load();
 renderAll();
 </script>
