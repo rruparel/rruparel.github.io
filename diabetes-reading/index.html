@@ -130,6 +130,26 @@ li.markable { list-style-position: outside; }
 .w.marked { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--p4-ink); text-decoration-thickness: 2px; background: color-mix(in srgb, var(--p4-hi) 35%, transparent); border-radius: 2px; }
 .sheet.marking { -webkit-user-select: text; user-select: text; }
 .mkline:focus { position: static; width: auto; height: auto; margin: 4px 0 0; clip: auto; white-space: normal; display: inline-block; font: 600 12px var(--f-ui); background: var(--ink); color: var(--paper); border: 0; border-radius: 4px; padding: 4px 8px; }
+.fixlist { display: flex; flex-direction: column; gap: 14px; }
+.fx-h { font-weight: 800; font-size: 1.3em; margin: 0; }
+.fx-sub { margin: 0 0 4px !important; color: var(--ink-soft); }
+.fixcard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border: 1.5px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.fixcard .fc-col { padding: 14px 16px; min-width: 0; }
+.fixcard .fc-col + .fc-col { border-left: 1.5px solid var(--rule); background: var(--wash); }
+.fixcard.none .fc-col + .fc-col { background: var(--paper); }
+.fc-lbl { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+.fc-orig { margin: 0 !important; }
+.fc-orig .w.marked { color: var(--ink-soft); }
+.fc-fixed .fx-line { margin: 0 0 6px !important; }
+.fc-fixed .add { margin: 8px 0 0; background: var(--paper); }
+.fc-fixed .flow { margin: 4px 0 0; }
+.fc-none { margin: 0 0 10px !important; color: var(--ink-soft); font-size: .95em; }
+.fc-on { font-size: 14px; padding: 9px 14px; }
+.fc-fixed .term, .fc-fixed .chg, .fc-fixed mark.hi { background: var(--mark); color: var(--ink); border-radius: 2px; box-shadow: 0 0 0 2px var(--mark); }
+.fc-q { font-family: var(--f-hand); font-size: 1.1em; color: var(--p4-ink); margin: 0 !important; }
+.fc-q small { display: block; font: 500 12px var(--f-ui); color: var(--ink-soft); margin-top: 2px; }
+.fc-from { display: block; margin-top: 6px; font-size: 12px; color: var(--ink-soft); }
+@media (max-width: 640px) { .fixcard { grid-template-columns: 1fr; } .fixcard .fc-col + .fc-col { border-left: 0; border-top: 1.5px solid var(--rule); } }
 .dsum { flex-basis: 100%; margin: 0 !important; font-size: 14px; color: var(--ink); font-weight: 600; }
 .dsum:empty { display: none; }
 .delta { margin: .3em 0 .8em; padding: 8px 12px; border: 1.5px dashed var(--accent); border-radius: 6px; font-size: .9em; line-height: 1.45; background: var(--paper); }
@@ -455,6 +475,53 @@ function reflection() {
 }
 function baseBlocks(sheet) { return [...sheet.querySelectorAll('h3, p, li')].filter(el => !el.closest('.orig') && !el.closest('.cmpbar') && !el.closest('.delta') && !el.classList.contains('adapted') && !el.closest('.add') && !el.closest('details') && !el.closest('.cap')); }
 function secOf(el, sheet) { const hs = [...sheet.querySelectorAll('h3')]; let i = 0; hs.forEach((h, k) => { if (h === el || (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)) i = k + 1; }); return i; }
+const SUGGEST = { numbers: ['plain', 'target'], words: ['plain', 'why'], paragraph: ['steps'], symptoms: ['compare', 'conditions'], team: ['team'], prevent: [], other: ['plain'] };
+const COVERS = { numbers: h => /Meters show this|Is 70 the right line|class="add/.test(h), words: h => /class="term|<details/.test(h), paragraph: h => /class="flow/.test(h), symptoms: h => /class="add/.test(h), team: h => /Who do I call/.test(h), prevent: h => /class="chg/.test(h), other: h => /class="(term|chg|add|flow)/.test(h) };
+function wordsOf(t) { return new Set(t.toLowerCase().replace(/[^a-z0-9\s/]/g, ' ').split(/\s+/).filter(w => w.length > 2)); }
+function sim(a, b) { const A = wordsOf(a), B = wordsOf(b); let n = 0; A.forEach(w => { if (B.has(w)) n++; }); return n / Math.max(1, Math.min(A.size, B.size)); }
+function catsOfLine(m) { const c = []; const j = m.runs.join(' '); if (/70|mg\/dL/i.test(j)) c.push('numbers'); if (/hypoglycemia|hyperglycemia|ketoacidosis|DKA|glucagon/i.test(j)) c.push('words'); if (/^Common symptoms/.test(m.text)) c.push('symptoms'); if (/^Check to be sure/.test(m.text)) c.push('paragraph'); if (/health care team/.test(m.text)) c.push('team'); if (/^(Take medicines|Follow|Check regularly|Carry)/.test(m.text)) c.push('prevent'); if (!c.length) c.push('other'); return c; }
+function renderSkips(sheet) {
+  const bar = sheet.querySelector('.cmpbar');
+  const hs = [...sheet.querySelectorAll('h3')];
+  const cards = [...state.markedLines].sort((a, b) => b.words - a.words).map(m => {
+    const start = m.sec === 0 ? sheet.querySelector('h2') : hs[m.sec - 1]; const end = hs[m.sec] || null;
+    const sib = []; for (let n = start; n && n !== end; n = n.nextElementSibling) sib.push(n);
+    const cands = []; sib.forEach(n => { if (n.matches('h2, h3, p') && !n.matches('.adapted, .sub.chg')) cands.push(n); n.querySelectorAll && n.querySelectorAll(':scope > li').forEach(li => cands.push(li)); });
+    let best = null, score = 0; cands.forEach(c => { if (c.closest('.add, details, .cap, .cmpbar')) return; const sc = sim(m.text, c.textContent); if (sc > score) { score = sc; best = c; } });
+    let fixed = '', labels = [];
+    if (best && score >= 0.35) {
+      fixed = `<${best.tagName === 'LI' ? 'p' : 'p'} class="fx-line">${best.innerHTML}</p>`;
+      if (best.querySelector('.term')) labels.push('plain');
+      if (best.querySelector('.chg')) labels.push(best.querySelector('.sub.chg') ? 'plain' : 'voice');
+      // first support right after the line's block
+      let host = best.tagName === 'LI' ? best.parentElement : best; let n = host.nextElementSibling;
+      while (n && n !== end && !n.matches('p, ul, h3')) { if (n.matches('.add, .flow, details.why, .cap')) { if (!n.matches('.cap')) { fixed += n.outerHTML; break; } } n = n.nextElementSibling; }
+    } else {
+      const flow = sib.find(n => n.matches && n.matches('.flow'));
+      if (flow) fixed = flow.outerHTML;
+    }
+    const cats = catsOfLine(m); const changed = !!fixed && cats.some(c => (COVERS[c] || COVERS.other)(fixed));
+    let right;
+    if (changed) right = `<span class="fc-lbl">A more approachable version</span><div class="fc-fixed">${fixed}</div>`;
+    else {
+      const pick = cats.flatMap(c => SUGGEST[c] || []).find(k => !state.on.has(k));
+      const sp = pick && SUPPORTS.find(x => x.k === pick);
+      if (sp) right = `<span class="fc-lbl">Not covered yet</span><p class="fc-none">Your current supports don’t change the part you skipped.</p><button type="button" class="btn ghost fc-on" data-turnon="${sp.k}">Turn on ${esc(sp.label)}</button><span class="fc-from">from ${R[sp.from].pn} · ${esc(R[sp.from].name)}</span>`;
+      else if (cats.includes('prevent')) right = `<span class="fc-lbl">You’re not alone</span><p class="fc-none">No support changes this line. Participants skimmed it too, because it felt familiar:</p><p class="fc-q">“This is all common sense. I’m going fast here.”<small>P4 · The one who reversed it</small></p>`;
+      else right = `<span class="fc-lbl">Not covered yet</span><p class="fc-none">The supports that could help here are already on, but they don’t change this line.</p>`;
+    }
+    return { changed, html: `<article class="fixcard${changed ? '' : ' none'}"><div class="fc-col"><span class="fc-lbl">You skipped</span><p class="fc-orig">${m.html}</p></div><div class="fc-col">${right}</div></article>` };
+  });
+  const shown = state.showAll ? cards : cards.slice(0, 5);
+  const fixedN = cards.filter(c => c.changed).length; const words = state.markedLines.reduce((a, m) => a + m.words, 0);
+  sheet.innerHTML = '';
+  sheet.appendChild(bar);
+  const wrap = document.createElement('div'); wrap.className = 'fixlist';
+  wrap.innerHTML = `<h2 class="fx-h">What you skipped, and a way in</h2><p class="fx-sub">You skipped ${words} word${words === 1 ? '' : 's'} on ${cards.length} line${cards.length === 1 ? '' : 's'}. ${fixedN} ${fixedN === 1 ? 'has' : 'have'} a more approachable version with your supports.</p>` + shown.map(c => c.html).join('') + (cards.length > 5 && !state.showAll ? `<button type="button" class="link" id="fx-more">Show ${cards.length - 5} more</button>` : '');
+  sheet.appendChild(wrap);
+  const more = sheet.querySelector('#fx-more'); if (more) more.addEventListener('click', () => { state.showAll = true; renderSheet(); });
+  sheet.querySelectorAll('[data-turnon]').forEach(b => b.addEventListener('click', () => { state.on.add(b.dataset.turnon); renderRail(); renderSheet(); save(); }));
+}
 function marking() { return !state.firstDone && !state.matched && state.on.size === 0; }
 function splitWords(block, bi) {
   const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
@@ -491,7 +558,8 @@ function collectMarks() {
     const joined = runs.join(' ');
     if (/70|mg\/dL/i.test(joined)) cats.add('numbers');
     if (/hypoglycemia|hyperglycemia|ketoacidosis|DKA|glucagon/i.test(joined)) cats.add('words');
-    out.push({ bi: +el.dataset.bi, sec: +el.dataset.sec, runs, words, whole: words >= ws.length });
+    const cl = el.cloneNode(true); cl.querySelectorAll('.mkline').forEach(x => x.remove());
+    out.push({ bi: +el.dataset.bi, sec: +el.dataset.sec, runs, words, whole: words >= ws.length, html: cl.innerHTML, text: cl.textContent.trim(), tag: el.tagName });
   });
   return { out, cats };
 }
@@ -540,7 +608,7 @@ const QUESTIONS = [
   { id: 'life', text: 'A little more about your situation', life: true },
 ];
 
-const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: true, view: 'after', hl: false };
+const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: false, view: 'after', hl: false };
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
@@ -600,7 +668,7 @@ function bindPick(el) { el.querySelectorAll('[data-pick]').forEach(b => b.addEve
 function focusQ() { const h = document.querySelector('#quiz h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: false }); } }
 function applyReader(k, fromQuiz) {
   state.reader = k; state.matched = true; state.fromQuiz = fromQuiz; state.justMatched = true;
-  state.on = new Set(R[k].sup); state.view = 'after'; state.hl = true; state.firstDone = true;
+  state.on = new Set(R[k].sup); state.view = state.markedLines.length ? 'skips' : 'after'; state.hl = false; state.firstDone = true; state.showAll = false;
   if (state.cond) state.on.add('conditions');
   if (state.food !== 'none') state.on.add('food');
   renderAll();
@@ -633,7 +701,7 @@ function renderRail() {
     SUPPORTS.map(s => `<button type="button" class="sup" data-k="${s.k}" aria-pressed="${state.on.has(s.k)}"><span class="sw"></span><b>${esc(s.label)}</b><span class="from">from ${R[s.from].pn} · ${esc(R[s.from].name)}</span></button>`).join('') +
     `<div class="railfoot" aria-live="polite">${state.on.size} of ${SUPPORTS.length} on${state.on.size || state.reader ? ' · <button type="button" class="link" data-reset style="font-size:12px;padding:0">Start over</button>' : ''}</div>`;
   rail.querySelectorAll('.sup').forEach(b => b.addEventListener('click', () => {
-    const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); state.view = 'after'; renderRail(); renderSheet(); save();
+    const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); if (state.view === 'before') state.view = state.markedLines.length ? 'skips' : 'after'; renderRail(); renderSheet(); save();
   }));
 }
 
@@ -669,9 +737,9 @@ function renderSheet() {
   const pristine = !state.reader && state.on.size === 0;
   sheet.classList.toggle('hl', state.hl && state.view === 'after');
   const cmpbar = pristine ? '' : `<div class="cmpbar">
-    <div class="seg" role="group" aria-label="Compare versions"><button type="button" data-view="before" aria-pressed="${state.view === 'before'}">Before</button><button type="button" data-view="after" aria-pressed="${state.view === 'after'}">After</button></div>
-    ${state.view === 'after' ? `<label class="hltog" for="hl"><input type="checkbox" id="hl" ${state.hl ? 'checked' : ''}> Highlight what changed</label>` : `<span class="others">${state.markedLines.length ? 'Your first read, with the lines you skipped.' : 'The page before any supports. Switch to After to see your version.'}</span>`}
-    ${state.markedLines.length && state.view === 'after' ? `<label class="hltog" for="showskips"><input type="checkbox" id="showskips" ${state.showSkips ? 'checked' : ''}> Compare with my first read</label>` : ''}
+    <div class="seg" role="group" aria-label="Choose a view">${state.markedLines.length ? `<button type="button" data-view="skips" aria-pressed="${state.view === 'skips'}">Your skips</button>` : ''}<button type="button" data-view="before" aria-pressed="${state.view === 'before'}">Before</button><button type="button" data-view="after" aria-pressed="${state.view === 'after'}">${state.markedLines.length ? 'Full page' : 'After'}</button></div>
+    ${state.view === 'after' ? `<label class="hltog" for="hl"><input type="checkbox" id="hl" ${state.hl ? 'checked' : ''}> Highlight what changed</label>` : state.view === 'before' ? `<span class="others">${state.markedLines.length ? 'Your first read, with the words you skipped.' : 'The page before any supports. Switch to After to see your version.'}</span>` : ''}
+    ${state.markedLines.length && state.view === 'after' ? `<label class="hltog" for="showskips"><input type="checkbox" id="showskips" ${state.showSkips ? 'checked' : ''}> Note my skips</label>` : ''}
     <p class="dsum" id="dsum" aria-live="polite"></p>
   </div>`;
   sheet.innerHTML = cmpbar + `
@@ -757,6 +825,7 @@ function renderSheet() {
       <div class="copyrow"><button type="button" class="btn ghost" id="copy">Copy questions</button><span class="copied" id="copied" aria-live="polite"></span></div></div>` : ''}
   `;
 
+  if (state.view === 'skips' && state.markedLines.length) renderSkips(sheet);
   if (marking()) {
     const blocks = baseBlocks(sheet);
     blocks.forEach((el, i) => {
@@ -805,7 +874,7 @@ function renderSheet() {
       const blocks = baseBlocks(sheet);
       blocks.forEach((el, i) => { if (state.markedLines.some(m => m.bi === i)) { splitWords(el, i); el.querySelectorAll('.w').forEach(w => w.classList.toggle('marked', state.marks.has(w.dataset.k))); } });
       const n = state.markedLines.reduce((a, m) => a + m.words, 0); $('#dsum').textContent = `In your first read you skipped ${n} word${n === 1 ? '' : 's'}.`;
-    } else if (state.showSkips) {
+    } else if (state.view === 'after' && state.showSkips) {
       const hs = [...sheet.querySelectorAll('h3')];
       const bySec = {}; state.markedLines.forEach(m => (bySec[m.sec] = bySec[m.sec] || []).push(m));
       let helped = 0, secs = 0;
@@ -866,7 +935,7 @@ function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: sta
 function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true, firstDone: true, skipped: new Set(), marks: new Set(), markedLines: [], view: 'after', hl: true }); } } catch (e) {} }
 
 function resetAll() {
-  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: true, view: 'after', hl: false });
+  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: false, view: 'after', hl: false });
   save(); renderAll();
   const q = $('#quiz'); q.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
