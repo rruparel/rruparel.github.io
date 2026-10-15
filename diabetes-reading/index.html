@@ -110,6 +110,16 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(38px, 5.6
 .adapted { font-size: 12px; color: var(--ink-soft); margin: 0 0 10px !important; letter-spacing: .02em; }
 .adapted a { color: var(--accent); }
 @media (max-width: 560px) { .orig { grid-template-columns: 1fr; } .orig .btn { text-align: center; } }
+.mirror { font-family: var(--f-hand); font-size: 19px; line-height: 1.3; color: var(--r-ink); margin: 0 0 12px; }
+.cmpbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: -8px 0 22px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.seg { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.seg button { font: 600 14px/1 var(--f-ui); background: var(--paper); color: var(--ink); border: 0; padding: 9px 16px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.hltog { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; cursor: pointer; }
+.hltog input { width: 18px; height: 18px; accent-color: var(--ink); }
+.sheet.hl .add, .sheet.hl .flow, .sheet.hl details.why, .sheet.hl .cap { outline: 2.5px dashed var(--ci, var(--accent)); outline-offset: 4px; border-radius: 4px; }
+.sheet.hl .flow { --ci: var(--p5-ink); }
+.sheet.hl .term, .sheet.hl .chg, .sheet.hl mark.hi { background: var(--p4-hi); border-radius: 2px; box-shadow: 0 0 0 2px var(--p4-hi); }
 .pg { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; border-bottom: 1px dashed var(--rule); padding: 22px 0 6px; margin-bottom: 4px; }
 
 .term { border: 0; background: none; color: inherit; font: inherit; padding: 0; cursor: help; border-bottom: 1.5px dotted var(--ink-soft); }
@@ -244,7 +254,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 
     <div class="try">
       <h2>Try it: read the page your way</h2>
-      <p>This prototype turns those findings into a reading tool. Answer four quick questions and it matches you with the participant you read most like, then adjusts the handout with the supports that helped them. Every support links back to the moment in the study it came from.</p>
+      <p>This prototype turns those findings into a reading tool. First, skim the page and note what you skipped. Then answer four quick questions, and it matches you with the participant you read most like and adjusts the handout with the supports that helped them. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
     </div>
   </header>
 
@@ -300,6 +310,44 @@ const FOODS = {
   chinese: 'a small bowl of congee',
 };
 
+/* ---------- First read ---------- */
+const SKIMS = [
+  { k: 'words', t: 'The medical words (hypoglycemia, DKA)', who: ['p4', 'p5'] },
+  { k: 'numbers', t: 'The numbers and units (70 mg/dL)', who: ['p2', 'p4', 'p5'] },
+  { k: 'paragraph', t: 'The long paragraph on managing highs', who: ['p1', 'p4', 'p5'] },
+  { k: 'symptoms', t: 'The symptom lists', who: ['p2', 'p3'] },
+  { k: 'prevent', t: 'The prevention tips', who: ['p3', 'p4', 'p5'] },
+  { k: 'team', t: '“Talk to your health care team”', who: ['p3'] },
+  { k: 'none', t: 'Nothing, I read it all', who: ['p1'] },
+];
+const SKIM_PHRASE = { words: 'the medical words', numbers: 'the numbers and units', paragraph: 'the long paragraph on highs', symptoms: 'the symptom lists', prevent: 'the prevention tips', team: 'the “talk to your health care team” lines' };
+function listP(ks) { const n = ks.map(k => R[k].pn); return n.length < 3 ? n.join(' and ') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1]; }
+function reflection() {
+  if (!state.skipped.size) return '';
+  if (state.skipped.has('none')) return `You read it all. So did ${listP(['p1'])}, who still learned something new about DKA.`;
+  const lines = [...state.skipped].slice(0, 2).map(k => { const s = SKIMS.find(x => x.k === k); return `You skimmed ${SKIM_PHRASE[k]}. So did ${listP(s.who)}.`; });
+  return lines.join(' ');
+}
+function renderFirst() {
+  const el = $('#quiz');
+  el.innerHTML = `
+    <div class="qhead"><div class="eyebrow">Step 1 · First read</div><div class="qcount">Before the questions</div></div>
+    <div class="q"><h2>Skim the page below the way you normally would. What did you skim or skip?</h2>
+    <p class="others" style="margin:-6px 0 12px">Pick any that apply. Your participants did the same thing out loud.</p>
+    <div class="opts">${SKIMS.map(o => `<button type="button" class="opt" data-skim="${o.k}" aria-pressed="${state.skipped.has(o.k)}">${esc(o.t)}</button>`).join('')}</div></div>
+    <div class="qnav"><button type="button" class="link" id="skip-first">Skip this step</button>
+      <a class="btn ghost" href="#sheet">Scroll to the page ↓</a>
+      <button type="button" class="btn" id="first-done">Continue to the questions</button></div>`;
+  el.querySelectorAll('[data-skim]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.skim;
+    if (k === 'none') { state.skipped = state.skipped.has('none') ? new Set() : new Set(['none']); }
+    else { state.skipped.delete('none'); state.skipped.has(k) ? state.skipped.delete(k) : state.skipped.add(k); }
+    renderFirst();
+  }));
+  $('#first-done').addEventListener('click', () => { state.firstDone = true; renderQuiz(); $('#quiz').scrollIntoView({ block: 'start' }); });
+  $('#skip-first').addEventListener('click', () => { state.skipped = new Set(); state.firstDone = true; renderQuiz(); });
+}
+
 /* ---------- Quiz ---------- */
 const QUESTIONS = [
   { id: 'for', text: 'Who are you reading this for?', opts: [
@@ -325,7 +373,7 @@ const QUESTIONS = [
   { id: 'life', text: 'A little more about your situation', life: true },
 ];
 
-const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false };
+const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, firstDone: false, skipped: new Set(), view: 'after', hl: false };
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
@@ -338,6 +386,7 @@ function score() {
 function renderQuiz() {
   const el = $('#quiz');
   if (state.matched) return renderMatch();
+  if (!state.firstDone) return renderFirst();
   const q = QUESTIONS[state.step];
   const prog = QUESTIONS.map((_, i) => `<i class="${i < state.step ? 'done' : ''}"></i>`).join('');
   let body;
@@ -353,7 +402,7 @@ function renderQuiz() {
   }
   const canNext = q.life || state.answers[q.id] != null;
   el.innerHTML = `
-    <div class="qhead"><div class="eyebrow">Match me to a reader</div><div class="qcount">Question ${state.step + 1} of ${QUESTIONS.length}</div></div>
+    <div class="qhead"><div class="eyebrow">Step 2 · Match me to a reader</div><div class="qcount">Question ${state.step + 1} of ${QUESTIONS.length}</div></div>
     <div class="progress">${prog}</div>
     <div class="q"><h2>${esc(q.text)}</h2>${body}</div>
     <div class="qnav">
@@ -383,7 +432,7 @@ function bindPick(el) { el.querySelectorAll('[data-pick]').forEach(b => b.addEve
 
 function applyReader(k, fromQuiz) {
   state.reader = k; state.matched = true; state.fromQuiz = fromQuiz;
-  state.on = new Set(R[k].sup);
+  state.on = new Set(R[k].sup); state.view = 'after'; state.hl = true; state.firstDone = true;
   if (state.cond) state.on.add('conditions');
   if (state.food !== 'none') state.on.add('food');
   renderAll();
@@ -399,6 +448,7 @@ function renderMatch() {
       <div class="you">${state.fromQuiz ? 'You read most like' : 'Reading as'}</div>
       <h2>${r.pn} · ${esc(r.name)}</h2>
       <p class="why">${esc(r.why)} We turned on the supports that helped them. Switch any of them on or off.</p>
+      ${reflection() ? `<p class="mirror">${esc(reflection())}</p>` : ''}
       <button type="button" class="btn ghost reset" data-reset>Start over</button>
     </div>
     <div><p class="hand">“${esc(r.q)}”<small>${r.pn}, in the study</small></p>
@@ -414,7 +464,7 @@ function renderRail() {
     SUPPORTS.map(s => `<button type="button" class="sup" data-k="${s.k}" aria-pressed="${state.on.has(s.k)}"><span class="sw"></span><b>${esc(s.label)}</b><span class="from">from ${R[s.from].pn} · ${esc(R[s.from].name)}</span></button>`).join('') +
     `<div class="railfoot">${state.on.size} of ${SUPPORTS.length} on${state.on.size || state.reader ? ' · <button type="button" class="link" data-reset style="font-size:12px;padding:0">Start over</button>' : ''}</div>`;
   rail.querySelectorAll('.sup').forEach(b => b.addEventListener('click', () => {
-    const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); renderRail(); renderSheet(); save();
+    const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); state.view = 'after'; renderRail(); renderSheet(); save();
   }));
 }
 
@@ -425,8 +475,8 @@ function T(key) {
   if (!on('plain')) return med;
   return `<button type="button" class="term" aria-expanded="false" title="Medical term: ${esc(med)}">${plain}<span class="med">${med}</span></button>`;
 }
-const on = k => state.on.has(k);
-const Y = (you, they) => on('voice') ? they : you;
+const on = k => state.view !== 'before' && state.on.has(k);
+const Y = (you, they) => on('voice') ? `<span class="chg">${they}</span>` : you;
 function src(sup, label) {
   const s = SUPPORTS.find(x => x.k === sup), r = R[s.from];
   return `<button type="button" class="tag" aria-expanded="false" style="--ci:var(--${s.from}-ink)">${esc(label || s.label)} · from ${r.pn} <span class="car" aria-hidden="true">▸</span></button><p class="srcq" hidden style="--ci:var(--${s.from}-ink)">“${esc(s.q)}”<small>${r.pn} · ${esc(r.name)}, in the study</small></p>`;
@@ -442,13 +492,18 @@ function renderSheet() {
   document.documentElement.style.setProperty('--scale', on('big') ? '1.2' : '1');
   const sheet = $('#sheet');
   const unit = on('plain') ? '70' : '70 mg/dL';
-  const unitNote = on('plain') ? ' <span class="sub">(Meters show this as 70 mg/dL.)</span>' : '';
+  const unitNote = on('plain') ? ' <span class="sub chg">(Meters show this as 70 mg/dL.)</span>' : '';
   const otherSnack = state.foodOther ? `something from the ${state.foodOther} foods ${Y('you usually eat', 'they usually eat')} that has some carbs and some protein` : `something ${Y('you usually eat', 'they usually eat')} that has some carbs and some protein`;
   const snack = !on('food') ? FOODS.none : state.food === 'other' ? otherSnack : FOODS[state.food === 'none' ? 'southasian' : state.food];
   const foodLabel = on('food') && state.food === 'none' ? ' <select class="sel" id="food2" aria-label="Choose foods" style="padding:4px 8px;font-size:.85em"><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option><option value="other">Other</option></select>' : '';
 
   const pristine = !state.reader && state.on.size === 0;
-  sheet.innerHTML = `
+  sheet.classList.toggle('hl', state.hl && state.view === 'after');
+  const cmpbar = pristine ? '' : `<div class="cmpbar">
+    <div class="seg" role="group" aria-label="Compare versions"><button type="button" data-view="before" aria-pressed="${state.view === 'before'}">Before</button><button type="button" data-view="after" aria-pressed="${state.view === 'after'}">After</button></div>
+    ${state.view === 'after' ? `<label class="hltog" for="hl"><input type="checkbox" id="hl" ${state.hl ? 'checked' : ''}> Highlight what changed</label>` : '<span class="others">The page before any supports. Switch to After to see your version.</span>'}
+  </div>`;
+  sheet.innerHTML = cmpbar + `
   ${pristine ? `<div class="orig">
     <div class="orig-text"><span class="eyebrow">The original pages</span>
     <p><b>Pages 9 and 10</b> of <i>Your Rights and Care Standards: A Guide for People with Type 2 Diabetes</i>, American Diabetes Association, 2026. This is what every participant read.</p></div>
@@ -480,7 +535,7 @@ function renderSheet() {
   <p><b>Fast-acting carbs:</b> glucose tablets or gel, ½ cup of juice or regular soda, 1 tablespoon of sugar or honey.</p>
   ${add('noblame', '<p>Here, sugar is treatment. Using it to bring up a low is the right thing to do, even if you usually avoid sugar.</p>')}
   ${add('conditions', `<p>Kidney disease? Ask the kidney doctor whether juice is okay. Glucose tablets are another option.</p>`, 'warn')}
-  <p>Once above 70 or trending up on a continuous glucose monitor (CGM), have a snack if the next meal is more than an hour away, such as ${esc(snack)}.${foodLabel}</p>
+  <p>Once above 70 or trending up on a continuous glucose monitor (CGM), have a snack if the next meal is more than an hour away, such as ${on('food') ? `<span class="chg">${snack}</span>` : esc(snack)}.${foodLabel}</p>
   ${on('food') ? `<div class="cap">${src('food')}</div>` : ''}
   <p>Ask the health care team about ${T('glucagon')}.</p>
 
@@ -531,6 +586,8 @@ function renderSheet() {
       <div class="copyrow"><button type="button" class="btn ghost" id="copy">Copy questions</button><span class="copied" id="copied" aria-live="polite"></span></div></div>` : ''}
   `;
 
+  sheet.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; renderSheet(); }));
+  const hl = $('#hl'); if (hl) hl.addEventListener('change', () => { state.hl = hl.checked; renderSheet(); });
   sheet.querySelectorAll('button.tag').forEach(b => b.addEventListener('click', () => {
     const open = b.getAttribute('aria-expanded') !== 'true';
     b.setAttribute('aria-expanded', open);
@@ -551,10 +608,10 @@ function selectList() { const r = document.createRange(); r.selectNodeContents($
 
 /* ---------- Persistence (this browser only) ---------- */
 function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: state.reader, on: [...state.on], food: state.food, foodOther: state.foodOther, cond: state.cond, team: state.team, checks: state.checks, fromQuiz: state.fromQuiz })); } catch (e) {} }
-function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true }); } } catch (e) {} }
+function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true, firstDone: true, skipped: new Set(), view: 'after', hl: true }); } } catch (e) {} }
 
 function resetAll() {
-  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false });
+  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), view: 'after', hl: false });
   save(); renderAll();
   const q = $('#quiz'); q.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
