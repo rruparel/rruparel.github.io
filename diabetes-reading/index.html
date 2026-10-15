@@ -111,8 +111,10 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(38px, 5.6
 .add { position: relative; margin: .7em 0; padding: 10px 14px 10px 16px; border-radius: 4px; background: var(--wash); border-left: 4px solid var(--c, var(--accent)); font-size: .95em; }
 .tag { display: inline-flex; gap: 6px; align-items: center; font: 600 11px/1.2 var(--f-ui); letter-spacing: .06em; color: var(--ci, var(--ink-soft)); margin-bottom: 4px; text-transform: uppercase; background: none; border: 0; padding: 3px 0; cursor: pointer; text-align: left; }
 button.tag:hover { text-decoration: underline; text-underline-offset: 3px; }
-.tag .car { display: inline-block; transition: transform .15s; }
-.tag[aria-expanded="true"] .car { transform: rotate(90deg); }
+.tag .car { display: inline-block; font-size: 0; }
+.tag .car::before { content: "\25B8"; font-size: 11px; }
+.tag[aria-expanded="true"] .car::before { content: "\25BE"; }
+button, .opt, .chip, .sup, .term { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .tag.static { cursor: default; }
 .srcq { font-family: var(--f-hand); font-size: 1.12em; line-height: 1.3; color: var(--ci); margin: 2px 0 8px !important; }
 .srcq small { display: block; font: 500 12px var(--f-ui); color: var(--ink-soft); margin-top: 2px; }
@@ -164,6 +166,12 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
   .match { grid-template-columns: 1fr; }
   .premise, .closing { grid-template-columns: 1fr; }
   .team label { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 560px) {
+  .flow { flex-direction: column; }
+  .flow .box { flex: 0 0 auto; }
+  .flow .arr { transform: rotate(90deg); line-height: 1; }
+  .opts { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 </style>
