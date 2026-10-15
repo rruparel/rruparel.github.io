@@ -125,6 +125,11 @@ li.markable { list-style-position: outside; }
 .markbar .link { color: var(--paper); opacity: .85; }
 .mb-btns { display: flex; gap: 14px; align-items: center; }
 @media (max-width: 560px) { .markbar .long { display: none; } .markbar { padding: 8px 8px 8px 14px; margin-inline: -4px; flex-wrap: nowrap; } .markbar .btn { padding: 10px 14px; } #markcount, .markbar .btn { white-space: nowrap; } }
+.sheet.marking .w { cursor: pointer; border-radius: 3px; transition: background .12s; }
+.sheet.marking .w:hover { background: var(--wash); box-shadow: 0 0 0 2px var(--wash); }
+.w.marked { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--p4-ink); text-decoration-thickness: 2px; background: color-mix(in srgb, var(--p4-hi) 35%, transparent); border-radius: 2px; }
+.sheet.marking { -webkit-user-select: text; user-select: text; }
+.mkline:focus { position: static; width: auto; height: auto; margin: 4px 0 0; clip: auto; white-space: normal; display: inline-block; font: 600 12px var(--f-ui); background: var(--ink); color: var(--paper); border: 0; border-radius: 4px; padding: 4px 8px; }
 .dsum { flex-basis: 100%; margin: 0 !important; font-size: 14px; color: var(--ink); font-weight: 600; }
 .dsum:empty { display: none; }
 .delta { margin: .3em 0 .8em; padding: 8px 12px; border: 1.5px dashed var(--accent); border-radius: 6px; font-size: .9em; line-height: 1.45; background: var(--paper); }
@@ -283,7 +288,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 
     <div class="try">
       <h2>Try it: read the page your way</h2>
-      <p>This prototype turns those findings into a reading tool. First, read the page and tap any line you would skim or skip. Then answer four quick questions, and it matches you with the participant you read most like and adjusts the handout with the supports that helped them. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
+      <p>This prototype turns those findings into a reading tool. First, read the page and mark any words you would skim or skip. Then answer four quick questions, and it matches you with the participant you read most like and adjusts the handout with the supports that helped them. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
     </div>
   </header>
 
@@ -361,14 +366,49 @@ function reflection() {
 function baseBlocks(sheet) { return [...sheet.querySelectorAll('h3, p, li')].filter(el => !el.closest('.orig') && !el.closest('.cmpbar') && !el.closest('.delta') && !el.classList.contains('adapted') && !el.closest('.add') && !el.closest('details') && !el.closest('.cap')); }
 function secOf(el, sheet) { const hs = [...sheet.querySelectorAll('h3')]; let i = 0; hs.forEach((h, k) => { if (h === el || (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)) i = k + 1; }); return i; }
 function marking() { return !state.firstDone && !state.matched && state.on.size === 0; }
-function catsFromMarks() {
-  const cats = new Set();
-  document.querySelectorAll('#sheet [data-mid]').forEach(el => { if (state.marks.has(el.dataset.mid)) (el.dataset.cats || '').split(' ').filter(Boolean).forEach(c => cats.add(c)); });
+function splitWords(block, bi) {
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  let wi = 0;
+  nodes.forEach(node => {
+    const parts = node.textContent.split(/(\s+)/); const frag = document.createDocumentFragment();
+    parts.forEach(part => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+      const sp = document.createElement('span'); sp.className = 'w'; sp.dataset.k = bi + ':' + (wi++); sp.textContent = part; frag.appendChild(sp);
+    });
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+function blockCats(el) {
+  const t = el.textContent, cats = [];
+  if (/^Common symptoms/.test(t)) cats.push('symptoms');
+  if (/^Check to be sure/.test(t)) cats.push('paragraph');
+  if (/health care team/.test(t)) cats.push('team');
+  const h = el.closest('ul') && el.closest('ul').previousElementSibling;
+  if (h && /prevent lows/i.test(h.textContent)) cats.push('prevent');
   return cats;
 }
+function collectMarks() {
+  const out = [], cats = new Set();
+  document.querySelectorAll('#sheet [data-bi]').forEach(el => {
+    const ws = [...el.querySelectorAll('.w')]; const runs = []; let cur = [];
+    ws.forEach(w => { if (state.marks.has(w.dataset.k)) cur.push(w.textContent); else if (cur.length) { runs.push(cur.join(' ')); cur = []; } });
+    if (cur.length) runs.push(cur.join(' '));
+    if (!runs.length) return;
+    const words = runs.join(' ').split(' ').length;
+    blockCats(el).forEach(c => cats.add(c));
+    const joined = runs.join(' ');
+    if (/70|mg\/dL/i.test(joined)) cats.add('numbers');
+    if (/hypoglycemia|hyperglycemia|ketoacidosis|DKA|glucagon/i.test(joined)) cats.add('words');
+    out.push({ bi: +el.dataset.bi, sec: +el.dataset.sec, runs, words, whole: words >= ws.length });
+  });
+  return { out, cats };
+}
 function finishFirst(skip) {
-  state.skipped = skip ? new Set() : (state.marks.size ? catsFromMarks() : new Set(['none']));
-  state.markedLines = skip ? [] : [...document.querySelectorAll('#sheet [data-mid]')].filter(el => state.marks.has(el.dataset.mid)).map(el => ({ mid: el.dataset.mid, sec: +el.dataset.sec, text: el.textContent.trim() }));
+  const { out, cats } = collectMarks();
+  state.skipped = skip ? new Set() : (state.marks.size ? cats : new Set(['none']));
+  state.markedLines = skip ? [] : out;
   state.firstDone = true;
   renderAll();
   $('#quiz').scrollIntoView({ block: 'start' }); focusQ();
@@ -377,8 +417,8 @@ function renderFirst() {
   const el = $('#quiz');
   el.innerHTML = `
     <div class="qhead"><div class="eyebrow">Step 1 · First read</div><div class="qcount">Before the questions</div></div>
-    <div class="q"><h2>Read the page below the way you normally would. Tap any line you would skim or skip.</h2>
-    <p class="others" style="margin:-6px 0 12px">Your participants did the same thing out loud. Tap a line again to unmark it. When you are done, use the bar at the bottom of the page.</p></div>
+    <div class="q"><h2>Read the page below the way you normally would. Mark any words you would skim or skip.</h2>
+    <p class="others" style="margin:-6px 0 12px">Tap a word to mark it, or drag across a phrase like “70 mg/dL.” Tap again to unmark. Your participants did the same thing out loud. When you are done, use the bar at the bottom of the page.</p></div>
     <div class="qnav"><button type="button" class="link" id="skip-first">Skip this step</button>
       <a class="btn" href="#sheet" id="to-sheet">Start reading ↓</a></div>`;
   $('#skip-first').addEventListener('click', () => finishFirst(true));
@@ -630,33 +670,51 @@ function renderSheet() {
   if (marking()) {
     const blocks = baseBlocks(sheet);
     blocks.forEach((el, i) => {
-      const t = el.textContent, cats = [];
-      if (/^Common symptoms/.test(t)) cats.push('symptoms');
-      if (/below 70/.test(t)) cats.push('numbers');
-      if (/^Check to be sure/.test(t)) cats.push('paragraph');
-      if (/health care team/.test(t)) cats.push('team');
-      if (/hypoglycemia|hyperglycemia|ketoacidosis|glucagon/i.test(t)) cats.push('words');
-      const h = el.closest('ul') && el.closest('ul').previousElementSibling;
-      if (h && /prevent lows/i.test(h.textContent)) cats.push('prevent');
-      const id = 'm' + i;
-      el.dataset.mid = id; el.dataset.cats = cats.join(' '); el.dataset.sec = secOf(el, sheet);
-      el.classList.add('markable'); el.classList.toggle('marked', state.marks.has(id));
-      el.innerHTML = `<button type="button" class="mkb" aria-pressed="${state.marks.has(id)}" title="Mark as skimmed or skipped">${el.innerHTML}</button>`;
-      const btn = el.firstElementChild;
-      btn.addEventListener('click', () => { state.marks.has(id) ? state.marks.delete(id) : state.marks.add(id); el.classList.toggle('marked'); btn.setAttribute('aria-pressed', state.marks.has(id)); updateBar(); });
+      el.dataset.bi = i; el.dataset.sec = secOf(el, sheet);
+      splitWords(el, i);
+      el.querySelectorAll('.w').forEach(w => w.classList.toggle('marked', state.marks.has(w.dataset.k)));
+      const lb = document.createElement('button'); lb.type = 'button'; lb.className = 'mkline sr-only';
+      const snippet = el.textContent.trim().slice(0, 50);
+      lb.textContent = 'Mark this line as skipped: ' + snippet;
+      lb.addEventListener('click', () => {
+        const ws = [...el.querySelectorAll('.w')]; const all = ws.every(w => state.marks.has(w.dataset.k));
+        ws.forEach(w => { all ? state.marks.delete(w.dataset.k) : state.marks.add(w.dataset.k); w.classList.toggle('marked', !all); });
+        lb.textContent = (all ? 'Mark this line as skipped: ' : 'Unmark this line: ') + snippet; updateBar();
+      });
+      el.appendChild(lb);
     });
-    const bar = document.createElement('div'); bar.className = 'markbar'; bar.innerHTML = `<span id="markcount" aria-live="polite"></span><span class="mb-btns"><button type="button" class="link" id="mb-skip">Skip</button><button type="button" class="btn" id="mb-done">Done reading<span class="long">, continue</span></button></span>`;
+    sheet.classList.add('marking');
+    const markSelection = () => {
+      const sel = getSelection(); if (!sel || sel.isCollapsed || !sel.rangeCount) return false;
+      const ws = [...sheet.querySelectorAll('.w')].filter(w => sel.containsNode(w, true));
+      if (!ws.length) return false;
+      ws.forEach(w => { state.marks.add(w.dataset.k); w.classList.add('marked'); });
+      sel.removeAllRanges(); updateBar(); return true;
+    };
+    window._markSel = markSelection; window._updBar = () => updateBar();
+    if (!sheet.dataset.bound) {
+      sheet.dataset.bound = '1';
+      sheet.addEventListener('pointerup', () => { if (marking()) window._dragged = window._markSel(); });
+      document.addEventListener('selectionchange', () => { clearTimeout(window._selT); window._selT = setTimeout(() => { if (marking() && matchMedia('(pointer: coarse)').matches) window._markSel(); }, 700); });
+      sheet.addEventListener('click', e => {
+        const w = e.target.closest('.w'); if (!w || !marking()) return;
+        if (window._dragged) { window._dragged = false; return; }
+        const k = w.dataset.k; state.marks.has(k) ? state.marks.delete(k) : state.marks.add(k); w.classList.toggle('marked'); window._updBar();
+      });
+    }
+    const bar = document.createElement('div'); bar.className = 'markbar'; bar.innerHTML = `<span id="markcount" aria-live="polite"></span><span class="mb-btns"><button type="button" class="link" id="mb-clear">Clear</button><button type="button" class="link" id="mb-skip">Skip</button><button type="button" class="btn" id="mb-done">Done reading<span class="long">, continue</span></button></span>`;
     sheet.appendChild(bar);
-    const updateBar = () => { const n = state.marks.size; $('#markcount').innerHTML = n ? `${n} <span class="long">line${n === 1 ? '' : 's'} </span>marked<span class="long"> as skimmed or skipped</span>` : 'Tap lines you<span class="long"> would</span> skip'; };
+    const updateBar = () => { const n = state.marks.size; $('#markcount').innerHTML = n ? `${n} word${n === 1 ? '' : 's'} marked<span class="long"> as skimmed or skipped</span>` : 'Tap or drag<span class="long"> across</span> words you skip'; $('#mb-clear').hidden = !n; };
     updateBar();
+    $('#mb-clear').addEventListener('click', () => { state.marks = new Set(); sheet.querySelectorAll('.w.marked').forEach(w => w.classList.remove('marked')); updateBar(); });
     $('#mb-done').addEventListener('click', () => finishFirst(false));
     $('#mb-skip').addEventListener('click', () => finishFirst(true));
-  }
+  } else { sheet.classList.remove('marking'); }
   if (!marking() && state.markedLines.length && !pristine) {
     if (state.view === 'before') {
-      const blocks = baseBlocks(sheet); const ids = new Set(state.markedLines.map(m => m.mid));
-      blocks.forEach((el, i) => { if (ids.has('m' + i)) el.classList.add('markable', 'marked', 'static'); });
-      const n = state.markedLines.length; $('#dsum').textContent = `In your first read you skipped ${n} line${n === 1 ? '' : 's'}.`;
+      const blocks = baseBlocks(sheet);
+      blocks.forEach((el, i) => { if (state.markedLines.some(m => m.bi === i)) { splitWords(el, i); el.querySelectorAll('.w').forEach(w => w.classList.toggle('marked', state.marks.has(w.dataset.k))); } });
+      const n = state.markedLines.reduce((a, m) => a + m.words, 0); $('#dsum').textContent = `In your first read you skipped ${n} word${n === 1 ? '' : 's'}.`;
     } else if (state.showSkips) {
       const hs = [...sheet.querySelectorAll('h3')];
       const bySec = {}; state.markedLines.forEach(m => (bySec[m.sec] = bySec[m.sec] || []).push(m));
@@ -681,13 +739,15 @@ function renderSheet() {
         inSec.forEach(scan); if (start.matches('h3')) scan(start);
         if (start.querySelector && start.querySelector('.term')) found.add('Everyday words');
         if (found.size) helped++;
-        const quote = lines.slice(0, 2).map(m => `“${esc(m.text.length > 70 ? m.text.slice(0, 68).trim() + '…' : m.text)}”`).join(' and ') + (lines.length > 2 ? ` and ${lines.length - 2} more` : '');
+        const phrases = lines.flatMap(m => m.runs);
+        const clip = t => { t = t.replace(/^[^\w(]+|[^\w%)]+$/g, ''); if ((t.match(/\(/g) || []).length !== (t.match(/\)/g) || []).length) t = t.replace(/[()]/g, ''); t = t.replace(/^\((.*)\)$/, '$1'); return t.length > 60 ? t.slice(0, 58).trim() + '…' : t; };
+        const quote = phrases.slice(0, 3).map(t => `“${esc(clip(t))}”`).join(', ') + (phrases.length > 3 ? ` and ${phrases.length - 3} more` : '');
         const box = document.createElement('div'); box.className = 'delta' + (found.size ? '' : ' none');
         box.innerHTML = `<span class="dlbl">You skipped</span> ${quote}<br><span class="dlbl">${found.size ? 'Now' : 'Now'}</span> ${found.size ? [...found].map(f => `<b>${esc(f)}</b>`).join(', ') : 'no change in this section with your current supports'}`;
         start.insertAdjacentElement('afterend', box);
       });
-      const n = state.markedLines.length;
-      $('#dsum').textContent = `You skipped ${n} line${n === 1 ? '' : 's'} in ${secs} section${secs === 1 ? '' : 's'}. ${helped} of ${secs === 1 ? 'that section' : 'those sections'} now ${helped === 1 ? 'has' : 'have'} added support.`;
+      const n = state.markedLines.reduce((a, m) => a + m.words, 0);
+      $('#dsum').textContent = `You skipped ${n} word${n === 1 ? '' : 's'} in ${secs} section${secs === 1 ? '' : 's'}. ` + (secs === 1 ? (helped ? 'That section now has added support.' : 'That section has no added support yet.') : `${helped} of those sections now ${helped === 1 ? 'has' : 'have'} added support.`);
     }
   }
   const sk = $('#showskips'); if (sk) sk.addEventListener('change', () => { state.showSkips = sk.checked; renderSheet(); });
