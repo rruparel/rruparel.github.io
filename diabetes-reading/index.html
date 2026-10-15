@@ -294,6 +294,15 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .xln { grid-column: 1; align-self: start; padding: 3px 40px; transition: filter 1.6s ease, opacity .4s ease, font-size .6s ease; }
 .xnote { grid-column: 2; padding: 3px 0; }
 .xnote p { font-family: var(--f-hand); color: var(--x-ink); font-size: 18px; line-height: 1.28; margin: 0 0 8px; }
+.xshift { grid-column: 1; position: relative; z-index: 1; margin: 6px 40px 10px; padding: 12px 14px; border-left: 4px solid var(--x-ink); background: color-mix(in srgb, var(--x-hi) 35%, var(--paper)); border-radius: 0 6px 6px 0; }
+.xshift > .lab { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--x-ink); margin-bottom: 6px; }
+.xs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.xs-row .lab { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.xs-row p { font-family: var(--f-hand); font-size: 18px; line-height: 1.3; color: var(--x-ink); margin: 2px 0 0; }
+.xs-row p.q::before { content: "\201C"; } .xs-row p.q::after { content: "\201D"; }
+@media (max-width: 860px) { .xshift { margin-inline: 20px; } .xs-row { grid-template-columns: 1fr; } }
+.xsheet.floatnotes .xnote { position: absolute; right: 0; width: 280px; grid-column: auto; }
+.xsheet.floatnotes .xnote:empty { display: none; }
 .xnote p.q::before { content: "\201C"; } .xnote p.q::after { content: "\201D"; }
 .xnote .lab { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin: 6px 0 2px; }
 .xnote .shift { border-left: 3px solid var(--x-hi); padding-left: 10px; margin-top: 4px; }
@@ -1133,6 +1142,26 @@ if (document.getElementById('quiz')) renderAll();
     return xesc(word);
   }
 
+  function layoutNotes() {
+    const sheet = document.getElementById('xsheet'); if (!sheet) return;
+    const wide = sheet.clientWidth >= 860;
+    sheet.classList.toggle('floatnotes', wide);
+    const notes = [...sheet.querySelectorAll('.xnote')];
+    if (!wide) { notes.forEach(n => n.style.top = ''); sheet.style.minHeight = ''; return; }
+    sheet.querySelectorAll('.xln, .kgap, .xshift').forEach(l => l.style.marginTop = '');
+    let last = 0; const top0 = sheet.getBoundingClientRect().top; const CAP = 36;
+    notes.forEach(n => {
+      if (!n.textContent.trim()) { n.style.top = '-9999px'; return; }
+      let line = n.previousElementSibling; while (line && !line.matches('.xln, .kgap')) line = line.previousElementSibling;
+      let lt = line ? line.getBoundingClientRect().top - top0 : 0;
+      if (line && last + 6 - lt > CAP) { line.style.marginTop = (last + 6 - lt - CAP) + 'px'; lt = line.getBoundingClientRect().top - top0; }
+      const t = Math.max(lt, last + 6);
+      n.style.top = t + 'px'; last = t + n.offsetHeight;
+    });
+    sheet.style.minHeight = (last + 30) + 'px';
+  }
+  window.addEventListener('resize', () => { clearTimeout(window._xl); window._xl = setTimeout(layoutNotes, 150); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutNotes);
   function renderX() {
     timers.forEach(clearInterval); timers = [];
     const r = cur ? XR[cur] : PLAIN; const sec = document.getElementById('experience');
@@ -1152,8 +1181,8 @@ if (document.getElementById('quiz')) renderAll();
       let note = '';
       if (r.out9 && ln.id === 'h1') note = '<span class="lab">P1 reviewed page 10 only</span>';
       if (conf.n && !(r.out9 && ln.p === 9)) note = conf.n.map(q => `<p class="q">${xesc(q)}</p>`).join('');
-      if (conf.shift) note += `<div class="shift"><span class="lab">Before reading</span><p class="q">So to me, poorly controlled means, you didn’t do your part.</p><span class="lab">After this line</span><p class="q">Now I think, maybe sometimes you did your part and still it went up.</p></div>`;
       html += `<div class="xnote">${note}</div>`;
+      if (conf.shift) html += `<div class="xshift" role="note"><span class="lab">What this line changed for P4</span><div class="xs-row"><div><span class="lab">Before reading</span><p class="q">So to me, poorly controlled means, you didn’t do your part.</p></div><div><span class="lab">After this line</span><p class="q">Now I think, maybe sometimes you did your part and still it went up.</p></div></div></div>`;
       if (r.gapAfter === ln.id) html += `<div class="kgap"><b>Kidneys</b> · not on these two pages</div><div class="xnote"><p class="q">there’s nothing about kidneys on these two pages. Like, at all. Which, for my dad, that’s the main thing.</p></div>`;
     });
     const sheet = document.getElementById('xsheet');
@@ -1173,6 +1202,7 @@ if (document.getElementById('quiz')) renderAll();
       line.addEventListener('mouseenter', on); line.addEventListener('mouseleave', off);
       note.addEventListener('click', () => { const was = note.classList.contains('linked') && note.dataset.pinned; sheet.querySelectorAll('.linked').forEach(x => { x.classList.remove('linked'); delete x.dataset.pinned; }); if (!was) { on(); note.dataset.pinned = '1'; } });
     });
+    layoutNotes();
     if (r.photo && !reduce()) setTimeout(() => sheet.classList.remove("dim"), 700);
     if (reduce()) return;
     sheet.querySelectorAll('[data-fx="scramble"]').forEach(el => { const w = el.dataset.w; timers.push(setInterval(() => { el.textContent = scramble(w); }, 260)); });
