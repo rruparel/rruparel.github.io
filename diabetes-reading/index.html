@@ -345,8 +345,9 @@ function renderQuiz() {
     body = `<div class="opts">
       <button type="button" class="opt" id="opt-cond" aria-pressed="${state.cond}">They (or I) have other conditions too, like kidney, heart or blood pressure</button>
       <label class="opt" style="cursor:default">Foods we eat most<br><select class="sel" id="food" style="margin-top:8px;width:100%">
-        <option value="none">Prefer not to say</option><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option>
-      </select></label></div>`;
+        <option value="none">Prefer not to say</option><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option><option value="other">Other</option>
+      </select>
+      <input class="sel" id="food-other" type="text" maxlength="40" placeholder="Which foods? (optional)" aria-label="Which foods do you eat most?" style="margin-top:8px;width:100%" ${state.food === 'other' ? '' : 'hidden'}></label></div>`;
   } else {
     body = `<div class="opts">${q.opts.map((o, i) => `<button type="button" class="opt" data-a="${i}" aria-pressed="${state.answers[q.id] === i}">${esc(o.t)}</button>`).join('')}</div>`;
   }
@@ -363,7 +364,9 @@ function renderQuiz() {
     ${Object.keys(state.answers).length || state.step > 0 || state.cond || state.food !== 'none' ? '<div style="margin-top:12px"><button type="button" class="link" data-reset>Clear my answers and start over</button></div>' : ''}`;
   el.querySelectorAll('.opt[data-a]').forEach(b => b.addEventListener('click', () => { state.answers[q.id] = +b.dataset.a; renderQuiz(); }));
   const oc = $('#opt-cond'); if (oc) oc.addEventListener('click', () => { state.cond = !state.cond; oc.setAttribute('aria-pressed', state.cond); });
-  const fd = $('#food'); if (fd) { fd.value = state.food; fd.addEventListener('change', () => state.food = fd.value); }
+  const fd = $('#food'), fo = $('#food-other');
+  if (fd) { fd.value = state.food; fd.addEventListener('change', () => { state.food = fd.value; fo.hidden = fd.value !== 'other'; if (!fo.hidden) fo.focus(); }); }
+  if (fo) { fo.value = state.foodOther || ''; fo.addEventListener('input', () => state.foodOther = fo.value.trim()); }
   const back = $('#back'); if (back) back.addEventListener('click', () => { state.step--; renderQuiz(); });
   $('#fwd').addEventListener('click', () => {
     if (state.step < QUESTIONS.length - 1) { state.step++; renderQuiz(); return; }
@@ -440,8 +443,9 @@ function renderSheet() {
   const sheet = $('#sheet');
   const unit = on('plain') ? '70' : '70 mg/dL';
   const unitNote = on('plain') ? ' <span class="sub">(Meters show this as 70 mg/dL.)</span>' : '';
-  const snack = on('food') ? FOODS[state.food === 'none' ? 'southasian' : state.food] : FOODS.none;
-  const foodLabel = on('food') && state.food === 'none' ? ' <select class="sel" id="food2" aria-label="Choose foods" style="padding:4px 8px;font-size:.85em"><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option></select>' : '';
+  const otherSnack = state.foodOther ? `something from the ${state.foodOther} foods ${Y('you usually eat', 'they usually eat')} that has some carbs and some protein` : `something ${Y('you usually eat', 'they usually eat')} that has some carbs and some protein`;
+  const snack = !on('food') ? FOODS.none : state.food === 'other' ? otherSnack : FOODS[state.food === 'none' ? 'southasian' : state.food];
+  const foodLabel = on('food') && state.food === 'none' ? ' <select class="sel" id="food2" aria-label="Choose foods" style="padding:4px 8px;font-size:.85em"><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option><option value="other">Other</option></select>' : '';
 
   const pristine = !state.reader && state.on.size === 0;
   sheet.innerHTML = `
@@ -546,11 +550,11 @@ function renderSheet() {
 function selectList() { const r = document.createRange(); r.selectNodeContents($('#callq')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('#copied').textContent = 'Selected. Copy with your keyboard.'; }
 
 /* ---------- Persistence (this browser only) ---------- */
-function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: state.reader, on: [...state.on], food: state.food, cond: state.cond, team: state.team, checks: state.checks, fromQuiz: state.fromQuiz })); } catch (e) {} }
+function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: state.reader, on: [...state.on], food: state.food, foodOther: state.foodOther, cond: state.cond, team: state.team, checks: state.checks, fromQuiz: state.fromQuiz })); } catch (e) {} }
 function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true }); } } catch (e) {} }
 
 function resetAll() {
-  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, fromQuiz: false });
+  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false });
   save(); renderAll();
   const q = $('#quiz'); q.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
