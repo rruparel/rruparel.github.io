@@ -351,7 +351,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 
 </head>
 <body>
-<a class="skip" href="#sheet">Skip to the reading</a>
+<a class="skip" href="#experience">Skip to Part 1</a>
 <main class="wrap" id="top">
   <header>
     <div class="intro">
@@ -400,32 +400,9 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
       <article class="xsheet" id="xsheet" aria-label="The handout, as the selected participant experienced it"></article>
       <div class="xfoot">
         <p>The handout is condensed from pages 9 and 10 of the ADA guide. The effects are interpretations of what participants described, not how the guide actually looks.</p>
-        <a class="btn" href="#part3">Part 2: what could help ↓</a>
+        <a class="btn" href="what-could-help.html">Part 2: what could help →</a>
       </div>
     </section>
-
-  <div class="try part3-head" id="part3">
-    <span class="eyebrow">Part 2</span>
-    <h2>What could help: read the page your way</h2>
-    <p>Now try it yourself. First, read the page and mark any words you would skim or skip. Then answer four quick questions. You’ll be matched with the participant you read most like, and the page will add the supports that came out of their experience. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
-  </div>
-
-
-  <section class="quiz" id="quiz" aria-label="Match me to a reader"></section>
-
-  <section class="reader">
-    <aside class="rail" id="rail" aria-label="Reading supports"></aside>
-    <article class="sheet" id="sheet" aria-label="The handout" tabindex="-1"></article>
-  </section>
-
-  <section class="closing" id="closing" aria-live="polite">
-    <h2 id="close-h">One line can change who gets blamed.</h2>
-    <div>
-      <p id="close-lead">After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:</p>
-      <p class="hand" id="close-q">“I will not tell her, ‘Just walk more.’ I used to say that.”</p>
-      <p>Each support here started as something a participant needed. Tap any tag on the page to read the moment behind it. To see how each person experienced the original page, go back to <a href="#experience">Part 1</a>.</p>
-    </div>
-  </section>
 
   <p class="foot">A class prototype, not medical advice. Handout content is condensed from pages 9 and 10 of an American Diabetes Association guide for people living with type 2 diabetes. Each added support is tagged with the participant whose reading it came from. Five think-aloud interviews, September 2026. Roma Ruparel, INFO 272.</p>
 </main>
@@ -1018,7 +995,7 @@ function renderClosing() {
 }
 function renderAll() { renderQuiz(); renderRail(); renderSheet(); renderClosing(); }
 load();
-renderAll();
+if (document.getElementById('quiz')) renderAll();
 
 /* ---------- Part 1: read it the way they did ---------- */
 (function () {

@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>What Could Help</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600;700;800&family=Kalam:wght@400;700&display=swap">
+<style>
+/* Layout: a reading app. A short matching quiz up top, then a supports rail beside one tuned handout sheet. Shares its look with Read Five Ways. */
+:root {
+  --desk: #e3e7ec; --paper: #fdfdfb; --ink: #1d2733; --ink-soft: #4f5d6c; --rule: #cdd5dd; --accent: #24476b; --wash: #eef2f6;
+  --shadow: 0 1px 2px rgba(29,39,51,.08), 0 8px 28px rgba(29,39,51,.10);
+  --warn: #8a3b12; --warn-bg: #fbeee5;
+  --mark: rgba(255,222,80,.70);
+  --p1-hi: rgba(120,184,245,.55); --p1-ink: #1d5fa8;
+  --p2-hi: rgba(190,166,240,.55); --p2-ink: #5b3fa0;
+  --p3-hi: rgba(120,220,170,.55); --p3-ink: #1c7550;
+  --p4-hi: rgba(255,222,80,.70);  --p4-ink: #7d6000;
+  --p5-hi: rgba(255,170,105,.60); --p5-ink: #a84d14;
+  --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-ui: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-hand: "Kalam", "Comic Sans MS", "Bradley Hand", cursive;
+  --scale: 1;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --desk: #14181d; --paper: #1e242b; --ink: #e4e9ee; --ink-soft: #9aa7b4; --rule: #36404b; --accent: #9cc3ea; --wash: #262d35;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.35);
+  --warn: #ffb28a; --warn-bg: #3a2519;
+  --mark: rgba(240,205,60,.22);
+  --p1-hi: rgba(90,160,235,.38); --p1-ink: #8fc2f7; --p2-hi: rgba(160,130,230,.40); --p2-ink: #c3b0f5;
+  --p3-hi: rgba(80,200,145,.36); --p3-ink: #86e0b5; --p4-hi: rgba(240,205,60,.40); --p4-ink: #f2d66a;
+  --p5-hi: rgba(245,150,80,.40); --p5-ink: #ffb784; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --desk: #14181d; --paper: #1e242b; --ink: #e4e9ee; --ink-soft: #9aa7b4; --rule: #36404b; --accent: #9cc3ea; --wash: #262d35;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.35);
+  --warn: #ffb28a; --warn-bg: #3a2519;
+  --mark: rgba(240,205,60,.22);
+  --p1-hi: rgba(90,160,235,.38); --p1-ink: #8fc2f7; --p2-hi: rgba(160,130,230,.40); --p2-ink: #c3b0f5;
+  --p3-hi: rgba(80,200,145,.36); --p3-ink: #86e0b5; --p4-hi: rgba(240,205,60,.40); --p4-ink: #f2d66a;
+  --p5-hi: rgba(245,150,80,.40); --p5-ink: #ffb784; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--desk); color: var(--ink); font-family: var(--f-ui); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 44px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+button { font-family: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(38px, 5.6vw, 58px); line-height: 1.04; margin: 8px 0 12px; letter-spacing: -.01em; text-wrap: balance; }
+.lede { font-family: var(--f-display); font-size: clamp(18px, 2.1vw, 20px); max-width: 660px; margin: 0; }
+
+/* Quiz */
+.quiz { margin-top: 28px; background: var(--paper); box-shadow: var(--shadow); border-radius: 4px; padding: 26px clamp(18px, 4vw, 36px) 24px; }
+.qhead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.qcount { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.progress { display: flex; gap: 6px; margin: 10px 0 18px; }
+.progress i { flex: 1; height: 4px; border-radius: 2px; background: var(--rule); }
+.progress i.done { background: var(--ink); }
+.q h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(22px, 2.8vw, 28px); margin: 0 0 14px; line-height: 1.2; text-wrap: balance; }
+.opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); border-radius: 6px; padding: 12px 14px; cursor: pointer; font-size: 15px; font-weight: 500; line-height: 1.35; transition: border-color .15s, background .15s; }
+.opt:hover { border-color: var(--ink-soft); }
+.opt[aria-pressed="true"] { border-color: var(--ink); background: var(--wash); box-shadow: inset 0 0 0 1px var(--ink); }
+.qnav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 18px; align-items: center; }
+.btn { font: 600 15px/1 var(--f-ui); background: var(--ink); color: var(--paper); border: 0; padding: 12px 18px; border-radius: 6px; cursor: pointer; }
+.btn:disabled { opacity: .35; cursor: default; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--rule); }
+.link { background: none; border: 0; color: var(--ink-soft); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 6px 0; }
+.sel { font: 500 15px var(--f-ui); padding: 10px 12px; border-radius: 6px; border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); }
+.pickrow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip { font: 600 13px/1 var(--f-ui); border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); padding: 9px 12px; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+.chip .dot { width: 11px; height: 11px; border-radius: 3px; }
+
+/* Match result */
+.match { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 18px 32px; align-items: start; }
+.match .you { font-size: 13px; color: var(--ink-soft); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.match h2 { font-family: var(--f-display); font-size: clamp(26px, 3.4vw, 34px); font-weight: 600; margin: 4px 0 6px; line-height: 1.12; }
+.match .why { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+.match .hand { font-family: var(--f-hand); font-size: 21px; line-height: 1.3; color: var(--r-ink); margin: 0; }
+.match .hand small { display: block; font: 500 12px var(--f-ui); color: var(--ink-soft); margin-top: 4px; }
+.others { margin-top: 6px; font-size: 13px; color: var(--ink-soft); }
+
+/* Reader layout */
+.reader { margin-top: 28px; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 28px; align-items: start; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); display: flex; flex-direction: column; gap: 10px; }
+.rail h3 { margin: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+.rail p.hint { margin: 0 0 4px; font-size: 13px; color: var(--ink-soft); }
+.sup { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: start; text-align: left; border: 1.5px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 9px 11px; cursor: pointer; color: var(--ink); }
+.sup .sw { grid-row: span 2; width: 30px; height: 18px; border-radius: 999px; background: var(--rule); position: relative; margin-top: 2px; transition: background .15s; }
+.sup .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--paper); transition: transform .15s; }
+.sup[aria-pressed="true"] .sw { background: var(--ink); }
+.sup[aria-pressed="true"] .sw::after { transform: translateX(12px); }
+.sup b { font-size: 14px; font-weight: 600; }
+.sup span.from { font-size: 12px; color: var(--ink-soft); }
+.railfoot { font-size: 12px; color: var(--ink-soft); }
+
+.sheet { background: var(--paper); box-shadow: var(--shadow); border-radius: 3px; padding: 40px clamp(18px, 5vw, 56px) 44px; font-size: calc(16px * var(--scale)); min-width: 0; }
+.sheet h2 { font-weight: 800; font-size: 1.4em; margin: 0 0 4px; letter-spacing: -.01em; }
+.sheet h3 { font-weight: 700; font-size: 1.08em; color: var(--accent); margin: 1.6em 0 .4em; }
+.sheet p, .sheet li { margin: .35em 0; }
+.sheet ul { padding-left: 1.2em; margin: .3em 0; }
+.sheet .sub { color: var(--ink-soft); margin: 0 0 .6em; }
+.orig { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 20px; align-items: center; background: var(--wash); border: 1.5px solid var(--rule); border-radius: 6px; padding: 16px 18px; margin: 0 0 22px; font-size: 15px; }
+.orig p { margin: 4px 0 0; }
+.orig .eyebrow { display: block; }
+.orig .btn { text-decoration: none; display: inline-block; white-space: nowrap; }
+.orig-note { grid-column: 1 / -1; font-size: 13px; color: var(--ink-soft); margin: 0 !important; }
+.adapted { font-size: 12px; color: var(--ink-soft); margin: 0 0 10px !important; letter-spacing: .02em; }
+.adapted a { color: var(--accent); }
+@media (max-width: 560px) { .orig { grid-template-columns: 1fr; } .orig .btn { text-align: center; } }
+.markable { cursor: pointer; border-radius: 4px; margin-left: -6px !important; padding-left: 6px; transition: background .15s, color .15s; }
+.markable:hover { background: var(--wash); }
+.markable.marked { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--p4-ink); text-decoration-thickness: 1.5px; }
+.mkb { all: unset; display: block; width: 100%; box-sizing: border-box; cursor: pointer; font: inherit; color: inherit; text-decoration: inherit; -webkit-tap-highlight-color: transparent; }
+.mkb:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.markable.marked .mkb::after { content: "skipped"; display: inline-block; margin-left: 8px; font: 400 .95em var(--f-hand); color: var(--p4-ink); text-decoration: none; transform: rotate(-2deg); }
+li.markable { list-style-position: outside; }
+.markbar { position: sticky; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); margin: 28px -8px -16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; background: var(--ink); color: var(--paper); border-radius: 10px; padding: 12px 14px 12px 18px; box-shadow: var(--shadow); font-size: 15px; font-weight: 600; z-index: 5; }
+.markbar .btn { background: var(--paper); color: var(--ink); }
+.markbar .link { color: var(--paper); opacity: .85; }
+.mb-btns { display: flex; gap: 14px; align-items: center; }
+@media (max-width: 560px) { .markbar .long { display: none; } .markbar { padding: 8px 8px 8px 14px; margin-inline: -4px; flex-wrap: nowrap; } .markbar .btn { padding: 10px 14px; } #markcount, .markbar .btn { white-space: nowrap; } }
+.sheet.marking .w { cursor: pointer; border-radius: 3px; transition: background .12s; }
+.sheet.marking .w:hover { background: var(--wash); box-shadow: 0 0 0 2px var(--wash); }
+.w.marked { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--p4-ink); text-decoration-thickness: 2px; background: color-mix(in srgb, var(--p4-hi) 35%, transparent); border-radius: 2px; }
+.sheet.marking { -webkit-user-select: text; user-select: text; }
+.mkline:focus { position: static; width: auto; height: auto; margin: 4px 0 0; clip: auto; white-space: normal; display: inline-block; font: 600 12px var(--f-ui); background: var(--ink); color: var(--paper); border: 0; border-radius: 4px; padding: 4px 8px; }
+.fixlist { display: flex; flex-direction: column; gap: 14px; }
+.fx-h { font-weight: 800; font-size: 1.3em; margin: 0; }
+.fx-sub { margin: 0 0 4px !important; color: var(--ink-soft); }
+.fixcard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border: 1.5px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.fixcard .fc-col { padding: 14px 16px; min-width: 0; }
+.fixcard .fc-col + .fc-col { border-left: 1.5px solid var(--rule); background: var(--wash); }
+.fixcard.none .fc-col + .fc-col { background: var(--paper); }
+.fc-lbl { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+.fc-orig { margin: 0 !important; }
+.fc-orig .w.marked { color: var(--ink-soft); }
+.fc-fixed .fx-line { margin: 0 0 6px !important; }
+.fc-fixed .add { margin: 8px 0 0; background: var(--paper); }
+.fc-fixed .flow { margin: 4px 0 0; }
+.fc-none { margin: 0 0 10px !important; color: var(--ink-soft); font-size: .95em; }
+.fc-on { font-size: 14px; padding: 9px 14px; }
+.fc-fixed .term, .fc-fixed .chg, .fc-fixed mark.hi { background: var(--mark); color: var(--ink); border-radius: 2px; box-shadow: 0 0 0 2px var(--mark); }
+.fc-q { font-family: var(--f-hand); font-size: 1.1em; color: var(--p4-ink); margin: 0 !important; }
+.fc-q small { display: block; font: 500 12px var(--f-ui); color: var(--ink-soft); margin-top: 2px; }
+.fc-from { display: block; margin-top: 6px; font-size: 12px; color: var(--ink-soft); }
+@media (max-width: 640px) { .fixcard { grid-template-columns: 1fr; } .fixcard .fc-col + .fc-col { border-left: 0; border-top: 1.5px solid var(--rule); } }
+.dsum { flex-basis: 100%; margin: 0 !important; font-size: 14px; color: var(--ink); font-weight: 600; }
+.dsum:empty { display: none; }
+.delta { margin: .3em 0 .8em; padding: 8px 12px; border: 1.5px dashed var(--accent); border-radius: 6px; font-size: .9em; line-height: 1.45; background: var(--paper); }
+.delta.none { border-color: var(--rule); color: var(--ink-soft); }
+.delta .dlbl { display: inline-block; min-width: 82px; font: 700 11px/1.4 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.markable.static { cursor: default; margin-left: 0 !important; padding-left: 0; }
+.markable.static:hover { background: none; }
+.markable.static::after { content: "skipped"; display: inline-block; margin-left: 8px; font: 400 .95em var(--f-hand); color: var(--p4-ink); text-decoration: none; transform: rotate(-2deg); }
+.mirror { font-family: var(--f-hand); font-size: 19px; line-height: 1.3; color: var(--r-ink); margin: 0 0 12px; }
+.cmpbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: -8px 0 22px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.seg { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.seg button { font: 600 14px/1 var(--f-ui); background: var(--paper); color: var(--ink); border: 0; padding: 9px 16px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.hltog { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; cursor: pointer; }
+.hltog input { width: 18px; height: 18px; accent-color: var(--ink); }
+.sheet.hl .add, .sheet.hl .flow, .sheet.hl details.why, .sheet.hl .cap { outline: 2.5px dashed var(--ci, var(--accent)); outline-offset: 4px; border-radius: 4px; }
+.sheet.hl .flow { --ci: var(--p5-ink); }
+.sheet { position: relative; }
+.sheet.annotated { padding-right: 270px; }
+.annot { position: absolute; right: 18px; width: 232px; font-size: 13px; line-height: 1.4; background: var(--paper); border: 1.5px solid var(--rule); border-left: 4px solid var(--ah); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; z-index: 2; }
+.annot.inline { position: static; width: auto; margin: 4px 0 10px; }
+.annot .a-what { font-weight: 600; color: var(--ink); }
+.annot .a-why { color: var(--ink-soft); }
+.annot .a-why b { color: var(--ink); font-weight: 700; }
+.annot .a-tag { font: 700 11px/1.3 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--ai); }
+.sheet.hl .term, .sheet.hl .chg, .sheet.hl mark.hi { background: var(--mark); color: var(--ink); border-radius: 2px; box-shadow: 0 0 0 2px var(--mark); }
+.sheet.hl h3 .term { color: var(--ink); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 10; background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 6px; font-weight: 600; text-decoration: none; }
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + 12px); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pg { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; border-bottom: 1px dashed var(--rule); padding: 22px 0 6px; margin-bottom: 4px; }
+
+.term { border: 0; background: none; color: inherit; font: inherit; padding: 0; cursor: help; border-bottom: 1.5px dotted var(--ink-soft); }
+.term .med { font: 600 .72em var(--f-ui); color: var(--ink-soft); margin-left: 4px; letter-spacing: .02em; }
+.term[aria-expanded="false"] .med { display: none; }
+
+.add { position: relative; margin: .7em 0; padding: 10px 14px 10px 16px; border-radius: 4px; background: var(--wash); border-left: 4px solid var(--c, var(--accent)); font-size: .95em; }
+.tag { display: inline-flex; gap: 6px; align-items: center; font: 600 12px/1.2 var(--f-ui); letter-spacing: .06em; color: var(--ci, var(--ink-soft)); margin-bottom: 4px; text-transform: uppercase; background: none; border: 0; padding: 3px 0; cursor: pointer; text-align: left; }
+button.tag:hover { text-decoration: underline; text-underline-offset: 3px; }
+.tag .car { display: inline-block; font-size: 0; }
+.tag .car::before { content: "\25B8"; font-size: 11px; }
+.tag[aria-expanded="true"] .car::before { content: "\25BE"; }
+button, .opt, .chip, .sup, .term { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.tag.static { cursor: default; }
+.srcq { font-family: var(--f-hand); font-size: 1.12em; line-height: 1.3; color: var(--ci); margin: 2px 0 8px !important; }
+.srcq small { display: block; font: 500 12px var(--f-ui); color: var(--ink-soft); margin-top: 2px; }
+.cap { margin: -2px 0 6px; }
+details.why .tag { display: flex; margin-top: 6px; }
+.premise { margin-top: 22px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 900px; }
+.premise div { border-top: 2px solid var(--ink); padding-top: 8px; font-size: 15px; line-height: 1.4; }
+.premise b { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 40px; align-items: end; }
+.intro-text { min-width: 0; }
+.srcl { color: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.srcl:hover { color: var(--accent); }
+.qr { margin: 0; background: var(--paper); box-shadow: var(--shadow); border-radius: 6px; padding: 12px 12px 10px; width: 200px; text-align: center; }
+.qr svg { display: block; width: 100%; height: auto; border-radius: 2px; }
+.qr figcaption { font-size: 12px; font-weight: 600; color: var(--ink); margin-top: 8px; line-height: 1.35; }
+.qr figcaption span { display: block; font-weight: 500; color: var(--ink-soft); font-size: 10.5px; white-space: nowrap; }
+.findings { margin-top: 30px; }
+.findings > h2 { margin: 0 0 12px; }
+.find-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.find { background: var(--paper); box-shadow: var(--shadow); border-radius: 4px; border-top: 5px solid var(--c); padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.find h3 { font-family: var(--f-display); font-weight: 600; font-size: 21px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.find p { margin: 0; font-size: 15px; line-height: 1.5; }
+.find blockquote { margin: auto 0 0; padding-top: 8px; font-family: var(--f-hand); font-size: 19px; line-height: 1.3; color: var(--ci); }
+.find cite { display: block; font: 500 12px/1.4 var(--f-ui); font-style: normal; color: var(--ink-soft); margin-top: 4px; }
+.try { margin-top: 34px; max-width: 720px; }
+.try h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(24px, 3vw, 30px); margin: 0 0 6px; line-height: 1.15; }
+.try p { margin: 0; font-size: 16px; }
+.closing { margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 36px; align-items: start; }
+.closing h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.12; margin: 0; text-wrap: balance; }
+.closing p { margin: 0 0 10px; }
+.closing .hand { font-family: var(--f-hand); font-size: 22px; line-height: 1.3; color: var(--p4-ink); }
+.closing a { color: var(--accent); }
+.add.warn { background: var(--warn-bg); }
+.add p { margin: .2em 0; }
+mark.hi { background: linear-gradient(transparent 12%, var(--c) 12%, var(--c) 90%, transparent 90%); color: inherit; padding: 0 2px; }
+
+details.why { margin: .5em 0; }
+details.why summary { cursor: pointer; font-weight: 600; font-size: .92em; color: var(--ci); }
+details.why p { margin: .4em 0 .2em; font-size: .95em; }
+
+.flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: .6em 0; }
+.flow .box { flex: 1 1 130px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 9px 11px; font-size: .92em; line-height: 1.35; min-width: 0; }
+.flow .box b { display: block; font-size: .78em; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.flow .box.alert { border-color: var(--warn); }
+.flow .arr { align-self: center; color: var(--ink-soft); font-weight: 700; }
+
+.tablewrap { overflow-x: auto; margin: .6em 0; }
+table.cmp { border-collapse: collapse; width: 100%; min-width: 440px; font-size: .92em; }
+table.cmp th, table.cmp td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.cmp th { font-size: .8em; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+table.cmp td:first-child { font-weight: 600; width: 22%; }
+
+.team { display: grid; gap: 8px; margin-top: 6px; }
+.team label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: center; font-size: .92em; }
+.team input { font: inherit; font-size: .95em; padding: 8px 10px; border-radius: 5px; border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); min-width: 0; }
+.checks { list-style: none; padding: 0 !important; }
+.checks label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.checks input { margin-top: .3em; width: 18px; height: 18px; accent-color: var(--ink); flex: none; }
+.copyrow { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.copied { font-size: 13px; color: var(--ink-soft); }
+
+.foot { margin-top: 36px; font-size: 13px; color: var(--ink-soft); max-width: 760px; border-top: 1px solid var(--rule); padding-top: 14px; }
+
+@media (max-width: 860px) {
+  .reader { grid-template-columns: minmax(0, 1fr); }
+  .rail { position: static; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .rail h3, .rail p.hint, .railfoot { grid-column: 1 / -1; }
+  .match { grid-template-columns: 1fr; }
+  .find-grid, .closing { grid-template-columns: 1fr; }
+  .intro { grid-template-columns: 1fr; }
+  .qr { display: none; }
+  .team label { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 560px) {
+  .flow { flex-direction: column; }
+  .flow .box { flex: 0 0 auto; }
+  .flow .arr { transform: rotate(90deg); line-height: 1; }
+  .opts { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+/* ---------- Part 1: read it the way they did ---------- */
+.part-head { margin-top: 44px; max-width: 760px; }
+.part-head .eyebrow { display: block; }
+.part-head h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 3.8vw, 40px); margin: 4px 0 8px; line-height: 1.1; text-wrap: balance; }
+.part-head p { margin: 0; font-size: 16px; }
+.xpick { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
+.xpick .chip .dot { background: var(--rule); }
+.xpick .chip[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.xcard { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px 28px; padding: 14px 0 16px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: 18px; }
+.xcard h3 { font-family: var(--f-display); font-size: 24px; font-weight: 600; margin: 0 0 4px; }
+.xcard p { margin: 0; font-size: 15px; color: var(--ink-soft); }
+.xcard .lbl { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); margin-top: 8px; }
+.xcard .val { color: var(--ink); }
+.xcard .hand { font-family: var(--f-hand); font-size: 21px; line-height: 1.3; color: var(--x-ink); }
+.xsheet { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 280px; column-gap: 28px; padding-block: 34px 38px; font-size: 16px; }
+.xsheet::before { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(100% - 308px); background: var(--paper); box-shadow: var(--shadow); border-radius: 3px; z-index: 0; transition: filter 1.6s ease, transform 1.6s ease; }
+.xln, .xnote { position: relative; z-index: 1; }
+.xln { grid-column: 1; align-self: start; padding: 3px 40px; transition: filter 1.6s ease, opacity .4s ease, font-size .6s ease; }
+.xnote { grid-column: 2; padding: 3px 0; }
+.xnote p { font-family: var(--f-hand); color: var(--x-ink); font-size: 18px; line-height: 1.28; margin: 0 0 8px; }
+.xnote p.q::before { content: "\201C"; } .xnote p.q::after { content: "\201D"; }
+.xnote .lab { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin: 6px 0 2px; }
+.xnote .shift { border-left: 3px solid var(--x-hi); padding-left: 10px; margin-top: 4px; }
+.xln.h { font-weight: 700; font-size: 17px; margin-top: 12px; color: var(--accent); }
+.xln.h1 { font-weight: 800; font-size: 22px; color: var(--ink); margin-top: 0; }
+.xln.pg { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); padding-top: 20px; font-weight: 600; }
+.xln.pg::after { content: ""; display: block; border-bottom: 1px dashed var(--rule); margin-top: 6px; }
+.xln.out { opacity: .35; }
+.xln.skim { opacity: .55; }
+.xln.tiny { font-size: 10.5px; line-height: 1.35; letter-spacing: -.01em; }
+.xln.glaze { filter: blur(2.2px); opacity: .7; }
+.xln.hl > .t { background: linear-gradient(transparent 12%, var(--x-hi) 12%, var(--x-hi) 90%, transparent 90%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.fx { display: inline; border-radius: 2px; }
+.fx-scramble { font-variant-ligatures: none; text-decoration: underline wavy var(--x-ink); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.fx-glyph { font-weight: 700; letter-spacing: .04em; color: var(--x-ink); }
+.fx-cycle { display: inline-block; min-width: 2.2em; text-align: center; font-weight: 700; color: var(--x-ink); border-bottom: 2px dashed var(--x-ink); }
+.fx-team { font-weight: 700; color: var(--x-ink); border-bottom: 2px dashed var(--x-ink); }
+.fx-pulse { animation: xpulse 1.6s ease-in-out infinite; padding: 0 2px; }
+@keyframes xpulse { 0%, 100% { background: transparent; } 50% { background: var(--x-hi); } }
+.fx-conflict { text-decoration: line-through; text-decoration-color: var(--warn); text-decoration-thickness: 2px; }
+.fx-conflict + .aside, .fx-tag { display: inline-block; margin-left: 4px; font: 400 15px/1 var(--f-hand); color: var(--x-ink); transform: rotate(-2deg); }
+.fx-mark { background: var(--x-hi); padding: 0 2px; }
+.fx-fade { opacity: .35; }
+.fx-blank { filter: blur(3px); }
+.fx-academic { text-decoration: underline dotted var(--x-ink); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.kgap { grid-column: 1; position: relative; z-index: 1; margin: 6px 40px; padding: 10px 12px; border: 2px dashed var(--x-ink); border-radius: 6px; color: var(--ink-soft); font-size: 14px; }
+.kgap b { color: var(--x-ink); }
+.xsheet.photo::before { filter: blur(0); }
+.xsheet.photo.dim::before { transform: rotate(-.6deg); }
+.xsheet.photo.dim .xln { filter: blur(5px); }
+.photocap { grid-column: 1 / -1; position: relative; z-index: 1; margin: 0 40px 10px; font-size: 13px; color: var(--ink-soft); }
+.photocap span { font-family: var(--f-hand); font-size: 17px; color: var(--x-ink); }
+.xfoot { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; margin-top: 14px; }
+.xfoot p { margin: 0; font-size: 13px; color: var(--ink-soft); max-width: 620px; }
+.xfoot .btn { text-decoration: none; }
+.xnote.linkable { cursor: pointer; border-radius: 6px; transition: background .15s; }
+@media (min-width: 861px) { .xnote.linkable { padding: 4px 8px; margin-left: -8px; } }
+.xnote.linkable:hover, .xnote.linked { background: color-mix(in srgb, var(--x-hi) 30%, transparent); }
+.xnote.linkable:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.xln.linked { outline: 2.5px solid var(--x-ink); outline-offset: 3px; border-radius: 4px; filter: none !important; opacity: 1 !important; }
+.xln.linked > .t { background: var(--x-hi); box-shadow: 0 0 0 3px var(--x-hi); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.kgap.linked { background: color-mix(in srgb, var(--x-hi) 40%, transparent); }
+.part3-head { margin-top: 64px; }
+@media (max-width: 860px) {
+  .xsheet { grid-template-columns: minmax(0, 1fr); }
+  .xsheet::before { width: 100%; }
+  .xln { padding: 3px 20px; }
+  .xnote { grid-column: 1; padding: 0 20px 4px 34px; }
+  .xnote:empty { display: none; }
+  .kgap, .photocap { margin-inline: 20px; }
+  .xcard { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .fx-pulse { animation: none; background: var(--x-hi); } .xsheet.photo.dim .xln { filter: none; } }
+.p2head { padding-top: 4px; }
+.backlink { display: inline-block; margin-bottom: 18px; color: var(--accent); font-weight: 600; text-decoration: none; }
+.backlink:hover { text-decoration: underline; }
+.p2head h1 { margin-top: 6px; }
+.try { margin-top: 10px; }
+</style>
+
+</head>
+<body>
+<a class="skip" href="#sheet">Skip to the reading</a>
+<main class="wrap" id="top">
+  <header class="p2head">
+    <a class="backlink" href="index.html#experience">← Part 1: Read it the way they did</a>
+    <div class="eyebrow">Read Your Way · Part 2</div>
+    <h1>What could help</h1>
+  </header>
+
+  <div class="try" id="part3">
+    <p>Now try it yourself. First, read the page and mark any words you would skim or skip. Then answer four quick questions. You’ll be matched with the participant you read most like, and the page will add the supports that came out of their experience. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
+  </div>
+
+
+  <section class="quiz" id="quiz" aria-label="Match me to a reader"></section>
+
+  <section class="reader">
+    <aside class="rail" id="rail" aria-label="Reading supports"></aside>
+    <article class="sheet" id="sheet" aria-label="The handout" tabindex="-1"></article>
+  </section>
+
+  <section class="closing" id="closing" aria-live="polite">
+    <h2 id="close-h">One line can change who gets blamed.</h2>
+    <div>
+      <p id="close-lead">After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:</p>
+      <p class="hand" id="close-q">“I will not tell her, ‘Just walk more.’ I used to say that.”</p>
+      <p>Each support here started as something a participant needed. Tap any tag on the page to read the moment behind it. To see how each person experienced the original page, go back to <a href="index.html#experience">Part 1</a>.</p>
+    </div>
+  </section>
+
+  <p class="foot">A class prototype, not medical advice. Handout content is condensed from pages 9 and 10 of an American Diabetes Association guide for people living with type 2 diabetes. Each added support is tagged with the participant whose reading it came from. Five think-aloud interviews, September 2026. Roma Ruparel, INFO 272.</p>
+</main>
+
+<script>
+/* ---------- Readers and supports ---------- */
+const R = {
+  p1: { pn: 'P1', name: 'The researcher', q: 'I can’t list all of the symptoms and the different effects of each one.', why: 'You want the reasons behind the advice.', sup: ['why', 'compare'] },
+  p2: { pn: 'P2', name: 'The supporter', q: 'I feel like I am equipped with language that then I can be a part of, like, solution making', why: 'You support someone from nearby and want the page to fit real life.', sup: ['food', 'target', 'conditions'] },
+  p3: { pn: 'P3', name: 'The caregiver', q: 'He’s not gonna read this. He would hand this to me.', why: 'You do the day-to-day work of caring for someone.', sup: ['voice', 'team', 'conditions', 'checklist', 'compare'] },
+  p4: { pn: 'P4', name: 'The one who reversed it', q: 'Maybe the number goes away. But the fear stays.', why: 'You read for yourself and want plain words you can act on.', sup: ['plain', 'big', 'hope', 'noblame', 'food'] },
+  p5: { pn: 'P5', name: 'The son far away', q: 'I can’t do much about his kidneys from here. But I can maybe help set up something so we know sooner.', why: 'You help from a distance and want clear steps.', sup: ['voice', 'steps', 'askcall'] },
+};
+const SUPPORTS = [
+  { k: 'plain', label: 'Everyday words', from: 'p4', q: 'These doctor words, I don’t understand them. And I can’t even say them. So I just go past.' },
+  { k: 'big', label: 'Larger print', from: 'p4', q: 'And the print should be bigger. For older people.' },
+  { k: 'hope', label: 'It can get better', from: 'p4', q: 'They should tell people that it can go away. Like me.' },
+  { k: 'noblame', label: 'Not your fault', from: 'p4', q: 'Now I think, maybe sometimes you did your part and still it went up.' },
+  { k: 'voice', label: 'I’m helping someone', from: 'p3', q: 'He’s not gonna read this. He would hand this to me.' },
+  { k: 'team', label: 'Who do I call?', from: 'p3', q: '“Talk to your health care team” assumes you have one team. And he has five people. So who do I call?' },
+  { k: 'conditions', label: 'Other conditions', from: 'p3', q: 'The diabetes side said juice, and then the kidney side said watch the juice.' },
+  { k: 'checklist', label: 'Sick-day checklist', from: 'p3', q: 'I need to actually ask about a sick day plan at his next appointment. Because we don’t have one.' },
+  { k: 'steps', label: 'Show me the steps', from: 'p5', q: 'Like a flowchart. Honestly, this whole thing could be a flowchart.' },
+  { k: 'askcall', label: 'Questions for a check-in call', from: 'p5', q: 'Like, what should I be asking? What should I be watching for?' },
+  { k: 'why', label: 'Tell me why', from: 'p1', q: 'A little more about kind of a little bit of the light biology… of why this happens, too.' },
+  { k: 'compare', label: 'High vs. low side by side', from: 'p1', q: 'the distinction between high versus low blood sugar… because diabetes can make it go one or the other really quickly.' },
+  { k: 'food', label: 'Food that fits', from: 'p2', q: 'It would be interesting if it also named things that people might actually have on hand.' },
+  { k: 'target', label: 'Is 70 my number?', from: 'p2', q: 'who’s 70 really the baseline for?' },
+];
+const FOODS = {
+  none: 'cheese and crackers',
+  southasian: 'a roti with dal, or a small bowl of chevdo',
+  ethiopian: 'a piece of injera with misir (lentils)',
+  mexican: 'a corn tortilla with beans',
+  chinese: 'a small bowl of congee',
+};
+
+/* ---------- First read ---------- */
+const SKIMS = [
+  { k: 'words', t: 'The medical words (hypoglycemia, DKA)', who: ['p4', 'p5'] },
+  { k: 'numbers', t: 'The numbers and units (70 mg/dL)', who: ['p2', 'p4', 'p5'] },
+  { k: 'paragraph', t: 'The long paragraph on managing highs', who: ['p1', 'p4', 'p5'] },
+  { k: 'symptoms', t: 'The symptom lists', who: ['p2', 'p3'] },
+  { k: 'prevent', t: 'The prevention tips', who: ['p3', 'p4', 'p5'] },
+  { k: 'team', t: '“Talk to your health care team”', who: ['p3'] },
+  { k: 'none', t: 'Nothing, I read it all', who: ['p1'] },
+];
+const SKIM_PHRASE = { words: 'the medical words', numbers: 'the numbers and units', paragraph: 'the long paragraph on highs', symptoms: 'the symptom lists', prevent: 'the prevention tips', team: 'the “talk to your health care team” lines' };
+function listP(ks) { const n = ks.map(k => R[k].pn); return n.length < 3 ? n.join(' and ') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1]; }
+function reflection() {
+  if (!state.skipped.size) return '';
+  if (state.skipped.has('none')) return `You read it all. So did ${listP(['p1'])}, who still learned something new about DKA.`;
+  if (!SKIMS.some(x => state.skipped.has(x.k))) return '';
+  const lines = [...state.skipped].slice(0, 2).map(k => { const s = SKIMS.find(x => x.k === k); return `You skimmed ${SKIM_PHRASE[k]}. So did ${listP(s.who)}.`; });
+  return lines.join(' ');
+}
+function baseBlocks(sheet) { return [...sheet.querySelectorAll('h3, p, li')].filter(el => !el.closest('.orig') && !el.closest('.cmpbar') && !el.closest('.delta') && !el.classList.contains('adapted') && !el.closest('.add') && !el.closest('details') && !el.closest('.cap')); }
+function secOf(el, sheet) { const hs = [...sheet.querySelectorAll('h3')]; let i = 0; hs.forEach((h, k) => { if (h === el || (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)) i = k + 1; }); return i; }
+const SUGGEST = { numbers: ['plain', 'target'], words: ['plain', 'why'], paragraph: ['steps'], symptoms: ['compare', 'conditions'], team: ['team'], prevent: [], other: ['plain'] };
+const COVERS = { numbers: h => /Meters show this|Is 70 the right line|class="add/.test(h), words: h => /class="term|<details/.test(h), paragraph: h => /class="flow/.test(h), symptoms: h => /class="add/.test(h), team: h => /Who do I call/.test(h), prevent: h => /class="chg/.test(h), other: h => /class="(term|chg|add|flow)/.test(h) };
+function wordsOf(t) { return new Set(t.toLowerCase().replace(/[^a-z0-9\s/]/g, ' ').split(/\s+/).filter(w => w.length > 2)); }
+function sim(a, b) { const A = wordsOf(a), B = wordsOf(b); let n = 0; A.forEach(w => { if (B.has(w)) n++; }); return n / Math.max(1, Math.min(A.size, B.size)); }
+function catsOfLine(m) { const c = []; const j = m.runs.join(' '); if (/70|mg\/dL/i.test(j)) c.push('numbers'); if (/hypoglycemia|hyperglycemia|ketoacidosis|DKA|glucagon/i.test(j)) c.push('words'); if (/^Common symptoms/.test(m.text)) c.push('symptoms'); if (/^Check to be sure/.test(m.text)) c.push('paragraph'); if (/health care team/.test(m.text)) c.push('team'); if (/^(Take medicines|Follow|Check regularly|Carry)/.test(m.text)) c.push('prevent'); if (!c.length) c.push('other'); return c; }
+function renderSkips(sheet) {
+  const bar = sheet.querySelector('.cmpbar');
+  const hs = [...sheet.querySelectorAll('h3')];
+  const cards = [...state.markedLines].sort((a, b) => b.words - a.words).map(m => {
+    const start = m.sec === 0 ? sheet.querySelector('h2') : hs[m.sec - 1]; const end = hs[m.sec] || null;
+    const sib = []; for (let n = start; n && n !== end; n = n.nextElementSibling) sib.push(n);
+    const cands = []; sib.forEach(n => { if (n.matches('h2, h3, p') && !n.matches('.adapted, .sub.chg')) cands.push(n); n.querySelectorAll && n.querySelectorAll(':scope > li').forEach(li => cands.push(li)); });
+    let best = null, score = 0; cands.forEach(c => { if (c.closest('.add, details, .cap, .cmpbar')) return; const sc = sim(m.text, c.textContent); if (sc > score) { score = sc; best = c; } });
+    let fixed = '', labels = [];
+    if (best && score >= 0.35) {
+      fixed = `<${best.tagName === 'LI' ? 'p' : 'p'} class="fx-line">${best.innerHTML}</p>`;
+      if (best.querySelector('.term')) labels.push('plain');
+      if (best.querySelector('.chg')) labels.push(best.querySelector('.sub.chg') ? 'plain' : 'voice');
+      // first support right after the line's block
+      let host = best.tagName === 'LI' ? best.parentElement : best; let n = host.nextElementSibling;
+      while (n && n !== end && !n.matches('p, ul, h3')) { if (n.matches('.add, .flow, details.why, .cap')) { if (!n.matches('.cap')) { fixed += n.outerHTML; break; } } n = n.nextElementSibling; }
+    } else {
+      const flow = sib.find(n => n.matches && n.matches('.flow'));
+      if (flow) fixed = flow.outerHTML;
+    }
+    const cats = catsOfLine(m); const changed = !!fixed && cats.some(c => (COVERS[c] || COVERS.other)(fixed));
+    let right;
+    if (changed) right = `<span class="fc-lbl">A more approachable version</span><div class="fc-fixed">${fixed}</div>`;
+    else {
+      const pick = cats.flatMap(c => SUGGEST[c] || []).find(k => !state.on.has(k));
+      const sp = pick && SUPPORTS.find(x => x.k === pick);
+      if (sp) right = `<span class="fc-lbl">Not covered yet</span><p class="fc-none">Your current supports don’t change the part you skipped.</p><button type="button" class="btn ghost fc-on" data-turnon="${sp.k}">Turn on ${esc(sp.label)}</button><span class="fc-from">from ${R[sp.from].pn} · ${esc(R[sp.from].name)}</span>`;
+      else if (cats.includes('prevent')) right = `<span class="fc-lbl">You’re not alone</span><p class="fc-none">No support changes this line. Participants skimmed it too, because it felt familiar:</p><p class="fc-q">“This is all common sense. I’m going fast here.”<small>P4 · The one who reversed it</small></p>`;
+      else right = `<span class="fc-lbl">Not covered yet</span><p class="fc-none">The supports that could help here are already on, but they don’t change this line.</p>`;
+    }
+    return { changed, html: `<article class="fixcard${changed ? '' : ' none'}"><div class="fc-col"><span class="fc-lbl">You skipped</span><p class="fc-orig">${m.html}</p></div><div class="fc-col">${right}</div></article>` };
+  });
+  const shown = state.showAll ? cards : cards.slice(0, 5);
+  const fixedN = cards.filter(c => c.changed).length; const words = state.markedLines.reduce((a, m) => a + m.words, 0);
+  sheet.innerHTML = '';
+  sheet.appendChild(bar);
+  const wrap = document.createElement('div'); wrap.className = 'fixlist';
+  wrap.innerHTML = `<h2 class="fx-h">What you skipped, and a way in</h2><p class="fx-sub">You skipped ${words} word${words === 1 ? '' : 's'} on ${cards.length} line${cards.length === 1 ? '' : 's'}. ${fixedN} ${fixedN === 1 ? 'has' : 'have'} a more approachable version with your supports.</p>` + shown.map(c => c.html).join('') + (cards.length > 5 && !state.showAll ? `<button type="button" class="link" id="fx-more">Show ${cards.length - 5} more</button>` : '');
+  sheet.appendChild(wrap);
+  const more = sheet.querySelector('#fx-more'); if (more) more.addEventListener('click', () => { state.showAll = true; renderSheet(); });
+  sheet.querySelectorAll('[data-turnon]').forEach(b => b.addEventListener('click', () => { state.on.add(b.dataset.turnon); renderRail(); renderSheet(); save(); }));
+}
+const WHYQ = {
+  'glucose': ['Then why don’t they just say sugar? Everybody says sugar.', 'P4'],
+  'hypoglycemia': ['I’m going to skip the big word.', 'P4'],
+  'hyperglycemia': ['I’m going to skip the big word.', 'P4'],
+  'glucagon': ['No idea. I’d have to look that up.', 'P5'],
+  'diabetic ketoacidosis (DKA)': ['Keto, like the diet?', 'P4'],
+  unit: ['Seventy what?', 'P4'],
+  food: ['We don’t eat cheese and crackers. We will eat some chevdo, or a roti with something.', 'P4'],
+  voice: ['He’s not gonna read this. He would hand this to me.', 'P3'],
+  stress: ['Tension can make your sugar high? I didn’t know that.', 'P4'],
+};
+function supInfo(k) { const sp = SUPPORTS.find(x => x.k === k); return sp ? { label: sp.label, pn: R[sp.from].pn, from: sp.from, q: sp.q } : null; }
+function describe(el) {
+  const why = (k, wk) => { const i = supInfo(k); const w = WHYQ[wk]; return i ? { tag: `${i.label} · ${i.pn}`, from: i.from, q: w ? w[0] : i.q, qp: w ? w[1] : i.pn } : null; };
+  if (el.matches('.term')) { const med = (el.getAttribute('title') || '').replace('Medical term: ', ''); const plain = el.childNodes[0] ? el.childNodes[0].textContent : el.textContent; return { key: 'term:' + med, what: `“${med}” is now “${plain}”. Tap it to see the medical term.`, ...why('plain', med) }; }
+  if (el.matches('.sub.chg')) return { key: 'unit', what: 'Added a plain note on what “mg/dL” means.', ...why('plain', 'unit') };
+  if (el.matches('mark.hi')) return { key: 'stress', what: 'Highlighted “stress or illness” as a cause.', ...why('noblame', 'stress') };
+  if (el.matches('.chg')) {
+    const t = el.textContent;
+    if (/^(something|a roti|a piece of injera|a corn tortilla|a small bowl)/.test(t)) return { key: 'food', what: `Swapped “cheese and crackers” for ${t.length > 50 ? 'foods you usually eat' : '“' + t + '”'}.`, ...why('food', 'food') };
+    return { key: 'voice', what: `“You” now reads “${t}”, for the person helping.`, ...why('voice', 'voice') };
+  }
+  if (el.matches('.flow')) return { key: 'flow' + Math.random(), what: 'Rewrote the paragraph as if-then steps.', ...why('steps') };
+  if (el.matches('details.why')) return { key: 'why' + Math.random(), what: 'Added a short explanation of why this happens.', ...why('why') };
+  if (el.matches('.add')) { const tag = el.querySelector('.tag'); const lbl = tag ? tag.textContent.replace(/·.*$/, '').replace(/[▸▾]/g, '').trim() : ''; const sp = SUPPORTS.find(x => x.label === lbl); if (sp && /sugar is treatment/.test(el.textContent)) return { key: 'guilt', what: 'Added: treating a low with sugar is the right thing to do.', tag: `${sp.label} · ${R[sp.from].pn}`, from: sp.from, q: 'They will feel guilty. They will think, I’m not supposed to eat this.', qp: 'P4' }; return sp ? { key: 'add' + Math.random(), what: `Added: ${lbl.toLowerCase()}.`, tag: `${sp.label} · ${R[sp.from].pn}`, from: sp.from, q: sp.q, qp: R[sp.from].pn } : { key: 'add' + Math.random(), what: 'Added a note that some people feel nothing at all.', tag: 'Everyday words · P4', from: 'p4', q: 'My number was high and I felt completely fine.', qp: 'P4' }; }
+  return null;
+}
+function annotate(sheet) {
+  sheet.querySelectorAll('.annot').forEach(a => a.remove());
+  const wide = sheet.clientWidth >= 760;
+  sheet.classList.toggle('annotated', wide);
+  const seen = new Set(); const items = [];
+  sheet.querySelectorAll('.term, .chg, mark.hi, .add, .flow, details.why').forEach(el => {
+    if (el.closest('.add') && !el.matches('.add')) return; if (el.closest('.cmpbar, .fixlist')) return;
+    const d = describe(el); if (!d || seen.has(d.key)) return; seen.add(d.key); items.push({ el, d });
+  });
+  let lastBottom = 0; const top0 = sheet.getBoundingClientRect().top;
+  items.forEach(({ el, d }) => {
+    const a = document.createElement('div'); a.className = 'annot'; a.setAttribute('role', 'note'); a.style.setProperty('--ai', `var(--${d.from}-ink)`); a.style.setProperty('--ah', `var(--${d.from}-hi)`);
+    a.innerHTML = `<span class="a-what">${esc(d.what)}</span><span class="a-why"><b>Why:</b> “${esc(d.q)}” (${esc(d.qp || '')})</span><span class="a-tag">${esc(d.tag)}</span>`;
+    if (wide) {
+      sheet.appendChild(a);
+      let top = el.getBoundingClientRect().top - top0; if (top < lastBottom + 8) top = lastBottom + 8;
+      a.style.top = top + 'px'; lastBottom = top + a.offsetHeight;
+    } else {
+      const host = el.closest('p, li, h3, .add, .flow, details') || el;
+      const blk = host.matches('li') ? host.closest('ul') : host; blk.insertAdjacentElement('afterend', a); a.classList.add('inline');
+    }
+  });
+  if (wide && lastBottom > sheet.scrollHeight) sheet.style.minHeight = (lastBottom + 40) + 'px'; else sheet.style.minHeight = '';
+}
+window.addEventListener('resize', () => { clearTimeout(window._annT); window._annT = setTimeout(() => { if (state.hl && state.view === 'after') renderSheet(); }, 250); });
+function marking() { return !state.firstDone && !state.matched && state.on.size === 0; }
+function splitWords(block, bi) {
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  let wi = 0;
+  nodes.forEach(node => {
+    const parts = node.textContent.split(/(\s+)/); const frag = document.createDocumentFragment();
+    parts.forEach(part => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+      const sp = document.createElement('span'); sp.className = 'w'; sp.dataset.k = bi + ':' + (wi++); sp.textContent = part; frag.appendChild(sp);
+    });
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+function blockCats(el) {
+  const t = el.textContent, cats = [];
+  if (/^Common symptoms/.test(t)) cats.push('symptoms');
+  if (/^Check to be sure/.test(t)) cats.push('paragraph');
+  if (/health care team/.test(t)) cats.push('team');
+  const h = el.closest('ul') && el.closest('ul').previousElementSibling;
+  if (h && /prevent lows/i.test(h.textContent)) cats.push('prevent');
+  return cats;
+}
+function collectMarks() {
+  const out = [], cats = new Set();
+  document.querySelectorAll('#sheet [data-bi]').forEach(el => {
+    const ws = [...el.querySelectorAll('.w')]; const runs = []; let cur = [];
+    ws.forEach(w => { if (state.marks.has(w.dataset.k)) cur.push(w.textContent); else if (cur.length) { runs.push(cur.join(' ')); cur = []; } });
+    if (cur.length) runs.push(cur.join(' '));
+    if (!runs.length) return;
+    const words = runs.join(' ').split(' ').length;
+    blockCats(el).forEach(c => cats.add(c));
+    const joined = runs.join(' ');
+    if (/70|mg\/dL/i.test(joined)) cats.add('numbers');
+    if (/hypoglycemia|hyperglycemia|ketoacidosis|DKA|glucagon/i.test(joined)) cats.add('words');
+    const cl = el.cloneNode(true); cl.querySelectorAll('.mkline').forEach(x => x.remove());
+    out.push({ bi: +el.dataset.bi, sec: +el.dataset.sec, runs, words, whole: words >= ws.length, html: cl.innerHTML, text: cl.textContent.trim(), tag: el.tagName });
+  });
+  return { out, cats };
+}
+function finishFirst(skip) {
+  const { out, cats } = collectMarks();
+  state.skipped = skip ? new Set() : (state.marks.size ? cats : new Set(['none']));
+  state.markedLines = skip ? [] : out;
+  state.firstDone = true;
+  renderAll();
+  $('#quiz').scrollIntoView({ block: 'start' }); focusQ();
+}
+function renderFirst() {
+  const el = $('#quiz');
+  el.innerHTML = `
+    <div class="qhead"><div class="eyebrow">Step 1 · First read</div><div class="qcount">Before the questions</div></div>
+    <div class="q"><h2>Read the page below the way you normally would. Mark any words you would skim or skip.</h2>
+    <p class="others" style="margin:-6px 0 12px">Tap a word to mark it, or drag across a phrase like “70 mg/dL.” Tap again to unmark. Your participants did the same thing out loud. When you are done, use the bar at the bottom of the page.</p></div>
+    <div class="qnav"><button type="button" class="link" id="skip-first">Skip this step</button>
+      <a class="btn" href="#sheet" id="to-sheet">Start reading ↓</a></div>`;
+  $('#skip-first').addEventListener('click', () => finishFirst(true));
+  $('#to-sheet').addEventListener('click', e => { e.preventDefault(); const sh = $('#sheet'); sh.scrollIntoView({ block: 'start' }); sh.focus({ preventScroll: true }); });
+}
+
+/* ---------- Quiz ---------- */
+const QUESTIONS = [
+  { id: 'for', text: 'Who are you reading this for?', opts: [
+    { t: 'Myself', s: { p4: 3 } },
+    { t: 'Someone I care for at home', s: { p3: 3 } },
+    { t: 'A family member who lives far away', s: { p5: 3 } },
+    { t: 'Someone I support from nearby', s: { p2: 3 } },
+    { t: 'I work or study in health', s: { p1: 3, p2: 1 } },
+  ] },
+  { id: 'words', text: 'When you hit a medical word you don’t know, you usually…', opts: [
+    { t: 'Skip it, or ask someone in my family', s: { p4: 2 } },
+    { t: 'Look it up or ask an AI tool', s: { p5: 2 } },
+    { t: 'I know most of them by now', s: { p3: 1, p2: 1 } },
+    { t: 'Want to know the science behind it', s: { p1: 2 } },
+  ] },
+  { id: 'help', text: 'What would help you most right now?', opts: [
+    { t: 'Clear, step-by-step instructions', s: { p5: 2 } },
+    { t: 'Knowing who to call, and when', s: { p3: 2 } },
+    { t: 'Understanding why things happen', s: { p1: 2 } },
+    { t: 'Advice that fits our food and daily life', s: { p2: 2, p4: 1 } },
+    { t: 'Knowing that things can get better', s: { p4: 2 } },
+  ] },
+  { id: 'life', text: 'A little more about your situation', life: true },
+];
+
+const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: false, view: 'after', hl: false };
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+function score() {
+  const t = { p1: 0, p2: 0, p3: 0, p4: 0, p5: 0 };
+  for (const q of QUESTIONS) { const a = state.answers[q.id]; if (a != null && q.opts) for (const [k, v] of Object.entries(q.opts[a].s)) t[k] += v; }
+  return Object.entries(t).sort((a, b) => b[1] - a[1]);
+}
+
+function renderQuiz() {
+  const el = $('#quiz');
+  if (state.matched) return renderMatch();
+  if (!state.firstDone) return renderFirst();
+  const q = QUESTIONS[state.step];
+  const prog = QUESTIONS.map((_, i) => `<i class="${i < state.step ? 'done' : ''}"></i>`).join('');
+  let body;
+  if (q.life) {
+    body = `<div class="opts">
+      <button type="button" class="opt" id="opt-cond" aria-pressed="${state.cond}">They (or I) have other conditions too, like kidney, heart or blood pressure</button>
+      <label class="opt" style="cursor:default">Foods we eat most<br><select class="sel" id="food" style="margin-top:8px;width:100%">
+        <option value="none">Prefer not to say</option><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option><option value="other">Other</option>
+      </select>
+      <input class="sel" id="food-other" type="text" maxlength="40" placeholder="Which foods? (optional)" aria-label="Which foods do you eat most?" style="margin-top:8px;width:100%" ${state.food === 'other' ? '' : 'hidden'}></label></div>`;
+  } else {
+    body = `<div class="opts">${q.opts.map((o, i) => `<button type="button" class="opt" data-a="${i}" aria-pressed="${state.answers[q.id] === i}">${esc(o.t)}</button>`).join('')}</div>`;
+  }
+  const canNext = q.life || state.answers[q.id] != null;
+  el.innerHTML = `
+    <div class="qhead"><div class="eyebrow">Step 2 · Match me to a reader</div><div class="qcount">Question ${state.step + 1} of ${QUESTIONS.length}</div></div>
+    <div class="progress">${prog}</div>
+    <div class="q"><h2>${esc(q.text)}</h2>${body}</div>
+    <div class="qnav">
+      <button type="button" class="btn ghost" id="back" ${state.step === 0 ? 'hidden' : ''}>Back</button>
+      <button type="button" class="btn" id="fwd" ${canNext ? '' : 'disabled'}>${state.step === QUESTIONS.length - 1 ? 'Show my match' : 'Next'}</button>
+    </div>
+    <div style="margin-top:14px"><span class="others">Or pick a reader yourself:</span><div class="pickrow">${pickChips()}</div></div>
+    ${Object.keys(state.answers).length || state.step > 0 || state.cond || state.food !== 'none' ? '<div style="margin-top:12px"><button type="button" class="link" data-reset>Clear my answers and start over</button></div>' : ''}`;
+  el.querySelectorAll('.opt[data-a]').forEach(b => b.addEventListener('click', () => { state.answers[q.id] = +b.dataset.a; renderQuiz(); }));
+  const oc = $('#opt-cond'); if (oc) oc.addEventListener('click', () => { state.cond = !state.cond; oc.setAttribute('aria-pressed', state.cond); });
+  const fd = $('#food'), fo = $('#food-other');
+  if (fd) { fd.value = state.food; fd.addEventListener('change', () => { state.food = fd.value; fo.hidden = fd.value !== 'other'; if (!fo.hidden) fo.focus(); }); }
+  if (fo) { fo.value = state.foodOther || ''; fo.addEventListener('input', () => state.foodOther = fo.value.trim()); }
+  const back = $('#back'); if (back) back.addEventListener('click', () => { state.step--; renderQuiz(); focusQ(); });
+  $('#fwd').addEventListener('click', () => {
+    if (state.step < QUESTIONS.length - 1) { state.step++; renderQuiz(); focusQ(); return; }
+    const top = score()[0][0];
+    applyReader(top, true);
+  });
+  bindPick(el);
+}
+
+function pickChips() {
+  return Object.entries(R).map(([k, r]) => `<button type="button" class="chip" data-pick="${k}"><span class="dot" style="background:var(--${k}-hi)"></span>${r.pn} ${esc(r.name)}</button>`).join('');
+}
+function bindPick(el) { el.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => applyReader(b.dataset.pick, false))); }
+
+function focusQ() { const h = document.querySelector('#quiz h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: false }); } }
+function applyReader(k, fromQuiz) {
+  state.reader = k; state.matched = true; state.fromQuiz = fromQuiz; state.justMatched = true;
+  state.on = new Set(R[k].sup); state.view = state.markedLines.length ? 'skips' : 'after'; state.hl = false; state.firstDone = true; state.showAll = false;
+  if (state.cond) state.on.add('conditions');
+  if (state.food !== 'none') state.on.add('food');
+  renderAll();
+  save();
+}
+
+function renderMatch() {
+  const k = state.reader, r = R[k];
+  const el = $('#quiz');
+  el.style.setProperty('--r-ink', `var(--${k}-ink)`);
+  el.innerHTML = `<div class="match">
+    <div>
+      <div class="you">${state.fromQuiz ? 'You read most like' : 'Reading as'}</div>
+      <h2>${r.pn} · ${esc(r.name)}</h2>
+      <p class="why">${esc(r.why)} We turned on the supports that helped them. Switch any of them on or off.</p>
+      ${reflection() ? `<p class="mirror">${esc(reflection())}</p>` : ''}
+      <button type="button" class="btn ghost reset" data-reset>Start over</button>
+    </div>
+    <div><p class="hand">“${esc(r.q)}”<small>${r.pn}, in the study</small></p>
+      <div class="others" style="margin-top:14px">Try another reader:</div><div class="pickrow">${pickChips()}</div></div>
+  </div>`;
+  bindPick(el);
+  if (state.justMatched) { state.justMatched = false; focusQ(); }
+}
+
+/* ---------- Rail ---------- */
+function renderRail() {
+  const rail = $('#rail');
+  rail.innerHTML = `<h3>Reading supports</h3><p class="hint">${state.reader ? 'Turned on for your match. Mix and match.' : 'Answer the questions, or switch supports on here.'}</p>` +
+    SUPPORTS.map(s => `<button type="button" class="sup" data-k="${s.k}" aria-pressed="${state.on.has(s.k)}"><span class="sw"></span><b>${esc(s.label)}</b><span class="from">from ${R[s.from].pn} · ${esc(R[s.from].name)}</span></button>`).join('') +
+    `<div class="railfoot" aria-live="polite">${state.on.size} of ${SUPPORTS.length} on${state.on.size || state.reader ? ' · <button type="button" class="link" data-reset style="font-size:12px;padding:0">Start over</button>' : ''}</div>`;
+  rail.querySelectorAll('.sup').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k; state.on.has(k) ? state.on.delete(k) : state.on.add(k); if (state.view === 'before') state.view = state.markedLines.length ? 'skips' : 'after'; renderRail(); renderSheet(); save();
+  }));
+}
+
+/* ---------- Sheet ---------- */
+const MED = { glucose: ['sugar', 'glucose'], hypo: ['low blood sugar', 'hypoglycemia'], hyper: ['high blood sugar', 'hyperglycemia'], glucagon: ['an emergency medicine for a severe low', 'glucagon'], dka: ['a dangerous buildup of ketones', 'diabetic ketoacidosis (DKA)'] };
+function T(key) {
+  const [plain, med] = MED[key];
+  if (!on('plain')) return med;
+  return `<button type="button" class="term" aria-expanded="false" title="Medical term: ${esc(med)}">${plain}<span class="med">${med}</span></button>`;
+}
+const on = k => state.view !== 'before' && state.on.has(k);
+const Y = (you, they) => on('voice') ? `<span class="chg">${they}</span>` : you;
+function src(sup, label) {
+  const s = SUPPORTS.find(x => x.k === sup), r = R[s.from];
+  return `<button type="button" class="tag" aria-expanded="false" style="--ci:var(--${s.from}-ink)">${esc(label || s.label)} · from ${r.pn} <span class="car" aria-hidden="true">▸</span></button><p class="srcq" hidden style="--ci:var(--${s.from}-ink)">“${esc(s.q)}”<small>${r.pn} · ${esc(r.name)}, in the study</small></p>`;
+}
+function add(sup, html, extra = '', label) {
+  if (!on(sup)) return '';
+  const s = SUPPORTS.find(x => x.k === sup);
+  return `<div class="add ${extra}" style="--c:var(--${s.from}-hi);--ci:var(--${s.from}-ink)">${src(sup, label)}${html}</div>`;
+}
+const tint = k => `style="--c:var(--${SUPPORTS.find(x => x.k === k).from}-hi);--ci:var(--${SUPPORTS.find(x => x.k === k).from}-ink)"`;
+
+function renderSheet() {
+  document.documentElement.style.setProperty('--scale', on('big') ? '1.2' : '1');
+  const sheet = $('#sheet');
+  const unit = on('plain') ? '70' : '70 mg/dL';
+  const unitNote = on('plain') ? ' <span class="sub chg">(Meters show this as 70 mg/dL.)</span>' : '';
+  const otherSnack = state.foodOther ? `something from the ${state.foodOther} foods ${Y('you usually eat', 'they usually eat')} that has some carbs and some protein` : `something ${Y('you usually eat', 'they usually eat')} that has some carbs and some protein`;
+  const snack = !on('food') ? FOODS.none : state.food === 'other' ? otherSnack : FOODS[state.food === 'none' ? 'southasian' : state.food];
+  const foodLabel = on('food') && state.food === 'none' ? ' <select class="sel" id="food2" aria-label="Choose foods" style="padding:4px 8px;font-size:.85em"><option value="southasian">South Asian</option><option value="ethiopian">Ethiopian</option><option value="mexican">Mexican</option><option value="chinese">Chinese</option><option value="other">Other</option></select>' : '';
+
+  const pristine = !state.reader && state.on.size === 0;
+  sheet.classList.toggle('hl', state.hl && state.view === 'after');
+  const cmpbar = pristine ? '' : `<div class="cmpbar">
+    <div class="seg" role="group" aria-label="Choose a view">${state.markedLines.length ? `<button type="button" data-view="skips" aria-pressed="${state.view === 'skips'}">Your skips</button>` : ''}<button type="button" data-view="before" aria-pressed="${state.view === 'before'}">Before</button><button type="button" data-view="after" aria-pressed="${state.view === 'after'}">${state.markedLines.length ? 'Full page' : 'After'}</button></div>
+    ${state.view === 'after' ? `<label class="hltog" for="hl"><input type="checkbox" id="hl" ${state.hl ? 'checked' : ''}> Highlight what changed</label>` : state.view === 'before' ? `<span class="others">${state.markedLines.length ? 'Your first read, with the words you skipped.' : 'The page before any supports. Switch to After to see your version.'}</span>` : ''}
+    ${state.markedLines.length && state.view === 'after' ? `<label class="hltog" for="showskips"><input type="checkbox" id="showskips" ${state.showSkips ? 'checked' : ''}> Note my skips</label>` : ''}
+    <p class="dsum" id="dsum" aria-live="polite"></p>
+  </div>`;
+  sheet.innerHTML = cmpbar + `
+  ${pristine ? `<div class="orig">
+    <div class="orig-text"><span class="eyebrow">The original pages</span>
+    <p><b>Pages 9 and 10</b> of <i>Your Rights and Care Standards: A Guide for People with Type 2 Diabetes</i>, American Diabetes Association, 2026. This is what every participant read.</p></div>
+    <a class="btn" href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener">Open pages 9–10 (PDF)</a>
+    <p class="orig-note">On some phones the PDF opens at the cover. Scroll to page 9. Below is an adapted version of the same pages. Answer the questions or switch on a support to see how it changes.</p>
+  </div>` : ''}
+  <p class="adapted">Adapted from pages 9–10 of the ADA guide · <a href="https://prod.dpro.diabetes.org/sites/dpro/files/2026-05/psoc-t2-2026-v2-pubs-pap-online.pdf#page=9" target="_blank" rel="noopener">see the original</a></p>
+  <h2>Short-term health challenges</h2>
+  <p class="sub">${on('voice') ? 'For people helping someone live with type 2 diabetes.' : 'Low and high blood ' + T('glucose') + ' are common short-term issues in type 2 diabetes.'}</p>
+  ${add('hope', '<p>For many people, numbers can improve with changes in daily habits over time. Ask the doctor what is realistic for you.</p>')}
+
+  <h3>What is ${on('plain') ? T('hypo') : 'low blood glucose (hypoglycemia)'}?</h3>
+  <p>Usually below ${unit}.${unitNote}</p>
+  ${add('target', `<p>Is 70 the right line for ${Y('you', 'them')}? Ask the care team what ${Y('your', 'their')} target range is.</p>`)}
+  <p><b>Common causes</b></p>
+  <ul><li>Too much insulin or other diabetes medicine</li><li>Too little food, or meals that come late</li><li>More activity than usual. This can last several hours after being active.</li></ul>
+  ${on('why') ? `<details class="why" ${tint('why')}><summary>Why does this happen?</summary>${src('why')}<p>Diabetes medicines and activity both lower blood ${T('glucose')}. If food does not keep up, the level can drop too far.</p></details>` : ''}
+  <p><b>Common symptoms:</b> shakiness, sweating, hunger, dizziness, confusion, feeling weak.</p>
+  ${add('conditions', '<p>Other conditions or medicines can cause some of these too. When unsure, check the number.</p>')}
+
+  <h3>How to treat a low: the Rule of 15</h3>
+  ${on('steps') ? `<div class="flow" ${tint('steps')}>
+      <div class="box"><b>If</b>Below 70</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Do</b>Have 15 grams of fast-acting carbs</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Wait</b>15 minutes, then check again</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Still below 70?</b>Repeat. Once above 70, have a snack.</div></div>
+      <div class="cap">${src('steps')}</div>` :
+    `<p>Eat or drink 15 grams of fast-acting carbohydrates. Recheck after 15 minutes. If still low, repeat.</p>`}
+  <p><b>Fast-acting carbs:</b> glucose tablets or gel, ½ cup of juice or regular soda, 1 tablespoon of sugar or honey.</p>
+  ${add('noblame', '<p>Here, sugar is treatment. Using it to bring up a low is the right thing to do, even if you usually avoid sugar.</p>')}
+  ${add('conditions', `<p>Kidney disease? Ask the kidney doctor whether juice is okay. Glucose tablets are another option.</p>`, 'warn')}
+  <p>Once above 70 or trending up on a continuous glucose monitor (CGM), have a snack if the next meal is more than an hour away, such as ${on('food') ? `<span class="chg">${snack}</span>` : esc(snack)}.${foodLabel}</p>
+  ${on('food') ? `<div class="cap">${src('food')}</div>` : ''}
+  <p>Ask the health care team about ${T('glucagon')}.</p>
+
+  <div class="pg">Page 10</div>
+  <h3>How to prevent lows</h3>
+  <ul><li>Take medicines as prescribed</li><li>Follow ${Y('your', 'their')} eating plan</li><li>Check regularly, especially when routines change</li><li>Carry a fast-acting carb</li></ul>
+
+  <h3>What is ${on('plain') ? T('hyper') : 'high blood glucose (hyperglycemia)'}?</h3>
+  <p>Higher than ${Y('your', 'their')} target range.</p>
+  <p><b>Common causes:</b> not enough medicine, too much food, not enough activity, and ${on('noblame') ? `<mark class="hi" ${tint('noblame')}>stress or illness</mark>` : 'stress or illness'}.</p>
+  ${add('noblame', `<p>Highs can happen even when ${Y('you do', 'they do')} everything right. Stress and illness can raise blood ${T('glucose')} on their own.</p>`)}
+  ${on('why') ? `<details class="why" ${tint('why')}><summary>Why does this happen?</summary>${src('why')}<p>Insulin helps move ${T('glucose')} out of the blood and into the body’s cells. When there is not enough insulin, or it works less well, ${T('glucose')} stays in the blood.</p></details>` : ''}
+  <p><b>Common symptoms:</b> increased thirst, peeing often, feeling sleepy, blurred vision.</p>
+  ${on('plain') || on('why') ? `<div class="add" style="--c:var(--p4-hi);--ci:var(--p4-ink)"><span class="tag static">From P4 and P1</span><p>Some people feel nothing at all. Sometimes only a blood test shows it.</p><p class="srcq" style="--ci:var(--p4-ink)">“My number was high and I felt completely fine.”<small>P4 · The one who reversed it, in the study</small></p></div>` : ''}
+  ${add('conditions', '<p>Tiredness or peeing more can also come from age, the kidneys, or other medicines. Sleepiness can be a sign of high sugar, so check the number.</p>')}
+
+  ${on('compare') ? `<div class="add" ${tint('compare')}>${src('compare')}
+    <div class="tablewrap"><table class="cmp"><thead><tr><th><span class="sr-only">Topic</span></th><th>Low</th><th>High</th></tr></thead><tbody>
+      <tr><td>What</td><td>Below 70</td><td>Above target</td></tr>
+      <tr><td>Can feel like</td><td>Shaky, sweaty, hungry, dizzy, weak</td><td>Thirsty, peeing often, sleepy, blurry vision, or nothing</td></tr>
+      <tr><td>Both</td><td colspan="2">Confusion can happen with either. Check the number to tell which.</td></tr>
+      <tr><td>First step</td><td>Rule of 15</td><td>Check again, drink water, take medicines</td></tr>
+    </tbody></table></div></div>` : ''}
+
+  <h3>How to manage a high</h3>
+  ${on('steps') ? `<div class="flow" ${tint('steps')}>
+      <div class="box"><b>First</b>Check again to be sure</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box"><b>Then</b>Drink water. Take medicines as prescribed. Don’t skip a dose.</div><span class="arr" aria-hidden="true">→</span>
+      <div class="box alert"><b>Call the doctor right away if</b>It stays high, or there is nausea, vomiting or confusion</div></div>
+      <div class="cap">${src('steps')}</div>` :
+    `<p>Check to be sure. Drink water. Take medicines as prescribed and don’t skip a dose. If levels stay high, or there is nausea, vomiting or confusion, contact the doctor right away. It could be ${T('dka')}.</p>`}
+  ${on('why') ? `<details class="why" ${tint('why')}><summary>What is DKA?</summary>${src('why')}<p>With too little insulin, the body breaks down fat for energy, which makes ketones. Too many ketones can make the blood acidic. This is an emergency.</p></details>` : ''}
+  ${on('team') ? `<div class="add" ${tint('team')}>${src('team')}
+      <p>“Talk to the health care team” can mean several people. Write down who to call for what. This clears when you leave or refresh the page.</p>
+      <div class="team">
+        ${[['high', 'Sugar running high or low'], ['sick', 'Sick-day questions'], ['kidney', 'Kidney or other condition'], ['meds', 'Medicine changes']].map(([id, lbl]) => `<label for="team-${id}"><span>${lbl}</span><input id="team-${id}" data-team="${id}" placeholder="Name or clinic" value="${esc((state.team || {})[id] || '')}"></label>`).join('')}
+      </div></div>` : `<p>Talk to the health care team about what to do if levels run higher than ${Y('your', 'their')} targets.</p>`}
+
+  <h3>Sick-day planning</h3>
+  <p>When ${Y('you are', 'they are')} sick, blood ${T('glucose')} can rise, even when eating less.</p>
+  ${on('checklist') ? `<div class="add" ${tint('checklist')}>${src('checklist')}<ul class="checks">
+      ${[['c1', 'Check sugar at least every four hours'], ['c2', 'Keep drinking fluids'], ['c3', 'If eating is hard, drink fluids that have carbs'], ['c4', 'Ask which medicines to keep taking, and whether any should be paused or adjusted'], ['c5', 'Know who to call (see the list above)']].map(([id, t]) => `<li><label for="${id}"><input type="checkbox" id="${id}" data-check="${id}" ${(state.checks || {})[id] ? 'checked' : ''}>${t}</label></li>`).join('')}
+    </ul></div>` : `<ul><li>Check at least every four hours</li><li>Keep taking diabetes medicines. The dose may need adjusting.</li><li>Drink plenty of fluids. If ${Y('you can’t', 'they can’t')} eat, replace meals with fluids that have carbs.</li></ul>`}
+  ${add('conditions', '<p>With kidney disease or several doctors, ask ahead of time which medicines to keep or pause when sick. Write the plan down.</p>', 'warn')}
+
+  ${on('askcall') ? `<div class="add" ${tint('askcall')}>${src('askcall')}
+      <ul id="callq"><li>Have you checked your sugar today? What was it?</li><li>Feeling thirsty, sleepy, or more tired than usual?</li><li>Are you sick, or eating less than normal?</li><li>Did any doctor change a medicine?</li></ul>
+      <div class="copyrow"><button type="button" class="btn ghost" id="copy">Copy questions</button><span class="copied" id="copied" aria-live="polite"></span></div></div>` : ''}
+  `;
+
+  if (state.view === 'skips' && state.markedLines.length) renderSkips(sheet);
+  if (marking()) {
+    const blocks = baseBlocks(sheet);
+    blocks.forEach((el, i) => {
+      el.dataset.bi = i; el.dataset.sec = secOf(el, sheet);
+      splitWords(el, i);
+      el.querySelectorAll('.w').forEach(w => w.classList.toggle('marked', state.marks.has(w.dataset.k)));
+      const lb = document.createElement('button'); lb.type = 'button'; lb.className = 'mkline sr-only';
+      const snippet = el.textContent.trim().slice(0, 50);
+      lb.textContent = 'Mark this line as skipped: ' + snippet;
+      lb.addEventListener('click', () => {
+        const ws = [...el.querySelectorAll('.w')]; const all = ws.every(w => state.marks.has(w.dataset.k));
+        ws.forEach(w => { all ? state.marks.delete(w.dataset.k) : state.marks.add(w.dataset.k); w.classList.toggle('marked', !all); });
+        lb.textContent = (all ? 'Mark this line as skipped: ' : 'Unmark this line: ') + snippet; updateBar();
+      });
+      el.appendChild(lb);
+    });
+    sheet.classList.add('marking');
+    const markSelection = () => {
+      const sel = getSelection(); if (!sel || sel.isCollapsed || !sel.rangeCount) return false;
+      const ws = [...sheet.querySelectorAll('.w')].filter(w => sel.containsNode(w, true));
+      if (!ws.length) return false;
+      ws.forEach(w => { state.marks.add(w.dataset.k); w.classList.add('marked'); });
+      sel.removeAllRanges(); updateBar(); return true;
+    };
+    window._markSel = markSelection; window._updBar = () => updateBar();
+    if (!sheet.dataset.bound) {
+      sheet.dataset.bound = '1';
+      sheet.addEventListener('pointerup', () => { if (marking()) window._dragged = window._markSel(); });
+      document.addEventListener('selectionchange', () => { clearTimeout(window._selT); window._selT = setTimeout(() => { if (marking() && matchMedia('(pointer: coarse)').matches) window._markSel(); }, 700); });
+      sheet.addEventListener('click', e => {
+        const w = e.target.closest('.w'); if (!w || !marking()) return;
+        if (window._dragged) { window._dragged = false; return; }
+        const k = w.dataset.k; state.marks.has(k) ? state.marks.delete(k) : state.marks.add(k); w.classList.toggle('marked'); window._updBar();
+      });
+    }
+    const bar = document.createElement('div'); bar.className = 'markbar'; bar.innerHTML = `<span id="markcount" aria-live="polite"></span><span class="mb-btns"><button type="button" class="link" id="mb-clear">Clear</button><button type="button" class="link" id="mb-skip">Skip</button><button type="button" class="btn" id="mb-done">Done reading<span class="long">, continue</span></button></span>`;
+    sheet.appendChild(bar);
+    const updateBar = () => { const n = state.marks.size; $('#markcount').innerHTML = n ? `${n} word${n === 1 ? '' : 's'} marked<span class="long"> as skimmed or skipped</span>` : 'Tap or drag<span class="long"> across</span> words you skip'; $('#mb-clear').hidden = !n; };
+    updateBar();
+    $('#mb-clear').addEventListener('click', () => { state.marks = new Set(); sheet.querySelectorAll('.w.marked').forEach(w => w.classList.remove('marked')); updateBar(); });
+    $('#mb-done').addEventListener('click', () => finishFirst(false));
+    $('#mb-skip').addEventListener('click', () => finishFirst(true));
+  } else { sheet.classList.remove('marking'); }
+  if (!marking() && state.markedLines.length && !pristine) {
+    if (state.view === 'before') {
+      const blocks = baseBlocks(sheet);
+      blocks.forEach((el, i) => { if (state.markedLines.some(m => m.bi === i)) { splitWords(el, i); el.querySelectorAll('.w').forEach(w => w.classList.toggle('marked', state.marks.has(w.dataset.k))); } });
+      const n = state.markedLines.reduce((a, m) => a + m.words, 0); $('#dsum').textContent = `In your first read you skipped ${n} word${n === 1 ? '' : 's'}.`;
+    } else if (state.view === 'after' && state.showSkips) {
+      const hs = [...sheet.querySelectorAll('h3')];
+      const bySec = {}; state.markedLines.forEach(m => (bySec[m.sec] = bySec[m.sec] || []).push(m));
+      let helped = 0, secs = 0;
+      Object.entries(bySec).forEach(([sec, lines]) => {
+        sec = +sec; secs++;
+        const start = sec === 0 ? sheet.querySelector('h2') : hs[sec - 1];
+        const end = hs[sec] || null;
+        const inSec = [];
+        for (let n = start.nextElementSibling; n && n !== end; n = n.nextElementSibling) inSec.push(n);
+        const found = new Set();
+        const scan = el => {
+          el.querySelectorAll ? null : null;
+          const all = [el, ...el.querySelectorAll('*')];
+          all.forEach(x => {
+            if (x.matches('button.tag')) found.add(x.textContent.replace(/·.*$/, '').trim());
+            if (x.matches('.term')) found.add('Everyday words');
+            if (x.matches('.flow')) found.add('Show me the steps');
+            if (x.matches('details.why')) found.add('Tell me why');
+          });
+        };
+        inSec.forEach(scan); if (start.matches('h3')) scan(start);
+        if (start.querySelector && start.querySelector('.term')) found.add('Everyday words');
+        if (found.size) helped++;
+        const phrases = lines.flatMap(m => m.runs);
+        const clip = t => { t = t.replace(/^[^\w(]+|[^\w%)]+$/g, ''); if ((t.match(/\(/g) || []).length !== (t.match(/\)/g) || []).length) t = t.replace(/[()]/g, ''); t = t.replace(/^\((.*)\)$/, '$1'); return t.length > 60 ? t.slice(0, 58).trim() + '…' : t; };
+        const quote = phrases.slice(0, 3).map(t => `“${esc(clip(t))}”`).join(', ') + (phrases.length > 3 ? ` and ${phrases.length - 3} more` : '');
+        const box = document.createElement('div'); box.className = 'delta' + (found.size ? '' : ' none');
+        box.innerHTML = `<span class="dlbl">You skipped</span> ${quote}<br><span class="dlbl">${found.size ? 'Now' : 'Now'}</span> ${found.size ? [...found].map(f => `<b>${esc(f)}</b>`).join(', ') : 'no change in this section with your current supports'}`;
+        start.insertAdjacentElement('afterend', box);
+      });
+      const n = state.markedLines.reduce((a, m) => a + m.words, 0);
+      $('#dsum').textContent = `You skipped ${n} word${n === 1 ? '' : 's'} in ${secs} section${secs === 1 ? '' : 's'}. ` + (secs === 1 ? (helped ? 'That section now has added support.' : 'That section has no added support yet.') : `${helped} of those sections now ${helped === 1 ? 'has' : 'have'} added support.`);
+    }
+  }
+  if (state.hl && state.view === 'after') annotate(sheet);
+  const sk = $('#showskips'); if (sk) sk.addEventListener('change', () => { state.showSkips = sk.checked; renderSheet(); });
+  sheet.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; renderSheet(); }));
+  const hl = $('#hl'); if (hl) hl.addEventListener('change', () => { state.hl = hl.checked; renderSheet(); });
+  sheet.querySelectorAll('button.tag').forEach(b => b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    b.setAttribute('aria-expanded', open);
+    const q = b.nextElementSibling; if (q && q.classList.contains('srcq')) q.hidden = !open;
+  }));
+  sheet.querySelectorAll('.term').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') !== 'true')));
+  sheet.querySelectorAll('[data-team]').forEach(i => i.addEventListener('input', () => { state.team = state.team || {}; state.team[i.dataset.team] = i.value; save(); }));
+  sheet.querySelectorAll('[data-check]').forEach(i => i.addEventListener('change', () => { state.checks = state.checks || {}; state.checks[i.dataset.check] = i.checked; save(); }));
+  const f2 = $('#food2'); if (f2) f2.addEventListener('change', () => { state.food = f2.value; renderSheet(); save(); });
+  const cp = $('#copy');
+  if (cp) cp.addEventListener('click', () => {
+    const txt = [...document.querySelectorAll('#callq li')].map(li => '- ' + li.textContent).join('\n');
+    const done = () => { $('#copied').textContent = 'Copied'; };
+    try { navigator.clipboard.writeText(txt).then(done, () => { selectList(); }); } catch (e) { selectList(); }
+  });
+}
+function selectList() { const r = document.createRange(); r.selectNodeContents($('#callq')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('#copied').textContent = 'Selected. Copy with your keyboard.'; }
+
+/* ---------- Persistence (this browser only) ---------- */
+function save() { /* fresh start on every visit: nothing is kept between page loads */ }
+function load() { try { localStorage.removeItem('ryw'); localStorage.removeItem('ryw-preview'); localStorage.removeItem('r5w-idx'); } catch (e) {} }
+
+function resetAll() {
+  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: false, view: 'after', hl: false });
+  save(); renderAll();
+  const q = $('#quiz'); q.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-reset]')) resetAll(); });
+const CLOSING = {
+  p1: { h: 'Even experts fill in gaps as they read.', lead: 'P1 has worked on diabetes prevention for years. Reading still corrected something she had mixed up:', q: 'I had flipped the diabetic ketoacidosis between low versus high… it’s actually lack of insulin, so it’s high blood sugar.' },
+  p2: { h: 'The right words make it easier to help.', lead: 'For P2, the page mattered most because it gave her a way to support someone instead of watching from the side, and to:', q: 'actually be a part of… figuring out what happens next.' },
+  p3: { h: 'Reading showed her where the gaps were.', lead: 'For P3, the page did not teach much that was new. It showed her what her family’s routine was missing, like a written sick-day plan:', q: 'it’s not that the material taught me a lot, it’s that it showed me where our gaps are.' },
+  p4: { h: 'One line can change who gets blamed.', lead: 'After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:', q: 'I will not tell her, ‘Just walk more.’ I used to say that.' },
+  p5: { h: 'Reading made the distance feel real.', lead: 'For P5, the page brought home how much of his dad’s day he cannot see from another country:', q: 'Reading about it and realizing I don’t really know what his day looks like.' },
+};
+function renderClosing() {
+  const k = state.reader || 'p4', c = CLOSING[k];
+  $('#close-h').textContent = c.h;
+  $('#close-lead').textContent = c.lead;
+  const q = $('#close-q'); q.textContent = '“' + c.q + '”'; q.style.color = `var(--${k}-ink)`;
+}
+function renderAll() { renderQuiz(); renderRail(); renderSheet(); renderClosing(); }
+load();
+renderAll();
+
+/* ---------- Part 1: read it the way they did ---------- */
+(function () {
+  const XP = [
+    { id: 'h1', k: 'h1', p: 9, t: 'Short-Term Health Challenges' },
+    { id: 'intro', p: 9, t: 'Low and high blood {glucose} are common short-term issues in type 2 diabetes.' },
+    { id: 'h_low', k: 'h', p: 9, t: 'What is low blood {glucose} ({hypo})?' },
+    { id: 'l70', p: 9, t: 'Usually below {seventy} {mgdl}.' },
+    { id: 'causes', p: 9, t: 'Causes: too much insulin or other diabetes medications; too little food or delayed meals; more physical activity than usual. This can last several hours after being active.' },
+    { id: 'sxlow', p: 9, t: 'Symptoms: shakiness, sweating, hunger, dizziness, {confusion}, feeling weak.' },
+    { id: 'h_treat', k: 'h', p: 9, t: 'How should I treat low blood {glucose}? Use the Rule of 15.' },
+    { id: 'rule', p: 9, t: 'Eat or drink 15 grams of fast-acting carbohydrates: {glucose} tablets or gel, ½ cup of {juice} or {soda}, 1 tablespoon of sugar or honey. Recheck after 15 minutes. If still low, repeat.' },
+    { id: 'cgm', p: 9, t: 'Once above 70 or trending up on {your} continuous {glucose} monitor (CGM), have a snack, such as {snack}.' },
+    { id: 'glucagon', p: 9, t: 'Ask {your} {team} about {glucagon}.' },
+    { id: 'pg10', k: 'pg', p: 10, t: 'Page 10' },
+    { id: 'h_prev', k: 'h', p: 10, t: 'How can I prevent low blood {glucose}?' },
+    { id: 'prev', p: 10, t: 'Take medications as prescribed. Follow {your} eating plan. Check regularly.' },
+    { id: 'h_high', k: 'h', p: 10, t: 'What is high blood {glucose} ({hyper})?' },
+    { id: 'highdef', p: 10, t: 'Higher than {your} target range.' },
+    { id: 'hicause', p: 10, t: 'Causes: not enough medication, too much food, not enough physical activity, and {stress}.' },
+    { id: 'sxhigh', p: 10, t: 'Symptoms: increased thirst, frequent urination, {sleepy}, blurred vision.' },
+    { id: 'h_mng', k: 'h', p: 10, t: 'How should I manage my high blood {glucose}?' },
+    { id: 'manage', p: 10, t: 'Check to be sure. Drink water. Take {your} medications as prescribed. If levels stay high, or {you} have nausea, vomiting or {confusion}, contact {your} doctor right away. It could be {dka}.' },
+    { id: 'team', p: 10, t: 'Talk to {your} {team} about what to do if {your} levels are higher than {your} targets.' },
+    { id: 'h_sick', k: 'h', p: 10, t: 'Sick-day planning' },
+    { id: 'sick', p: 10, t: 'When {you} are sick, blood {glucose} can rise, even if {you} are eating less. Check at least every four hours. Keep taking {your} diabetes medications.' },
+  ];
+  const TOK = { glucose: 'glucose', hypo: 'hypoglycemia', hyper: 'hyperglycemia', seventy: '70', mgdl: 'mg/dL', confusion: 'confusion', juice: 'juice', soda: 'regular soda', your: 'your', you: 'you', team: 'health care team', glucagon: 'glucagon', snack: 'cheese and crackers', stress: 'stress or illness', sleepy: 'feeling sleepy', dka: 'diabetic ketoacidosis (DKA)' };
+
+  const XR = {
+    p4: { pn: 'P4', name: 'The one who reversed it', who: 'Told she was borderline eight or nine years ago; now walks ten thousand steps and her numbers are normal.', readsFor: 'Herself, and her friends in the morning walking group',
+      q: 'These doctor words, I don’t understand them. And I can’t even say them. So I just go past.',
+      fx: { glucose: 'scramble', hypo: 'scramble', hyper: 'scramble', glucagon: 'scramble', dka: 'scramble', mgdl: 'glyph', soda: 'mark', snack: 'mark', stress: 'mark' },
+      sr: { scramble: 'a medical word P4 could not read or say', glyph: 'a unit P4 did not recognize' },
+      lines: {
+        intro: { n: ['Then why don’t they just say sugar? Everybody says sugar.'] },
+        l70: { n: ['Seventy what?'] },
+        causes: { s: 'hl', n: ['Yes, that is what happened to me. With the walking.', 'Oh, several hours? I didn’t know that.'] },
+        sxlow: { s: 'hl', n: ['Shaky and weak, that was me. Sweating and talking funny, that was my friend.'] },
+        rule: { n: ['All these years they are telling us, don’t drink soda… And now they are saying drink soda?'] },
+        cgm: { n: ['We don’t eat cheese and crackers. We will eat some chevdo, or a roti with something.'] },
+        prev: { s: 'skim', n: ['This is all common sense. I’m going fast here.'] },
+        h_high: { n: ['Okay, this one is me. Or it was me.'] },
+        hicause: { s: 'hl', shift: true, n: ['Tension can make your sugar high? I didn’t know that.', 'I thought it was because I was eating badly. Maybe it was also the tension.'] },
+        sxhigh: { n: ['My number was high and I felt completely fine.'] },
+        manage: { s: 'tiny', n: ['This is a long paragraph. The print is very small.'] },
+        sick: { n: ['When I am sick, I don’t eat anything. Only khichdi, maybe. So I would think the sugar goes down.'] },
+      } },
+    p3: { pn: 'P3', name: 'The caregiver', who: 'Primary caregiver for her dad, who lives with her and sees five specialists.', readsFor: 'Her dad, who lives with her',
+      q: 'He’s not gonna read this. He would hand this to me.',
+      fx: { you: 'cycle', your: 'cycleyour', team: 'team', confusion: 'pulse', juice: 'conflict', sleepy: 'pulse' },
+      sr: { cycle: '“you,” which P3 kept translating to her dad or herself', team: 'a “health care team” that, for P3, is five different specialists' },
+      lines: {
+        l70: { n: ['That’s the number his sensor alarms at.'] },
+        causes: { s: 'hl', n: ['So, like, if he walks in the afternoon, it could hit later.'] },
+        sxlow: { s: 'skim', n: ['I’m kind of skimming this because I’ve lived it.'] },
+        rule: { n: ['the diabetes side said juice, and then the kidney side said watch the juice.'] },
+        cgm: { n: ['That’s actually how we do it. I watch the arrow.'] },
+        glucagon: { n: ['We do have that, actually. It’s in the kitchen drawer.'] },
+        prev: { s: 'skim', n: ['this is all stuff I kind of already know. I’m skimming.'] },
+        sxhigh: { s: 'hl', n: ['How many times have I just let him nap, and it was actually his sugar?'] },
+        manage: { n: ['Confusion is on the low list too… So if he’s confused, how do I know which one it is?'] },
+        team: { n: ['assumes you have one team. And he has five people. So who do I call?'] },
+        sick: { s: 'hl', n: ['This is the part I actually care about.', 'in my head, not eating means low.'] },
+      } },
+    p5: { pn: 'P5', name: 'The son far away', who: 'His dad in India has lived with diabetes for 15 to 20 years; his sister handles the appointments.', readsFor: 'His dad, mostly through photos of lab reports',
+      q: 'And I’m looking at it at eleven at night, and there’s all these numbers and abbreviations, and I have no idea what I’m looking at.',
+      photo: true,
+      fx: { mgdl: 'fade', glucagon: 'blank', dka: 'gemini', hypo: 'gloss:hypo is low', hyper: 'gloss:hyper is high' },
+      sr: { fade: 'a unit P5 did not know', blank: 'a word P5 had no idea about', gemini: 'a term P5 would paste into an AI tool' },
+      gapAfter: 'highdef',
+      lines: {
+        l70: { n: ['I’m just gonna take seventy as the number.'] },
+        rule: { s: 'hl', n: ['That’s basically an algorithm. That’s a loop. I can follow that.'] },
+        cgm: { s: 'hl', n: ['Could I see his numbers from here?'] },
+        prev: { s: 'skim', n: ['Okay, this is fine. I’m skimming.'] },
+        h_high: { n: ['That’s the one my dad has.'] },
+        sxhigh: { n: ['When I talk to him on the phone, he sounds fine. So I have no idea.'] },
+        manage: { s: 'glaze', n: ['my eyes kind of glaze over on paragraphs'] },
+        sick: { n: ['So this says keep taking them. And I’m like, well, that’s not what happened with him.'] },
+      } },
+    p2: { pn: 'P2', name: 'The supporter', who: 'Has watched family members diagnosed later in life; works and studies in public health.', readsFor: 'Family members managing a newer diagnosis',
+      q: 'the terminology was never made with such a variety of identities and, like, lifestyles included.',
+      fx: { seventy: 'cycle70', hypo: 'academic', snack: 'mark', glucose: 'academicg' },
+      sr: { cycle70: 'a number P2 questioned', academic: 'a word P2 called a big academic word' },
+      lines: {
+        intro: { n: ['the way most people are interacting with the disease is still to say blood sugar'] },
+        h_low: { n: ['it’s a big academic word. That does translate to, like, low blood glucose.'] },
+        l70: { s: 'hl', n: ['who’s 70 really the baseline for?'] },
+        sxlow: { s: 'skim', n: ['what if people have other chronic conditions that elicit some of these other symptoms?'] },
+        rule: { n: ['what if your truth is you know, you’re not carrying any of those things'] },
+      } },
+    p1: { pn: 'P1', name: 'The researcher', who: 'Diabetes across generations in her family; worked in a type 2 diabetes prevention program.', readsFor: 'Her parents, and the communities she has worked with',
+      q: 'I can’t list all of the symptoms and the different effects of each one.',
+      out9: true,
+      fx: { dka: 'flip', sleepy: 'mark' },
+      sr: { flip: 'a term P1 had placed under low blood sugar instead of high' },
+      lines: {
+        prev: { n: ['thinking through the motivation and the willpower to change years-long, decades-long habits'] },
+        sxhigh: { s: 'hl', n: ['it kind of jogged my memory of, oh, I remember the increased [thirst]', 'the feeling sleepy and some of the side effects were new to me'] },
+        manage: { n: ['I had flipped the diabetic ketoacidosis between low versus high… it’s actually lack of insulin, so it’s high blood sugar.'] },
+        sick: { s: 'hl', n: ['this was actually new to me as well, in terms of sick day planning'] },
+      } },
+  };
+  const ORDER = ['p1', 'p2', 'p3', 'p4', 'p5'];
+  let cur = null, timers = [];
+  const PLAIN = { pn: '', name: 'Original', fx: {}, sr: {}, lines: {} };
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const xesc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  function scramble(w, seed) { const a = w.split(''); const letters = a.map((c, i) => /[a-z]/i.test(c) ? i : -1).filter(i => i > 0); let r = seed || Math.random(); for (let i = letters.length - 1; i > 0; i--) { r = (r * 9301 + 49297) % 233280 / 233280; const j = Math.floor(r * (i + 1)); const t = a[letters[i]]; a[letters[i]] = a[letters[j]]; a[letters[j]] = t; } return a.join(''); }
+
+  function tok(key, r) {
+    const word = TOK[key]; const f = r.fx[key];
+    if (!f) return xesc(word);
+    const [kind, arg] = f.split(':');
+    const srText = (r.sr && r.sr[kind]) ? `<span class="sr-only">${xesc(word)} (${xesc(r.sr[kind])})</span>` : '';
+    switch (kind) {
+      case 'scramble': return `<span class="fx fx-scramble" data-fx="scramble" data-w="${xesc(word)}" aria-hidden="true">${xesc(scramble(word, 0.37))}</span>${srText}`;
+      case 'glyph': return `<span class="fx fx-glyph" aria-hidden="true">??/??</span>${srText}`;
+      case 'fade': return `<span class="fx fx-fade" aria-hidden="true">${xesc(word)}</span>${srText}`;
+      case 'blank': return `<span class="fx fx-blank" aria-hidden="true">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">no idea</span>${srText}`;
+      case 'gemini': return `<span class="fx" aria-hidden="true">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">→ ask Gemini</span>${srText}`;
+      case 'gloss': return `<span class="fx fx-academic">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">${xesc(arg)}</span>`;
+      case 'cycle': return `<span class="fx fx-cycle" data-fx="cycle" data-v="you|he|me" aria-hidden="true">${reduce() ? 'you / he / me' : 'you'}</span>${srText}`;
+      case 'cycleyour': return `<span class="fx fx-cycle" data-fx="cycle" data-v="your|his|my" aria-hidden="true">${reduce() ? 'your / his / my' : 'your'}</span><span class="sr-only">your (which P3 kept translating to her dad or herself)</span>`;
+      case 'team': return `<span class="fx fx-team" data-fx="cycle" data-v="health care team|endocrinologist?|primary care?|kidney doctor?" aria-hidden="true">${reduce() ? 'endocrinologist? primary care? kidney doctor?' : 'health care team'}</span>${srText}`;
+      case 'pulse': return `<span class="fx fx-pulse">${xesc(word)}</span>`;
+      case 'conflict': return `<span class="fx fx-conflict">${xesc(word)}</span><span class="aside" aria-hidden="true">watch the juice</span><span class="sr-only">(her dad’s kidney doctor said to watch the juice)</span>`;
+      case 'mark': return `<span class="fx fx-mark">${xesc(word)}</span>`;
+      case 'academic': return `<span class="fx fx-academic">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">big academic word</span>`;
+      case 'academicg': return `<span class="fx fx-academic">${xesc(word)}</span>`;
+      case 'cycle70': return `<span class="fx fx-cycle" data-fx="cycle" data-v="70|70?" aria-hidden="true">${reduce() ? '70?' : '70'}</span>${srText}`;
+      case 'flip': return `<span class="fx fx-mark">${xesc(word)}</span><span class="fx-tag" data-fx="cycle" data-v="low?|high" aria-hidden="true">${reduce() ? 'low? high' : 'low?'}</span><span class="sr-only">(P1 had thought this belonged with low blood sugar)</span>`;
+    }
+    return xesc(word);
+  }
+
+  function renderX() {
+    timers.forEach(clearInterval); timers = [];
+    const r = cur ? XR[cur] : PLAIN; const sec = document.getElementById('experience');
+    sec.style.setProperty('--x-hi', cur ? `var(--${cur}-hi)` : 'transparent'); sec.style.setProperty('--x-ink', cur ? `var(--${cur}-ink)` : 'var(--ink)');
+    document.getElementById('xpick').innerHTML = `<button type="button" class="chip" data-x="" aria-pressed="${!cur}"><span class="dot"></span>Original</button>` + ORDER.map(k => `<button type="button" class="chip" data-x="${k}" aria-pressed="${k === cur}"><span class="dot" style="background:var(--${k}-hi)"></span>${XR[k].pn} ${xesc(XR[k].name)}</button>`).join('');
+    document.querySelectorAll('#xpick [data-x]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.x || null; cur = (k && k === cur) ? null : k; renderX(); }));
+    document.getElementById('xcard').innerHTML = !cur ? `<div><h3>The original page</h3><p>The condensed handout every participant read, with no effects. Turn on a participant to see how it felt to them, and tap them again to turn them off.</p></div><div></div>` : `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
+    let html = '';
+    if (r.photo) html += `<p class="photocap">Reading from a distance, in pieces and after the fact. <span>“So everything I know is kind of after the fact.”</span></p>`;
+    XP.forEach(ln => {
+      const conf = r.lines[ln.id] || {};
+      let cls = 'xln ' + (ln.k || 'p');
+      if (r.out9 && ln.p === 9 && ln.k !== 'h1') cls += ' out';
+      if (conf.s) cls += ' ' + conf.s;
+      const text = ln.t.replace(/\{(\w+)\}/g, (_, k) => tok(k, r));
+      html += `<div class="${cls}"><span class="t">${text}</span></div>`;
+      let note = '';
+      if (r.out9 && ln.id === 'h1') note = '<span class="lab">P1 reviewed page 10 only</span>';
+      if (conf.n && !(r.out9 && ln.p === 9)) note = conf.n.map(q => `<p class="q">${xesc(q)}</p>`).join('');
+      if (conf.shift) note += `<div class="shift"><span class="lab">Before reading</span><p class="q">So to me, poorly controlled means, you didn’t do your part.</p><span class="lab">After this line</span><p class="q">Now I think, maybe sometimes you did your part and still it went up.</p></div>`;
+      html += `<div class="xnote">${note}</div>`;
+      if (r.gapAfter === ln.id) html += `<div class="kgap"><b>Kidneys</b> · not on these two pages</div><div class="xnote"><p class="q">there’s nothing about kidneys on these two pages. Like, at all. Which, for my dad, that’s the main thing.</p></div>`;
+    });
+    const sheet = document.getElementById('xsheet');
+    sheet.className = 'xsheet' + (r.photo ? ' photo' + (reduce() ? '' : ' dim') : '');
+    sheet.innerHTML = html;
+    sheet.querySelectorAll('.xnote').forEach(note => {
+      if (!note.querySelector('p.q')) return;
+      let line = note.previousElementSibling; while (line && !line.classList.contains('xln') && !line.classList.contains('kgap')) line = line.previousElementSibling;
+      if (!line) return;
+      note.tabIndex = 0; note.classList.add('linkable'); note.setAttribute('role', 'note');
+      const label = line.textContent.trim().replace(/\s+/g, ' ').slice(0, 80);
+      note.setAttribute('aria-label', 'Note on: ' + label + '. ' + note.textContent.trim());
+      const on = () => { line.classList.add('linked'); note.classList.add('linked'); };
+      const off = () => { line.classList.remove('linked'); note.classList.remove('linked'); };
+      note.addEventListener('mouseenter', on); note.addEventListener('mouseleave', off);
+      note.addEventListener('focus', on); note.addEventListener('blur', off);
+      line.addEventListener('mouseenter', on); line.addEventListener('mouseleave', off);
+      note.addEventListener('click', () => { const was = note.classList.contains('linked') && note.dataset.pinned; sheet.querySelectorAll('.linked').forEach(x => { x.classList.remove('linked'); delete x.dataset.pinned; }); if (!was) { on(); note.dataset.pinned = '1'; } });
+    });
+    if (r.photo && !reduce()) setTimeout(() => sheet.classList.remove("dim"), 700);
+    if (reduce()) return;
+    sheet.querySelectorAll('[data-fx="scramble"]').forEach(el => { const w = el.dataset.w; timers.push(setInterval(() => { el.textContent = scramble(w); }, 260)); });
+    sheet.querySelectorAll('[data-fx="cycle"]').forEach((el, i) => { const vals = el.dataset.v.split('|'); let n = 0; timers.push(setInterval(() => { n = (n + 1) % vals.length; el.textContent = vals[n]; }, 1200 + (i % 3) * 170)); });
+  }
+  if (document.getElementById('experience')) renderX();
+})();
+</script>
+
+</body>
+</html>
