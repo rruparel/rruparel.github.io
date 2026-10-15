@@ -246,6 +246,71 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
   .opts { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+/* ---------- Part 1: read it the way they did ---------- */
+.part-head { margin-top: 44px; max-width: 760px; }
+.part-head .eyebrow { display: block; }
+.part-head h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(28px, 3.8vw, 40px); margin: 4px 0 8px; line-height: 1.1; text-wrap: balance; }
+.part-head p { margin: 0; font-size: 16px; }
+.xpick { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
+.xpick .chip[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.xcard { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px 28px; padding: 14px 0 16px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: 18px; }
+.xcard h3 { font-family: var(--f-display); font-size: 24px; font-weight: 600; margin: 0 0 4px; }
+.xcard p { margin: 0; font-size: 15px; color: var(--ink-soft); }
+.xcard .lbl { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); margin-top: 8px; }
+.xcard .val { color: var(--ink); }
+.xcard .hand { font-family: var(--f-hand); font-size: 21px; line-height: 1.3; color: var(--x-ink); }
+.xsheet { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 280px; column-gap: 28px; padding-block: 34px 38px; font-size: 16px; }
+.xsheet::before { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(100% - 308px); background: var(--paper); box-shadow: var(--shadow); border-radius: 3px; z-index: 0; transition: filter 1.6s ease, transform 1.6s ease; }
+.xln, .xnote { position: relative; z-index: 1; }
+.xln { grid-column: 1; padding: 3px 40px; transition: filter 1.6s ease, opacity .4s ease, font-size .6s ease; }
+.xnote { grid-column: 2; padding: 3px 0; }
+.xnote p { font-family: var(--f-hand); color: var(--x-ink); font-size: 18px; line-height: 1.28; margin: 0 0 8px; }
+.xnote p.q::before { content: "\201C"; } .xnote p.q::after { content: "\201D"; }
+.xnote .lab { display: block; font: 700 11px/1.3 var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin: 6px 0 2px; }
+.xnote .shift { border-left: 3px solid var(--x-hi); padding-left: 10px; margin-top: 4px; }
+.xln.h { font-weight: 700; font-size: 17px; margin-top: 12px; color: var(--accent); }
+.xln.h1 { font-weight: 800; font-size: 22px; color: var(--ink); margin-top: 0; }
+.xln.pg { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); padding-top: 20px; font-weight: 600; }
+.xln.pg::after { content: ""; display: block; border-bottom: 1px dashed var(--rule); margin-top: 6px; }
+.xln.out { opacity: .35; }
+.xln.skim { opacity: .55; }
+.xln.tiny { font-size: 10.5px; line-height: 1.35; letter-spacing: -.01em; }
+.xln.glaze { filter: blur(2.2px); opacity: .7; }
+.xln.hl > .t { background: linear-gradient(transparent 12%, var(--x-hi) 12%, var(--x-hi) 90%, transparent 90%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.fx { display: inline; border-radius: 2px; }
+.fx-scramble { font-variant-ligatures: none; text-decoration: underline wavy var(--x-ink); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.fx-glyph { font-weight: 700; letter-spacing: .04em; color: var(--x-ink); }
+.fx-cycle { display: inline-block; min-width: 2.2em; text-align: center; font-weight: 700; color: var(--x-ink); border-bottom: 2px dashed var(--x-ink); }
+.fx-team { font-weight: 700; color: var(--x-ink); border-bottom: 2px dashed var(--x-ink); }
+.fx-pulse { animation: xpulse 1.6s ease-in-out infinite; padding: 0 2px; }
+@keyframes xpulse { 0%, 100% { background: transparent; } 50% { background: var(--x-hi); } }
+.fx-conflict { text-decoration: line-through; text-decoration-color: var(--warn); text-decoration-thickness: 2px; }
+.fx-conflict + .aside, .fx-tag { display: inline-block; margin-left: 4px; font: 400 15px/1 var(--f-hand); color: var(--x-ink); transform: rotate(-2deg); }
+.fx-mark { background: var(--x-hi); padding: 0 2px; }
+.fx-fade { opacity: .35; }
+.fx-blank { filter: blur(3px); }
+.fx-academic { text-decoration: underline dotted var(--x-ink); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.kgap { grid-column: 1; position: relative; z-index: 1; margin: 6px 40px; padding: 10px 12px; border: 2px dashed var(--x-ink); border-radius: 6px; color: var(--ink-soft); font-size: 14px; }
+.kgap b { color: var(--x-ink); }
+.xsheet.photo::before { filter: blur(0); }
+.xsheet.photo.dim::before { transform: rotate(-.6deg); }
+.xsheet.photo.dim .xln { filter: blur(5px); }
+.photocap { grid-column: 1 / -1; position: relative; z-index: 1; margin: 0 40px 10px; font-size: 13px; color: var(--ink-soft); }
+.photocap span { font-family: var(--f-hand); font-size: 17px; color: var(--x-ink); }
+.xfoot { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; margin-top: 14px; }
+.xfoot p { margin: 0; font-size: 13px; color: var(--ink-soft); max-width: 620px; }
+.xfoot .btn { text-decoration: none; }
+.part3-head { margin-top: 64px; }
+@media (max-width: 860px) {
+  .xsheet { grid-template-columns: minmax(0, 1fr); }
+  .xsheet::before { width: 100%; }
+  .xln { padding: 3px 20px; }
+  .xnote { grid-column: 1; padding: 0 20px 4px 34px; }
+  .xnote:empty { display: none; }
+  .kgap, .photocap { margin-inline: 20px; }
+  .xcard { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .fx-pulse { animation: none; background: var(--x-hi); } .xsheet.photo.dim .xln { filter: none; } }
 </style>
 
 </head>
@@ -286,11 +351,29 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
       </div>
     </section>
 
-    <div class="try">
-      <h2>Try it: read the page your way</h2>
-      <p>This prototype turns those findings into a reading tool. First, read the page and mark any words you would skim or skip. Then answer four quick questions, and it matches you with the participant you read most like and adjusts the handout with the supports that helped them. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
-    </div>
   </header>
+
+    <section class="exp" id="experience" aria-labelledby="exp-h">
+      <div class="part-head">
+        <span class="eyebrow">Part 1</span>
+        <h2 id="exp-h">Read it the way they did</h2>
+        <p>Pick a participant. The page below shows what reading it was like for them: words that turned into noise, “you” that pointed at the wrong person, answers that weren’t there. Every effect comes from something they said, and their own words appear in handwriting.</p>
+      </div>
+      <div class="xpick" id="xpick" role="group" aria-label="Choose a participant"></div>
+      <div class="xcard" id="xcard" aria-live="polite"></div>
+      <article class="xsheet" id="xsheet" aria-label="The handout, as the selected participant experienced it"></article>
+      <div class="xfoot">
+        <p>The handout is condensed from pages 9 and 10 of the ADA guide. The effects are interpretations of what participants described, not how the guide actually looks.</p>
+        <a class="btn" href="#part3">Part 2: what could help ↓</a>
+      </div>
+    </section>
+
+  <div class="try part3-head" id="part3">
+    <span class="eyebrow">Part 2</span>
+    <h2>What could help: read the page your way</h2>
+    <p>Now try it yourself. First, read the page and mark any words you would skim or skip. Then answer four quick questions. You’ll be matched with the participant you read most like, and the page will add the supports that came out of their experience. Flip between Before and After to see what changed. Every support links back to the moment in the study it came from.</p>
+  </div>
+
 
   <section class="quiz" id="quiz" aria-label="Match me to a reader"></section>
 
@@ -304,7 +387,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
     <div>
       <p id="close-lead">After rethinking what “poorly controlled” means, P4 also changed how she would support a friend who uses insulin:</p>
       <p class="hand" id="close-q">“I will not tell her, ‘Just walk more.’ I used to say that.”</p>
-      <p>Each support here started as something a participant needed. Tap any tag on the page to read the moment behind it. To see how each person read the original page, open <a href="read-five-ways.html">Read Five Ways</a>.</p>
+      <p>Each support here started as something a participant needed. Tap any tag on the page to read the moment behind it. To see how each person experienced the original page, go back to <a href="#experience">Part 1</a>.</p>
     </div>
   </section>
 
@@ -798,6 +881,175 @@ function renderClosing() {
 function renderAll() { renderQuiz(); renderRail(); renderSheet(); renderClosing(); }
 load();
 renderAll();
+
+/* ---------- Part 1: read it the way they did ---------- */
+(function () {
+  const XP = [
+    { id: 'h1', k: 'h1', p: 9, t: 'Short-Term Health Challenges' },
+    { id: 'intro', p: 9, t: 'Low and high blood {glucose} are common short-term issues in type 2 diabetes.' },
+    { id: 'h_low', k: 'h', p: 9, t: 'What is low blood {glucose} ({hypo})?' },
+    { id: 'l70', p: 9, t: 'Usually below {seventy} {mgdl}.' },
+    { id: 'causes', p: 9, t: 'Causes: too much insulin or other diabetes medications; too little food or delayed meals; more physical activity than usual. This can last several hours after being active.' },
+    { id: 'sxlow', p: 9, t: 'Symptoms: shakiness, sweating, hunger, dizziness, {confusion}, feeling weak.' },
+    { id: 'h_treat', k: 'h', p: 9, t: 'How should I treat low blood {glucose}? Use the Rule of 15.' },
+    { id: 'rule', p: 9, t: 'Eat or drink 15 grams of fast-acting carbohydrates: {glucose} tablets or gel, ½ cup of {juice} or {soda}, 1 tablespoon of sugar or honey. Recheck after 15 minutes. If still low, repeat.' },
+    { id: 'cgm', p: 9, t: 'Once above 70 or trending up on {your} continuous {glucose} monitor (CGM), have a snack, such as {snack}.' },
+    { id: 'glucagon', p: 9, t: 'Ask {your} {team} about {glucagon}.' },
+    { id: 'pg10', k: 'pg', p: 10, t: 'Page 10' },
+    { id: 'h_prev', k: 'h', p: 10, t: 'How can I prevent low blood {glucose}?' },
+    { id: 'prev', p: 10, t: 'Take medications as prescribed. Follow {your} eating plan. Check regularly.' },
+    { id: 'h_high', k: 'h', p: 10, t: 'What is high blood {glucose} ({hyper})?' },
+    { id: 'highdef', p: 10, t: 'Higher than {your} target range.' },
+    { id: 'hicause', p: 10, t: 'Causes: not enough medication, too much food, not enough physical activity, and {stress}.' },
+    { id: 'sxhigh', p: 10, t: 'Symptoms: increased thirst, frequent urination, {sleepy}, blurred vision.' },
+    { id: 'h_mng', k: 'h', p: 10, t: 'How should I manage my high blood {glucose}?' },
+    { id: 'manage', p: 10, t: 'Check to be sure. Drink water. Take {your} medications as prescribed. If levels stay high, or {you} have nausea, vomiting or {confusion}, contact {your} doctor right away. It could be {dka}.' },
+    { id: 'team', p: 10, t: 'Talk to {your} {team} about what to do if {your} levels are higher than {your} targets.' },
+    { id: 'h_sick', k: 'h', p: 10, t: 'Sick-day planning' },
+    { id: 'sick', p: 10, t: 'When {you} are sick, blood {glucose} can rise, even if {you} are eating less. Check at least every four hours. Keep taking {your} diabetes medications.' },
+  ];
+  const TOK = { glucose: 'glucose', hypo: 'hypoglycemia', hyper: 'hyperglycemia', seventy: '70', mgdl: 'mg/dL', confusion: 'confusion', juice: 'juice', soda: 'regular soda', your: 'your', you: 'you', team: 'health care team', glucagon: 'glucagon', snack: 'cheese and crackers', stress: 'stress or illness', sleepy: 'feeling sleepy', dka: 'diabetic ketoacidosis (DKA)' };
+
+  const XR = {
+    p4: { pn: 'P4', name: 'The one who reversed it', who: 'Told she was borderline eight or nine years ago; now walks ten thousand steps and her numbers are normal.', readsFor: 'Herself, and her friends in the morning walking group',
+      q: 'These doctor words, I don’t understand them. And I can’t even say them. So I just go past.',
+      fx: { glucose: 'scramble', hypo: 'scramble', hyper: 'scramble', glucagon: 'scramble', dka: 'scramble', mgdl: 'glyph', soda: 'mark', snack: 'mark', stress: 'mark' },
+      sr: { scramble: 'a medical word P4 could not read or say', glyph: 'a unit P4 did not recognize' },
+      lines: {
+        intro: { n: ['Then why don’t they just say sugar? Everybody says sugar.'] },
+        l70: { n: ['Seventy what?'] },
+        causes: { s: 'hl', n: ['Yes, that is what happened to me. With the walking.', 'Oh, several hours? I didn’t know that.'] },
+        sxlow: { s: 'hl', n: ['Shaky and weak, that was me. Sweating and talking funny, that was my friend.'] },
+        rule: { n: ['All these years they are telling us, don’t drink soda… And now they are saying drink soda?'] },
+        cgm: { n: ['We don’t eat cheese and crackers. We will eat some chevdo, or a roti with something.'] },
+        prev: { s: 'skim', n: ['This is all common sense. I’m going fast here.'] },
+        h_high: { n: ['Okay, this one is me. Or it was me.'] },
+        hicause: { s: 'hl', shift: true, n: ['Tension can make your sugar high? I didn’t know that.', 'I thought it was because I was eating badly. Maybe it was also the tension.'] },
+        sxhigh: { n: ['My number was high and I felt completely fine.'] },
+        manage: { s: 'tiny', n: ['This is a long paragraph. The print is very small.'] },
+        sick: { n: ['When I am sick, I don’t eat anything. Only khichdi, maybe. So I would think the sugar goes down.'] },
+      } },
+    p3: { pn: 'P3', name: 'The caregiver', who: 'Primary caregiver for her dad, who lives with her and sees five specialists.', readsFor: 'Her dad, who lives with her',
+      q: 'He’s not gonna read this. He would hand this to me.',
+      fx: { you: 'cycle', your: 'cycleyour', team: 'team', confusion: 'pulse', juice: 'conflict', sleepy: 'pulse' },
+      sr: { cycle: '“you,” which P3 kept translating to her dad or herself', team: 'a “health care team” that, for P3, is five different specialists' },
+      lines: {
+        l70: { n: ['That’s the number his sensor alarms at.'] },
+        causes: { s: 'hl', n: ['So, like, if he walks in the afternoon, it could hit later.'] },
+        sxlow: { s: 'skim', n: ['I’m kind of skimming this because I’ve lived it.'] },
+        rule: { n: ['the diabetes side said juice, and then the kidney side said watch the juice.'] },
+        cgm: { n: ['That’s actually how we do it. I watch the arrow.'] },
+        glucagon: { n: ['We do have that, actually. It’s in the kitchen drawer.'] },
+        prev: { s: 'skim', n: ['this is all stuff I kind of already know. I’m skimming.'] },
+        sxhigh: { s: 'hl', n: ['How many times have I just let him nap, and it was actually his sugar?'] },
+        manage: { n: ['Confusion is on the low list too… So if he’s confused, how do I know which one it is?'] },
+        team: { n: ['assumes you have one team. And he has five people. So who do I call?'] },
+        sick: { s: 'hl', n: ['This is the part I actually care about.', 'in my head, not eating means low.'] },
+      } },
+    p5: { pn: 'P5', name: 'The son far away', who: 'His dad in India has lived with diabetes for 15 to 20 years; his sister handles the appointments.', readsFor: 'His dad, mostly through photos of lab reports',
+      q: 'And I’m looking at it at eleven at night, and there’s all these numbers and abbreviations, and I have no idea what I’m looking at.',
+      photo: true,
+      fx: { mgdl: 'fade', glucagon: 'blank', dka: 'gemini', hypo: 'gloss:hypo is low', hyper: 'gloss:hyper is high' },
+      sr: { fade: 'a unit P5 did not know', blank: 'a word P5 had no idea about', gemini: 'a term P5 would paste into an AI tool' },
+      gapAfter: 'highdef',
+      lines: {
+        l70: { n: ['I’m just gonna take seventy as the number.'] },
+        rule: { s: 'hl', n: ['That’s basically an algorithm. That’s a loop. I can follow that.'] },
+        cgm: { s: 'hl', n: ['Could I see his numbers from here?'] },
+        prev: { s: 'skim', n: ['Okay, this is fine. I’m skimming.'] },
+        h_high: { n: ['That’s the one my dad has.'] },
+        sxhigh: { n: ['When I talk to him on the phone, he sounds fine. So I have no idea.'] },
+        manage: { s: 'glaze', n: ['my eyes kind of glaze over on paragraphs'] },
+        sick: { n: ['So this says keep taking them. And I’m like, well, that’s not what happened with him.'] },
+      } },
+    p2: { pn: 'P2', name: 'The supporter', who: 'Has watched family members diagnosed later in life; works and studies in public health.', readsFor: 'Family members managing a newer diagnosis',
+      q: 'the terminology was never made with such a variety of identities and, like, lifestyles included.',
+      fx: { seventy: 'cycle70', hypo: 'academic', snack: 'mark', glucose: 'academicg' },
+      sr: { cycle70: 'a number P2 questioned', academic: 'a word P2 called a big academic word' },
+      lines: {
+        intro: { n: ['the way most people are interacting with the disease is still to say blood sugar'] },
+        h_low: { n: ['it’s a big academic word. That does translate to, like, low blood glucose.'] },
+        l70: { s: 'hl', n: ['who’s 70 really the baseline for?'] },
+        sxlow: { s: 'skim', n: ['what if people have other chronic conditions that elicit some of these other symptoms?'] },
+        rule: { n: ['what if your truth is you know, you’re not carrying any of those things'] },
+      } },
+    p1: { pn: 'P1', name: 'The researcher', who: 'Diabetes across generations in her family; worked in a type 2 diabetes prevention program.', readsFor: 'Her parents, and the communities she has worked with',
+      q: 'I can’t list all of the symptoms and the different effects of each one.',
+      out9: true,
+      fx: { dka: 'flip', sleepy: 'mark' },
+      sr: { flip: 'a term P1 had placed under low blood sugar instead of high' },
+      lines: {
+        prev: { n: ['thinking through the motivation and the willpower to change years-long, decades-long habits'] },
+        sxhigh: { s: 'hl', n: ['it kind of jogged my memory of, oh, I remember the increased [thirst]', 'the feeling sleepy and some of the side effects were new to me'] },
+        manage: { n: ['I had flipped the diabetic ketoacidosis between low versus high… it’s actually lack of insulin, so it’s high blood sugar.'] },
+        sick: { s: 'hl', n: ['this was actually new to me as well, in terms of sick day planning'] },
+      } },
+  };
+  const ORDER = ['p4', 'p3', 'p5', 'p2', 'p1'];
+  let cur = 'p4', timers = [];
+  const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const xesc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  function scramble(w, seed) { const a = w.split(''); const letters = a.map((c, i) => /[a-z]/i.test(c) ? i : -1).filter(i => i > 0); let r = seed || Math.random(); for (let i = letters.length - 1; i > 0; i--) { r = (r * 9301 + 49297) % 233280 / 233280; const j = Math.floor(r * (i + 1)); const t = a[letters[i]]; a[letters[i]] = a[letters[j]]; a[letters[j]] = t; } return a.join(''); }
+
+  function tok(key, r) {
+    const word = TOK[key]; const f = r.fx[key];
+    if (!f) return xesc(word);
+    const [kind, arg] = f.split(':');
+    const srText = (r.sr && r.sr[kind]) ? `<span class="sr-only">${xesc(word)} (${xesc(r.sr[kind])})</span>` : '';
+    switch (kind) {
+      case 'scramble': return `<span class="fx fx-scramble" data-fx="scramble" data-w="${xesc(word)}" aria-hidden="true">${xesc(scramble(word, 0.37))}</span>${srText}`;
+      case 'glyph': return `<span class="fx fx-glyph" aria-hidden="true">??/??</span>${srText}`;
+      case 'fade': return `<span class="fx fx-fade" aria-hidden="true">${xesc(word)}</span>${srText}`;
+      case 'blank': return `<span class="fx fx-blank" aria-hidden="true">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">no idea</span>${srText}`;
+      case 'gemini': return `<span class="fx" aria-hidden="true">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">→ ask Gemini</span>${srText}`;
+      case 'gloss': return `<span class="fx fx-academic">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">${xesc(arg)}</span>`;
+      case 'cycle': return `<span class="fx fx-cycle" data-fx="cycle" data-v="you|he|me" aria-hidden="true">${reduce() ? 'you / he / me' : 'you'}</span>${srText}`;
+      case 'cycleyour': return `<span class="fx fx-cycle" data-fx="cycle" data-v="your|his|my" aria-hidden="true">${reduce() ? 'your / his / my' : 'your'}</span><span class="sr-only">your (which P3 kept translating to her dad or herself)</span>`;
+      case 'team': return `<span class="fx fx-team" data-fx="cycle" data-v="health care team|endocrinologist?|primary care?|kidney doctor?" aria-hidden="true">${reduce() ? 'endocrinologist? primary care? kidney doctor?' : 'health care team'}</span>${srText}`;
+      case 'pulse': return `<span class="fx fx-pulse">${xesc(word)}</span>`;
+      case 'conflict': return `<span class="fx fx-conflict">${xesc(word)}</span><span class="aside" aria-hidden="true">watch the juice</span><span class="sr-only">(her dad’s kidney doctor said to watch the juice)</span>`;
+      case 'mark': return `<span class="fx fx-mark">${xesc(word)}</span>`;
+      case 'academic': return `<span class="fx fx-academic">${xesc(word)}</span><span class="fx-tag" aria-hidden="true">big academic word</span>`;
+      case 'academicg': return `<span class="fx fx-academic">${xesc(word)}</span>`;
+      case 'cycle70': return `<span class="fx fx-cycle" data-fx="cycle" data-v="70|70?" aria-hidden="true">${reduce() ? '70?' : '70'}</span>${srText}`;
+      case 'flip': return `<span class="fx fx-mark">${xesc(word)}</span><span class="fx-tag" data-fx="cycle" data-v="low?|high" aria-hidden="true">${reduce() ? 'low? high' : 'low?'}</span><span class="sr-only">(P1 had thought this belonged with low blood sugar)</span>`;
+    }
+    return xesc(word);
+  }
+
+  function renderX() {
+    timers.forEach(clearInterval); timers = [];
+    const r = XR[cur]; const sec = document.getElementById('experience');
+    sec.style.setProperty('--x-hi', `var(--${cur}-hi)`); sec.style.setProperty('--x-ink', `var(--${cur}-ink)`);
+    document.getElementById('xpick').innerHTML = ORDER.map(k => `<button type="button" class="chip" data-x="${k}" aria-pressed="${k === cur}"><span class="dot" style="background:var(--${k}-hi)"></span>${XR[k].pn} ${xesc(XR[k].name)}</button>`).join('');
+    document.querySelectorAll('#xpick [data-x]').forEach(b => b.addEventListener('click', () => { cur = b.dataset.x; renderX(); }));
+    document.getElementById('xcard').innerHTML = `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
+    let html = '';
+    if (r.photo) html += `<p class="photocap">Reading from a distance, in pieces and after the fact. <span>“So everything I know is kind of after the fact.”</span></p>`;
+    XP.forEach(ln => {
+      const conf = r.lines[ln.id] || {};
+      let cls = 'xln ' + (ln.k || 'p');
+      if (r.out9 && ln.p === 9 && ln.k !== 'h1') cls += ' out';
+      if (conf.s) cls += ' ' + conf.s;
+      const text = ln.t.replace(/\{(\w+)\}/g, (_, k) => tok(k, r));
+      html += `<div class="${cls}"><span class="t">${text}</span></div>`;
+      let note = '';
+      if (r.out9 && ln.id === 'h1') note = '<span class="lab">P1 reviewed page 10 only</span>';
+      if (conf.n && !(r.out9 && ln.p === 9)) note = conf.n.map(q => `<p class="q">${xesc(q)}</p>`).join('');
+      if (conf.shift) note += `<div class="shift"><span class="lab">Before reading</span><p class="q">So to me, poorly controlled means, you didn’t do your part.</p><span class="lab">After this line</span><p class="q">Now I think, maybe sometimes you did your part and still it went up.</p></div>`;
+      html += `<div class="xnote">${note}</div>`;
+      if (r.gapAfter === ln.id) html += `<div class="kgap"><b>Kidneys</b> · not on these two pages</div><div class="xnote"><p class="q">there’s nothing about kidneys on these two pages. Like, at all. Which, for my dad, that’s the main thing.</p></div>`;
+    });
+    const sheet = document.getElementById('xsheet');
+    sheet.className = 'xsheet' + (r.photo ? ' photo' + (reduce() ? '' : ' dim') : '');
+    sheet.innerHTML = html;
+    if (r.photo && !reduce()) setTimeout(() => sheet.classList.remove("dim"), 700);
+    if (reduce()) return;
+    sheet.querySelectorAll('[data-fx="scramble"]').forEach(el => { const w = el.dataset.w; timers.push(setInterval(() => { el.textContent = scramble(w); }, 260)); });
+    sheet.querySelectorAll('[data-fx="cycle"]').forEach((el, i) => { const vals = el.dataset.v.split('|'); let n = 0; timers.push(setInterval(() => { n = (n + 1) % vals.length; el.textContent = vals[n]; }, 1200 + (i % 3) * 170)); });
+  }
+  renderX();
+})();
 </script>
 
 </body>
