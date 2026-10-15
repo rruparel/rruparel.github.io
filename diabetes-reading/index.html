@@ -125,6 +125,14 @@ li.markable { list-style-position: outside; }
 .markbar .link { color: var(--paper); opacity: .85; }
 .mb-btns { display: flex; gap: 14px; align-items: center; }
 @media (max-width: 560px) { .markbar .long { display: none; } .markbar { padding: 8px 8px 8px 14px; margin-inline: -4px; flex-wrap: nowrap; } .markbar .btn { padding: 10px 14px; } #markcount, .markbar .btn { white-space: nowrap; } }
+.dsum { flex-basis: 100%; margin: 0 !important; font-size: 14px; color: var(--ink); font-weight: 600; }
+.dsum:empty { display: none; }
+.delta { margin: .3em 0 .8em; padding: 8px 12px; border: 1.5px dashed var(--accent); border-radius: 6px; font-size: .9em; line-height: 1.45; background: var(--paper); }
+.delta.none { border-color: var(--rule); color: var(--ink-soft); }
+.delta .dlbl { display: inline-block; min-width: 82px; font: 700 11px/1.4 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.markable.static { cursor: default; margin-left: 0 !important; padding-left: 0; }
+.markable.static:hover { background: none; }
+.markable.static::after { content: "skipped"; display: inline-block; margin-left: 8px; font: 400 .95em var(--f-hand); color: var(--p4-ink); text-decoration: none; transform: rotate(-2deg); }
 .mirror { font-family: var(--f-hand); font-size: 19px; line-height: 1.3; color: var(--r-ink); margin: 0 0 12px; }
 .cmpbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: -8px 0 22px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
 .seg { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; }
@@ -350,6 +358,8 @@ function reflection() {
   const lines = [...state.skipped].slice(0, 2).map(k => { const s = SKIMS.find(x => x.k === k); return `You skimmed ${SKIM_PHRASE[k]}. So did ${listP(s.who)}.`; });
   return lines.join(' ');
 }
+function baseBlocks(sheet) { return [...sheet.querySelectorAll('h3, p, li')].filter(el => !el.closest('.orig') && !el.closest('.cmpbar') && !el.closest('.delta') && !el.classList.contains('adapted') && !el.closest('.add') && !el.closest('details') && !el.closest('.cap')); }
+function secOf(el, sheet) { const hs = [...sheet.querySelectorAll('h3')]; let i = 0; hs.forEach((h, k) => { if (h === el || (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)) i = k + 1; }); return i; }
 function marking() { return !state.firstDone && !state.matched && state.on.size === 0; }
 function catsFromMarks() {
   const cats = new Set();
@@ -358,6 +368,7 @@ function catsFromMarks() {
 }
 function finishFirst(skip) {
   state.skipped = skip ? new Set() : (state.marks.size ? catsFromMarks() : new Set(['none']));
+  state.markedLines = skip ? [] : [...document.querySelectorAll('#sheet [data-mid]')].filter(el => state.marks.has(el.dataset.mid)).map(el => ({ mid: el.dataset.mid, sec: +el.dataset.sec, text: el.textContent.trim() }));
   state.firstDone = true;
   renderAll();
   $('#quiz').scrollIntoView({ block: 'start' }); focusQ();
@@ -399,7 +410,7 @@ const QUESTIONS = [
   { id: 'life', text: 'A little more about your situation', life: true },
 ];
 
-const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, firstDone: false, skipped: new Set(), marks: new Set(), view: 'after', hl: false };
+const state = { step: 0, answers: {}, cond: false, food: 'none', reader: null, on: new Set(), matched: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: true, view: 'after', hl: false };
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
@@ -529,7 +540,9 @@ function renderSheet() {
   sheet.classList.toggle('hl', state.hl && state.view === 'after');
   const cmpbar = pristine ? '' : `<div class="cmpbar">
     <div class="seg" role="group" aria-label="Compare versions"><button type="button" data-view="before" aria-pressed="${state.view === 'before'}">Before</button><button type="button" data-view="after" aria-pressed="${state.view === 'after'}">After</button></div>
-    ${state.view === 'after' ? `<label class="hltog" for="hl"><input type="checkbox" id="hl" ${state.hl ? 'checked' : ''}> Highlight what changed</label>` : '<span class="others">The page before any supports. Switch to After to see your version.</span>'}
+    ${state.view === 'after' ? `<label class="hltog" for="hl"><input type="checkbox" id="hl" ${state.hl ? 'checked' : ''}> Highlight what changed</label>` : `<span class="others">${state.markedLines.length ? 'Your first read, with the lines you skipped.' : 'The page before any supports. Switch to After to see your version.'}</span>`}
+    ${state.markedLines.length && state.view === 'after' ? `<label class="hltog" for="showskips"><input type="checkbox" id="showskips" ${state.showSkips ? 'checked' : ''}> Compare with my first read</label>` : ''}
+    <p class="dsum" id="dsum" aria-live="polite"></p>
   </div>`;
   sheet.innerHTML = cmpbar + `
   ${pristine ? `<div class="orig">
@@ -615,7 +628,7 @@ function renderSheet() {
   `;
 
   if (marking()) {
-    const blocks = [...sheet.querySelectorAll('h3, p, li')].filter(el => !el.closest('.orig') && !el.classList.contains('adapted') && !el.closest('.add'));
+    const blocks = baseBlocks(sheet);
     blocks.forEach((el, i) => {
       const t = el.textContent, cats = [];
       if (/^Common symptoms/.test(t)) cats.push('symptoms');
@@ -626,7 +639,7 @@ function renderSheet() {
       const h = el.closest('ul') && el.closest('ul').previousElementSibling;
       if (h && /prevent lows/i.test(h.textContent)) cats.push('prevent');
       const id = 'm' + i;
-      el.dataset.mid = id; el.dataset.cats = cats.join(' ');
+      el.dataset.mid = id; el.dataset.cats = cats.join(' '); el.dataset.sec = secOf(el, sheet);
       el.classList.add('markable'); el.classList.toggle('marked', state.marks.has(id));
       el.innerHTML = `<button type="button" class="mkb" aria-pressed="${state.marks.has(id)}" title="Mark as skimmed or skipped">${el.innerHTML}</button>`;
       const btn = el.firstElementChild;
@@ -639,6 +652,45 @@ function renderSheet() {
     $('#mb-done').addEventListener('click', () => finishFirst(false));
     $('#mb-skip').addEventListener('click', () => finishFirst(true));
   }
+  if (!marking() && state.markedLines.length && !pristine) {
+    if (state.view === 'before') {
+      const blocks = baseBlocks(sheet); const ids = new Set(state.markedLines.map(m => m.mid));
+      blocks.forEach((el, i) => { if (ids.has('m' + i)) el.classList.add('markable', 'marked', 'static'); });
+      const n = state.markedLines.length; $('#dsum').textContent = `In your first read you skipped ${n} line${n === 1 ? '' : 's'}.`;
+    } else if (state.showSkips) {
+      const hs = [...sheet.querySelectorAll('h3')];
+      const bySec = {}; state.markedLines.forEach(m => (bySec[m.sec] = bySec[m.sec] || []).push(m));
+      let helped = 0, secs = 0;
+      Object.entries(bySec).forEach(([sec, lines]) => {
+        sec = +sec; secs++;
+        const start = sec === 0 ? sheet.querySelector('h2') : hs[sec - 1];
+        const end = hs[sec] || null;
+        const inSec = [];
+        for (let n = start.nextElementSibling; n && n !== end; n = n.nextElementSibling) inSec.push(n);
+        const found = new Set();
+        const scan = el => {
+          el.querySelectorAll ? null : null;
+          const all = [el, ...el.querySelectorAll('*')];
+          all.forEach(x => {
+            if (x.matches('button.tag')) found.add(x.textContent.replace(/·.*$/, '').trim());
+            if (x.matches('.term')) found.add('Everyday words');
+            if (x.matches('.flow')) found.add('Show me the steps');
+            if (x.matches('details.why')) found.add('Tell me why');
+          });
+        };
+        inSec.forEach(scan); if (start.matches('h3')) scan(start);
+        if (start.querySelector && start.querySelector('.term')) found.add('Everyday words');
+        if (found.size) helped++;
+        const quote = lines.slice(0, 2).map(m => `“${esc(m.text.length > 70 ? m.text.slice(0, 68).trim() + '…' : m.text)}”`).join(' and ') + (lines.length > 2 ? ` and ${lines.length - 2} more` : '');
+        const box = document.createElement('div'); box.className = 'delta' + (found.size ? '' : ' none');
+        box.innerHTML = `<span class="dlbl">You skipped</span> ${quote}<br><span class="dlbl">${found.size ? 'Now' : 'Now'}</span> ${found.size ? [...found].map(f => `<b>${esc(f)}</b>`).join(', ') : 'no change in this section with your current supports'}`;
+        start.insertAdjacentElement('afterend', box);
+      });
+      const n = state.markedLines.length;
+      $('#dsum').textContent = `You skipped ${n} line${n === 1 ? '' : 's'} in ${secs} section${secs === 1 ? '' : 's'}. ${helped} of ${secs === 1 ? 'that section' : 'those sections'} now ${helped === 1 ? 'has' : 'have'} added support.`;
+    }
+  }
+  const sk = $('#showskips'); if (sk) sk.addEventListener('change', () => { state.showSkips = sk.checked; renderSheet(); });
   sheet.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; renderSheet(); }));
   const hl = $('#hl'); if (hl) hl.addEventListener('change', () => { state.hl = hl.checked; renderSheet(); });
   sheet.querySelectorAll('button.tag').forEach(b => b.addEventListener('click', () => {
@@ -661,10 +713,10 @@ function selectList() { const r = document.createRange(); r.selectNodeContents($
 
 /* ---------- Persistence (this browser only) ---------- */
 function save() { try { localStorage.setItem('ryw', JSON.stringify({ reader: state.reader, on: [...state.on], food: state.food, foodOther: state.foodOther, cond: state.cond, team: state.team, checks: state.checks, fromQuiz: state.fromQuiz })); } catch (e) {} }
-function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true, firstDone: true, skipped: new Set(), marks: new Set(), view: 'after', hl: true }); } } catch (e) {} }
+function load() { try { const d = JSON.parse(localStorage.getItem('ryw') || 'null'); if (d && d.reader && R[d.reader]) { Object.assign(state, d, { on: new Set(d.on || []), matched: true, firstDone: true, skipped: new Set(), marks: new Set(), markedLines: [], view: 'after', hl: true }); } } catch (e) {} }
 
 function resetAll() {
-  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), marks: new Set(), view: 'after', hl: false });
+  Object.assign(state, { step: 0, answers: {}, cond: false, food: 'none', foodOther: '', reader: null, on: new Set(), matched: false, fromQuiz: false, firstDone: false, skipped: new Set(), marks: new Set(), markedLines: [], showSkips: true, view: 'after', hl: false });
   save(); renderAll();
   const q = $('#quiz'); q.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const first = q.querySelector('.opt'); if (first) first.focus({ preventScroll: true });
