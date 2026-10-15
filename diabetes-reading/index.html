@@ -281,6 +281,11 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .part-head p { margin: 0; font-size: 16px; }
 .xpick { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 14px; }
 .xpick .chip .dot { background: var(--rule); }
+.xhint { margin: 14px 0 -8px; font-size: 13px; color: var(--ink-soft); }
+.xshows { display: flex; flex-wrap: wrap; gap: 6px; }
+.xshows a { font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: none; border: 1.5px solid var(--x-ink); border-radius: 999px; padding: 3px 10px; }
+.xshows a:hover { background: var(--x-hi); }
+.find:target { outline: 3px solid var(--ci); outline-offset: 3px; }
 .xtip { position: fixed; z-index: 60; max-width: 260px; background: var(--ink); color: var(--paper); font: 600 13px/1.35 var(--f-ui); padding: 6px 10px; border-radius: 6px; pointer-events: none; box-shadow: var(--shadow); }
 #xsheet [data-tip] { cursor: help; }
 mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radius: 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
@@ -377,7 +382,7 @@ mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radiu
   <header>
     <div class="intro">
       <div class="intro-text">
-      <div class="eyebrow">Design prototype</div>
+      <div class="eyebrow">Alternative report · INFO 272</div>
       <h1>Read Your Way</h1>
       <p class="lede">Five people with different connections to type 2 diabetes read the same two pages of a <a class="srcl" href="https://diabetes.org/guide-type-2-diabetes" target="_blank" rel="noopener" title="Your Rights and Care Standards: A Guide for People with Type 2 Diabetes (American Diabetes Association)">diabetes guide</a> while thinking out loud. Their histories, relationships and trusted sources shaped what they noticed, skipped and took away.</p>
       </div>
@@ -390,17 +395,17 @@ mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radiu
     <section class="findings" aria-labelledby="find-h">
       <h2 id="find-h" class="eyebrow">What the study found</h2>
       <div class="find-grid">
-        <article class="find" style="--c:var(--p3-hi);--ci:var(--p3-ink)">
+        <article class="find" id="t1" style="--c:var(--p3-hi);--ci:var(--p3-ink)">
           <h3>People read on behalf of someone else</h3>
           <p>The guide speaks to “you,” the person with diabetes. Yet only one of the five participants was reading for herself. The other four read it for a parent or another family member, and the person they pictured shaped what they paid attention to.</p>
           <blockquote>“He’s not gonna read this. He would hand this to me.”<cite>P3, caring for her father</cite></blockquote>
         </article>
-        <article class="find" style="--c:var(--p5-hi);--ci:var(--p5-ink)">
+        <article class="find" id="t2" style="--c:var(--p5-hi);--ci:var(--p5-ink)">
           <h3>Medical words can build trust but can also wear it down</h3>
           <p>How a medical word landed depended on the reader’s life. For the two participants who work in health, terms like “hypoglycemia” were a bridge to their doctors. Years of caregiving had made the same words familiar to P3. For P4, they were “doctor words” to skip. When the page fell short, people turned to sources they already trusted: P4 to her daughter, P3 to her dad’s pharmacist, and P5 to AI tools like Gemini.</p>
           <blockquote>“So it’s kind of become my, like, translator.”<cite>P5, on using AI to make sense of his dad’s lab reports</cite></blockquote>
         </article>
-        <article class="find" style="--c:var(--p4-hi);--ci:var(--p4-ink)">
+        <article class="find" id="t3" style="--c:var(--p4-hi);--ci:var(--p4-ink)">
           <h3>“Poorly controlled” meant something different to everyone</h3>
           <p>All five participants heard the phrase through their own lived experiences. P1 pictured the emergency room. P2 saw a body on “high alert.” P3 heard a judgment of her dad. P5 thought of a technical system being “out of range.” P4 began with “you didn’t do your part,” but one line in the readings about stress or illness changed her mind.</p>
           <blockquote>“Now I think, maybe sometimes you did your part and still it went up.”<cite>P4, by the end of her interview</cite></blockquote>
@@ -416,6 +421,7 @@ mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radiu
         <h2 id="exp-h">Read it the way they did</h2>
         <p>Start with the original page, then turn on a participant to see what reading it was like for them: words that turned into noise, “you” that pointed at the wrong person, answers that weren’t there. Every effect comes from something they said, and their own words appear in handwriting.</p>
       </div>
+      <p class="xhint">Participants are ordered from the biggest differences to the smallest.</p>
       <div class="xpick" id="xpick" role="group" aria-label="Choose a participant"></div>
       <div class="xcard" id="xcard" aria-live="polite"></div>
       <div class="xlegend" id="xlegend" hidden>
@@ -431,7 +437,7 @@ mark.xhl { background: var(--x-hi); color: inherit; padding: 0 2px; border-radiu
       </div>
     </section>
 
-  <p class="foot">A class prototype, not medical advice. Handout content is condensed from pages 9 and 10 of an American Diabetes Association guide for people living with type 2 diabetes. Each added support is tagged with the participant whose reading it came from. Five think-aloud interviews, September 2026. Roma Ruparel, INFO 272.</p>
+  <p class="foot">A class project, not medical advice. Handout content is condensed from pages 9 and 10 of an American Diabetes Association guide for people living with type 2 diabetes. Effects in Part 1 are interpretations of what participants described, and every handwritten note is their own words from five think-aloud interviews, September 2026. Roma Ruparel, INFO 272.</p>
 </main>
 
 <script>
@@ -1059,6 +1065,7 @@ if (document.getElementById('quiz')) renderAll();
       sr: { scramble: 'a medical word P4 could not read or say', glyph: 'a unit P4 did not recognize' },
       lines: {
         intro: { n: ['Then why don’t they just say sugar? Everybody says sugar.'] },
+        h_low: { n: ['If the sentence after makes sense, then okay. If not, I put it away and ask my daughter.'] },
         l70: { n: ['Seventy what?'] },
         causes: { hlp: ['too little food or delayed meals', 'This can last several hours after being active'], n: ['Yes, that is what happened to me. With the walking.', 'Oh, several hours? I didn’t know that.'] },
         sxlow: { hlp: ['shakiness, sweating', 'feeling weak'], n: ['Shaky and weak, that was me. Sweating and talking funny, that was my friend.'] },
@@ -1079,7 +1086,7 @@ if (document.getElementById('quiz')) renderAll();
         l70: { n: ['That’s the number his sensor alarms at.'] },
         causes: { hlp: ['This can last several hours after being active'], n: ['So, like, if he walks in the afternoon, it could hit later.'] },
         sxlow: { s: 'skim', n: ['I’m kind of skimming this because I’ve lived it.'] },
-        rule: { n: ['the diabetes side said juice, and then the kidney side said watch the juice.'] },
+        rule: { n: ['I remembered the pharmacist saying juice, and I gave him juice, and he came out of it.', 'the diabetes side said juice, and then the kidney side said watch the juice.'] },
         cgm: { n: ['That’s actually how we do it. I watch the arrow.'] },
         glucagon: { n: ['We do have that, actually. It’s in the kitchen drawer.'] },
         prev: { s: 'skim', n: ['this is all stuff I kind of already know. I’m skimming.'] },
@@ -1127,7 +1134,9 @@ if (document.getElementById('quiz')) renderAll();
         sick: { s: 'hl', n: ['this was actually new to me as well, in terms of sick day planning'] },
       } },
   };
-  const ORDER = ['p1', 'p2', 'p3', 'p4', 'p5'];
+  const ORDER = ['p4', 'p3', 'p5', 'p2', 'p1'];
+  const SHOWS = { p4: ['t2', 't3'], p3: ['t1', 't3'], p5: ['t1', 't2'], p2: ['t2', 't3'], p1: ['t2'] };
+  const TNAME = { t1: 'Reading for someone else', t2: 'Medical words and trust', t3: 'What “poorly controlled” means' };
   let cur = null, timers = [];
   const PLAIN = { pn: '', name: 'Original', fx: {}, sr: {}, lines: {} };
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1221,7 +1230,7 @@ if (document.getElementById('quiz')) renderAll();
     sec.style.setProperty('--x-hi', cur ? `var(--${cur}-hi)` : 'transparent'); sec.style.setProperty('--x-ink', cur ? `var(--${cur}-ink)` : 'var(--ink)');
     document.getElementById('xpick').innerHTML = `<button type="button" class="chip" data-x="" aria-pressed="${!cur}"><span class="dot"></span>Original</button>` + ORDER.map(k => `<button type="button" class="chip" data-x="${k}" aria-pressed="${k === cur}"><span class="dot" style="background:var(--${k}-hi)"></span>${XR[k].pn} ${xesc(XR[k].name)}</button>`).join('');
     document.querySelectorAll('#xpick [data-x]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.x || null; cur = (k && k === cur) ? null : k; renderX(); }));
-    document.getElementById('xcard').innerHTML = !cur ? `<div><h3>The original page</h3><p>The condensed handout every participant read, with no effects. Turn on a participant to see how it felt to them, and tap them again to turn them off.</p></div><div></div>` : `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
+    document.getElementById('xcard').innerHTML = !cur ? `<div><h3>The original page</h3><p>The condensed handout every participant read, with no effects. Turn on a participant to see how it felt to them, and tap them again to turn them off.</p></div><div></div>` : `<div><h3>Reading as ${r.pn} · ${xesc(r.name)}</h3><p>${xesc(r.who)}</p><p class="lbl">Reading for</p><p class="val">${xesc(r.readsFor)}</p><p class="lbl">Connects to</p><p class="val xshows">${SHOWS[cur].map(t => `<a href="#${t}">${TNAME[t]}</a>`).join('')}</p></div><div><p class="hand">“${xesc(r.q)}”</p></div>`;
     document.getElementById('xlegend').hidden = !cur;
     let html = '';
     if (r.photo) html += `<p class="photocap">Reading from a distance, in pieces and after the fact. <span>“So everything I know is kind of after the fact.”</span></p>`;
