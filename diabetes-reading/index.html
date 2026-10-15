@@ -262,7 +262,7 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .xsheet { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 280px; column-gap: 28px; padding-block: 34px 38px; font-size: 16px; }
 .xsheet::before { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(100% - 308px); background: var(--paper); box-shadow: var(--shadow); border-radius: 3px; z-index: 0; transition: filter 1.6s ease, transform 1.6s ease; }
 .xln, .xnote { position: relative; z-index: 1; }
-.xln { grid-column: 1; padding: 3px 40px; transition: filter 1.6s ease, opacity .4s ease, font-size .6s ease; }
+.xln { grid-column: 1; align-self: start; padding: 3px 40px; transition: filter 1.6s ease, opacity .4s ease, font-size .6s ease; }
 .xnote { grid-column: 2; padding: 3px 0; }
 .xnote p { font-family: var(--f-hand); color: var(--x-ink); font-size: 18px; line-height: 1.28; margin: 0 0 8px; }
 .xnote p.q::before { content: "\201C"; } .xnote p.q::after { content: "\201D"; }
@@ -300,6 +300,13 @@ table.cmp td:first-child { font-weight: 600; width: 22%; }
 .xfoot { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; margin-top: 14px; }
 .xfoot p { margin: 0; font-size: 13px; color: var(--ink-soft); max-width: 620px; }
 .xfoot .btn { text-decoration: none; }
+.xnote.linkable { cursor: pointer; border-radius: 6px; transition: background .15s; }
+@media (min-width: 861px) { .xnote.linkable { padding: 4px 8px; margin-left: -8px; } }
+.xnote.linkable:hover, .xnote.linked { background: color-mix(in srgb, var(--x-hi) 30%, transparent); }
+.xnote.linkable:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.xln.linked { outline: 2.5px solid var(--x-ink); outline-offset: 3px; border-radius: 4px; filter: none !important; opacity: 1 !important; }
+.xln.linked > .t { background: var(--x-hi); box-shadow: 0 0 0 3px var(--x-hi); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.kgap.linked { background: color-mix(in srgb, var(--x-hi) 40%, transparent); }
 .part3-head { margin-top: 64px; }
 @media (max-width: 860px) {
   .xsheet { grid-template-columns: minmax(0, 1fr); }
@@ -1043,6 +1050,20 @@ renderAll();
     const sheet = document.getElementById('xsheet');
     sheet.className = 'xsheet' + (r.photo ? ' photo' + (reduce() ? '' : ' dim') : '');
     sheet.innerHTML = html;
+    sheet.querySelectorAll('.xnote').forEach(note => {
+      if (!note.querySelector('p.q')) return;
+      let line = note.previousElementSibling; while (line && !line.classList.contains('xln') && !line.classList.contains('kgap')) line = line.previousElementSibling;
+      if (!line) return;
+      note.tabIndex = 0; note.classList.add('linkable'); note.setAttribute('role', 'note');
+      const label = line.textContent.trim().replace(/\s+/g, ' ').slice(0, 80);
+      note.setAttribute('aria-label', 'Note on: ' + label + '. ' + note.textContent.trim());
+      const on = () => { line.classList.add('linked'); note.classList.add('linked'); };
+      const off = () => { line.classList.remove('linked'); note.classList.remove('linked'); };
+      note.addEventListener('mouseenter', on); note.addEventListener('mouseleave', off);
+      note.addEventListener('focus', on); note.addEventListener('blur', off);
+      line.addEventListener('mouseenter', on); line.addEventListener('mouseleave', off);
+      note.addEventListener('click', () => { const was = note.classList.contains('linked') && note.dataset.pinned; sheet.querySelectorAll('.linked').forEach(x => { x.classList.remove('linked'); delete x.dataset.pinned; }); if (!was) { on(); note.dataset.pinned = '1'; } });
+    });
     if (r.photo && !reduce()) setTimeout(() => sheet.classList.remove("dim"), 700);
     if (reduce()) return;
     sheet.querySelectorAll('[data-fx="scramble"]').forEach(el => { const w = el.dataset.w; timers.push(setInterval(() => { el.textContent = scramble(w); }, 260)); });
